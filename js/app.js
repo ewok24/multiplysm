@@ -7,7 +7,7 @@
 
 	var app = angular.module('msmApp', ['ngRoute', 'ngSanitize', 'angulartics', 'angulartics.google.analytics']);
 
-	app.config(function ($routeProvider, $locationProvider) {
+	app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/',
 				{
@@ -55,7 +55,7 @@
 					templateUrl: 'html/blog.html'
 				})
 			.otherwise({ redirectTo: '/' });
-	});
+	}]);
 
 	app.service('selectedService', function() {
 		var selected;
@@ -210,7 +210,7 @@
    *                            Controllers
    *
    ********************************************************************/
-	app.controller('TopBar', function($scope, $route, selectedService) {
+	app.controller('TopBar', ['$scope', '$route', 'selectedService', function($scope, $route, selectedService) {
 		$scope.items = [
 			{name: 'Home', url: '#/'},
 			{name: 'About Us', url: '#/about'},
@@ -286,7 +286,7 @@
 			}
 			isOpen = !isOpen;
 		}
-	});
+	}]);
 
 	app.controller('SlidesController', function() {
 		/*
@@ -335,7 +335,7 @@
 	  //$('.orbit-slides-container').css({ 'min-height': minHeight });
 	});
 
-  app.controller('JoyrideController', function($scope) {
+  app.controller('JoyrideController', ['$scope', function($scope) {
 	  $scope.tour = function() {
 	  	console.log('joyride controller working!');
 	  }
@@ -376,13 +376,13 @@
           });
       }
       //*/
-  });
+  }]);
 
-	app.controller('InitializeController', function (){
+	app.controller('InitializeController', [function (){
 		$(document).foundation();
-	});
+	}]);
 
-	app.controller('podcastsController', function($scope) {
+	app.controller('podcastsController', ['$scope', function($scope) {
 		$('audio').mediaelementplayer();
 
 		$scope.playThis = function (pathToAudio) {
@@ -392,7 +392,7 @@
 			player.setSrc(pathToAudio);
 			player.play();
 		}
-	});
+	}]);
 
   /********************************************************************
    *
@@ -1139,7 +1139,7 @@
 		}
 	});
 
-	app.directive('weeklyEvent', function ($http, $compile, $location) {
+	app.directive('weeklyEvent', ['$http', '$compile', '$location', function ($http, $compile, $location) {
 		return {
 			restrict: 'E',
 			template: '<div></div>',
@@ -1172,7 +1172,7 @@
 				})
 			}
 		}
-	});
+	}]);
 
 	app.directive('podcast', function() {
 		return {
