@@ -78,7 +78,7 @@
 		}
 		return {
 			getSelected: getSelected,
-			setSelected: setSelected,
+			setSelected: setSelected
 		}
 	});
 
@@ -217,7 +217,7 @@
 			{name: 'Ministries', url: '#/events'},
 			{name: 'News/Updates', url: '#/news'},
 			{name: 'Podcasts', url: '#/podcasts'},
-			{name: 'Contact', url: '#/contact'},
+			{name: 'Contact', url: '#/contact'}
 		];
 
 		var update = function() {
@@ -551,7 +551,7 @@
         bullets: true,
         timer: true,
         variable_height: true,
-        container_class: 'orbit-container',
+        container_class: 'orbit-container'
         /*
         stack_on_small_class: 'orbit-stack-on-small',
         next_class: 'orbit-next',
@@ -581,7 +581,7 @@
 
   	var container = {
   		missionStatement : {},
-  		ourYouthPastor : {},
+  		ourYouthPastor : {}
   	};
   	var missionStatementData;
   	var ourYouthPastorData;
@@ -644,7 +644,7 @@
 
 		var container = {
             bibleStudy : {},
-  		    sundaySchool : {},
+  		    	sundaySchool : {}
   	    };
   	    var bibleStudyData;
   	    var sundaySchoolData;
@@ -727,14 +727,14 @@
   			index: 0,
   			title: "Today's Meditation",
   			isActive: false,
-  			data: {},
+  			data: {}
   		},
   		1 : {
   			index: 1,
   			title: "The Multiply Initiative",
   			isActive: false,
-  			data: {},
-  		},
+  			data: {}
+  		}
   	};
   	var weeklyData = {};
 
@@ -823,7 +823,7 @@
    				}
    				if (!weeklyData[week]) {
    					weeklyData[week] = {
-   						data: new Array(),
+   						data: new Array()
    					};
    				}
    				weeklyData[week].data.push(value);
@@ -836,7 +836,7 @@
    				}
    				if (!weeklyData[week]) {
    					weeklyData[week] = {
-   						data: new Array(),
+   						data: new Array()
    					};
    				}
    				weeklyData[week].data.push(value);
@@ -862,14 +862,14 @@
    			}
    			if (!weeklyData[number]) {
    				weeklyData[number] = {
-   					data: new Array(),
+   					data: new Array()
    				}
    			}
    			mainTabs[i] = {
    				index: i,
    				title: 'Week ' + number,
    				isActive: false,
-   				data: weeklyData[number].data,
+   				data: weeklyData[number].data
    			}
    		}
 
@@ -952,7 +952,7 @@
    				if (!oldEvents[year]) {
 	   				oldEvents[year] = {
 	   					year: year,
-	   					events: new Array(),
+	   					events: new Array()
 	   				};
 	   			}
 	   			oldEvents[year].events.push(value);
@@ -961,7 +961,7 @@
    					if (!upcomingEvents[year]) {
 		   				upcomingEvents[year] = {
 		   					year: year,
-		   					events: new Array(),
+		   					events: new Array()
 		   				};
 		   			}
 		   			upcomingEvents[year].events.push(value);
@@ -1001,13 +1001,13 @@
 	    0 : {
 		    title: "Current News/Updates",
 		    isActive: false,
-		    data: {},
+		    data: {}
 	    },
 	    1 : {
 		    title: "Old News/Updates",
 		    isActive: false,
-		    data: {},
-	    },
+		    data: {}
+	    }
     };
 	
     $scope.mainTabs = mainTabs;
@@ -1135,7 +1135,7 @@
         				'</div>',
      	replace: true,
 			link: function(scope, element, attrs, controller) {
-			},
+			}
 		}
 	});
 
@@ -1170,7 +1170,7 @@
 	        	});
 					}
 				})
-			},
+			}
 		}
 	});
 
