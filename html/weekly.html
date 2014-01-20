@@ -1,0 +1,22 @@
+﻿<div ng-controller="WeeklyController" class="row">
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
+  </div>
+
+  <div class="large-3 columns">
+  	<ul class="side-nav">
+		  <li ng-class="{active: isBibleStudy}" ng-click="getBibleStudyTemplate()"><a>Bible Study</a></li>
+		  <li ng-class="{active: isSundaySchool}" ng-click="getSundaySchoolTemplate()"><a>Sunday School</a></li>
+		  <li class="divider"></li>
+		</ul>
+  </div>
+  <div class="expand-on-small large-9 columns">
+    <img class="shadowed-image" src={{image}}>
+    <hr/>
+    <div class="panel">
+      <h2>{{subtitle}}</h2>
+      <div ng-bind-html-unsafe="content"></div>
+      <a href={{mapLink}} target="_blank"><img class="bordered-image" src={{mapImg}}></img></a>
+    </div>
+  </div>
+</div>

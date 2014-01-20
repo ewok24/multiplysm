@@ -1,0 +1,132 @@
+/* font-face */
+@font-face {
+  font-family: "AccessibilityFoundicons";
+  src: url("../fonts/accessibility_foundicons.eot");
+  src: url("../fonts/accessibility_foundicons.eot?#iefix") format("embedded-opentype"), url("../fonts/accessibility_foundicons.woff") format("woff"), url("../fonts/accessibility_foundicons.ttf") format("truetype"), url("../fonts/accessibility_foundicons.svg#AccessibilityFoundicons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* global foundicon styles */
+[class*="foundiconacc-"] {
+  display: inline;
+  width: auto;
+  height: auto;
+  line-height: inherit;
+  vertical-align: baseline;
+  background-image: none;
+  background-position: 0 0;
+  background-repeat: repeat;
+}
+
+[class*="foundiconacc-"]:before {
+  font-family: "AccessibilityFoundicons";
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+}
+
+/* icons */
+.foundiconacc-wheelchair:before {
+  content: "\f000";
+}
+
+.foundiconacc-speaker:before {
+  content: "\f001";
+}
+
+.foundiconacc-fontsize:before {
+  content: "\f002";
+}
+
+.foundiconacc-eject:before {
+  content: "\f003";
+}
+
+.foundiconacc-view-mode:before {
+  content: "\f004";
+}
+
+.foundiconacc-eyeball:before {
+  content: "\f005";
+}
+
+.foundiconacc-asl:before {
+  content: "\f006";
+}
+
+.foundiconacc-person:before {
+  content: "\f007";
+}
+
+.foundiconacc-question:before {
+  content: "\f008";
+}
+
+.foundiconacc-adult:before {
+  content: "\f009";
+}
+
+.foundiconacc-child:before {
+  content: "\f00a";
+}
+
+.foundiconacc-glasses:before {
+  content: "\f00b";
+}
+
+.foundiconacc-cc:before {
+  content: "\f00c";
+}
+
+.foundiconacc-blind:before {
+  content: "\f00d";
+}
+
+.foundiconacc-braille:before {
+  content: "\f00e";
+}
+
+.foundiconacc-iphone-home:before {
+  content: "\f00f";
+}
+
+.foundiconacc-w3c:before {
+  content: "\f010";
+}
+
+.foundiconacc-css:before {
+  content: "\f011";
+}
+
+.foundiconacc-key:before {
+  content: "\f012";
+}
+
+.foundiconacc-hearing-impaired:before {
+  content: "\f013";
+}
+
+.foundiconacc-male:before {
+  content: "\f014";
+}
+
+.foundiconacc-female:before {
+  content: "\f015";
+}
+
+.foundiconacc-network:before {
+  content: "\f016";
+}
+
+.foundiconacc-guidedog:before {
+  content: "\f017";
+}
+
+.foundiconacc-universal-access:before {
+  content: "\f018";
+}
+
+.foundiconacc-elevator:before {
+  content: "\f019";
+}

@@ -1,0 +1,18 @@
+<div ng-controller="NewsController" class="row">
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
+  </div>
+
+  <div class="large-3 columns">
+    <ul class="side-nav">
+      <li ng-repeat="tab in mainTabs" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.data, $index)"><a>{{tab.title}}</a></li>
+      <li class="divider"></li>
+    </ul>
+  </div>
+
+  <div class="expand-on-small large-9 columns">
+    <div class="expand-on-small small-12 large-12 columns">
+      <news-item ng-repeat="news in allNews"></news-item>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div data-ng-controller="FeedCtrl" class="row">
+  <div class="small-12 large-12 columns">
+  </div>
+  <hr/>
+  <div class="small-12 large-12 columns">
+    <h4>Blog Reader using AngularJS</h4>
+    <input type="text" data-ng-model="postFilter"/>
+    <ul>
+      <li ng-repeat="post in posts | filter:postFilter">
+        <h5><a href="{{post.link}}">{{post.title}}</a></h5>
+        <!--
+        <p class="text-left">{{post.content}}</p>
+        -->
+        <hr/>
+        <p class="text-left" ng-bind-html-unsafe="post.content"></p>
+        <span class="small">{{post.published}}</span>
+        <p class="text-left">{{post.labels}}</p>
+      </li>                
+    </ul>
+  </div>
+  <hr/>
+</div>
