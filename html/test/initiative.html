@@ -1,0 +1,40 @@
+<div ng-controller="InitiativeController" class="row">
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
+    <img class="shadowed-image show-for-small" src='img/EcclesiatesXL.png'>
+  </div>
+
+  <div class="large-3 columns">
+  	<ul class="side-nav">
+  		<li ng-repeat="tab in mainTabs" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.data, $index)"><a>{{tab.title}}</a></li>
+  		<li class="divider"></li>
+		</ul>
+  </div>
+
+  <div class="large-9 columns">
+    <div style="margin-bottom: 15px" class="large-12 columns show-for-medium-up">
+      <img class="shadowed-image" src='img/EcclesiatesXXL.png'>
+    </div>
+
+    <div class="large-12 columns show-for-medium-up">
+      <div ng-repeat="meditation in displayed">
+        <div class="panel">
+          <h2>{{meditation.title}}</h2>
+          <h3>{{meditation.dateText}}</h3>
+          <br/>
+          <div ng-bind-html-unsafe="meditation.content"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="show-for-small" ng-repeat="meditation in displayed">
+      <div class="panel">
+        <h2>{{meditation.title}}</h2>
+        <h3>{{meditation.dateText}}</h3>
+        <br/>
+        <div ng-bind-html-unsafe="meditation.content"></div>
+      </div>
+    </div>
+  	
+  </div>
+</div>

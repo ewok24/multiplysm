@@ -12,7 +12,7 @@
         <p class="text-left">{{post.content}}</p>
         -->
         <hr/>
-        <p class="text-left" ng-bind-html-unsafe="post.content"></p>
+        <p class="text-left" ng-bind-html="post.content"></p>
         <span class="small">{{post.published}}</span>
         <p class="text-left">{{post.labels}}</p>
       </li>                

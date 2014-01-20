@@ -5,7 +5,7 @@
 		FastClick.attach(document.body);
 	});
 
-	var app = angular.module('msmApp', ['angulartics', 'angulartics.google.analytics']);
+	var app = angular.module('msmApp', ['ngRoute', 'ngSanitize', 'angulartics', 'angulartics.google.analytics']);
 
 	app.config(function ($routeProvider, $locationProvider) {
 		$routeProvider
@@ -432,9 +432,7 @@
 			    value.date = d;
 			    value.dateText = weekday + ', ' + month + ' ' + day;
 
-			    var nextDay = new Date(d.getTime() + (1*24*60*60*1000));
-
-			    if (today > nextDay) {
+			    if (today > d) {
 			    } else {
 				    if (year) {
 					    if(!allEvents[d]) {
@@ -950,10 +948,7 @@
    			value.date = d;
    			value.dateText = weekday + ', ' + month + ' ' + day;
 
-   			var nextDay = new Date(d.getTime() + (1*24*60*60*1000));
-
-   			if (today > nextDay) {
-   				//console.log(today, d, value);
+   			if (today > d) {
    				if (!oldEvents[year]) {
 	   				oldEvents[year] = {
 	   					year: year,
@@ -1133,7 +1128,7 @@
           			'</div>'+
           			'<div class="row transparent">' +
           			'<div class="small-12 large-12 columns">'+
-          			'<div ng-bind-html-unsafe="news.content" class="panel shadowed-image">'+
+          			'<div ng-bind-html="news.content" class="panel shadowed-image">'+
           			'</div>'+
           			'</div>'+
           			'</div>' +

@@ -1,0 +1,179 @@
+﻿<div ng-controller="homeController">
+  <div class="row">
+    <div class="small-12 large-12 columns">
+      <!--
+      <img src="http://placehold.it/1000x400&text=[ img 1 ]" />
+      
+      <div id="slider">
+        <a href="#/initiative">
+          <img src="img/EcclesiatesXL.png"/>
+        </a>
+        <a href="#/initiative">
+          <img src="img/EcclesiatesXL.png"/>
+        </a>
+        <a href="#/initiative">
+          <img src="img/EcclesiatesXL.png"/>
+        </a>
+        <a href="#/initiative">
+          <img src="img/EcclesiatesXL.png"/>
+        </a>
+      </div>
+      -->
+    </div>
+    <div class="expand-on-small large-12 columns">
+      <div class="slideshow-wrapper">
+        <!--
+        <div class="preloader"></div>
+        -->
+        <ul data-orbit>
+          <li>
+            <img src="img/slide0-MainSlide.png" />
+          </li>
+          <li>
+            <a href="#/about">
+              <img src="img/slide1-MissionStatementSlide.png" />
+            </a>
+          </li>
+          <li>
+            <a href="#/initiative">
+              <img src="img/slide2-EcclesiatesSlide2.png" />
+            </a>
+          </li>
+          <li>
+            <a href="http://foundersbaptist.org" target="_blank">
+              <img src="img/slide3-FoundersSlide.png" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row follow-us">
+    <div class="small-12 large-12 columns">
+      <hr/>
+      <h3>Staying Connected</h3>
+      <div class="panel shadowed-image">
+        <h2>Follow Us!</h2>
+        <br/>
+        <p>
+          We have a variety of channels to keep you, both parents and students, informed of our activities here at <span class="optimus">Multiply Student Ministry</span>.
+        </p>
+        <ul>
+          <li>
+            <a href="https://launch.alertrocket.com/register?appKey=a9439828ac2b41948c73cfdd9ce2b184"><i class="foundicongen-star" target="_blank"></i><span>Subscribe</span></a> to receive push-notifications to your mobile device of all the updates on this website!
+          </li>
+          <li>
+            <a href="https://www.facebook.com/pages/Multiply-Student-Ministry/162835727236764" target="_blank"><i class="foundicon-facebook"></i> Like us</a> on Facebook!
+          </li>
+          <li>
+            <a href="https://twitter.com/MultiplySM" target="_blank"><i class="foundicon-twitter"></i>Follow us</a> on Twitter!
+          </li>
+          <li>
+            <a href="http://www.youtube.com/channel/UC1_FvX4zpH6mjViinxhsQqg" target="_blank"><i class="foundicon-youtube"></i>Check out</a> our YouTube Channel!
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!--
+  <div ng-controller="OrbitController" class="row">
+    <div class="small-12 large-12 columns">
+      <hr/>
+      <h3>New to this Website?</h3>
+      <a ng-click="tour()" class="large button expand">Take A Tour!</a>
+    </div>
+  </div>
+  -->
+
+  <div class="row">
+    <div class="small-12 large-6 columns">
+      <hr/>
+      <h3>Weekly Events</h3>
+      <ul class="small-block-grid-2 large-block-grid-2">
+        <li class="link-red">
+          <a href="#/weekly#biblestudy"><img src="img/Revelation_s.png">
+          <h5>Weekly Bible Study</h5>
+          </a>
+          <h6>Thursdays: 7-9pm</h6>
+          <p>@ Wells Residence: <a href="https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16" target="_blank">1411 Kennoway Park, Spring TX, 77379</a></p>
+          <p>Here's the <a href="https://docs.google.com/spreadsheet/ccc?key=0AqBmfata5ABldEZKZmlwWHphSjF1a2FUVlRoak5RcXc&usp=sharing" target="_blank">sign up sheet</a> for bringing food to Bible Study.</p>
+        </li>
+        <li class="link-red">
+          <a href="#/weekly#sundayschool"><img src="img/proverbs_s.png">
+          <h5>Sunday School</h5>
+          </a>
+          <h6>Sundays: 9am</h6>
+          <p>@ Founders Baptist Church: <a href="https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77379&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16" target="_blank">24724 Aldine Westfield, Spring TX, 77379</a></p>
+        </li>
+      </ul>
+    </div>
+    <div class="upcoming-list small-12 large-6 columns link-red">
+      <hr/>
+        <a href="#/upcoming">
+          <h3>Upcoming Event</h3>
+        </a>
+        <ul class="small-block-grid-1 large-block-grid-1">
+          <li>
+            <div class="panel shadowed-image">
+              <h2>{{nextEvent.title}}</h2>
+              <h3>{{nextEvent.dateText}}</h3>
+              <br/>
+              <div ng-bind-html-unsafe="nextEvent.content"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="news row">
+    <div class="small-12 large-12 columns">
+      <hr/>
+      <a href="#/news">
+        <h3>News/Updates</h3>
+      </a>
+    </div>
+    <div class="small-12 large-12 columns link-only-red">
+      <div class="panel hero shadowed-image link-only">
+        <h3>Sunday School Update:</h3>
+        <h4>For Sunday, October 27</h4>
+        <br/>
+        <div class="row hero">
+          <div class="hero small-12 large-6 columns">
+            <div class="panel shadowed-image">
+              <h3>Upcoming Sunday School Lesson:</h3>
+              <h2>Proverbs 5:1-23</h2>
+            </div>
+          </div>
+          <div class="hero small-12 large-6 columns">
+            <div class="panel shadowed-image">
+              <h3>This Week's Memory Verse:</h3>
+              <h6>Recite at Sunday School</h6>
+              <h2>Colossians 1:1-2</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel hero shadowed-image">
+        <h3>Bible Study Update:</h3>
+        <h4>For Thursday, October 17</h4>
+        <br/>
+        <div class="row hero">
+          <div class="hero small-12 large-12 columns">
+            <div class="panel shadowed-image">
+              <h3>Weekly Challenge</h3>
+              <p>
+                This week's bible study challenge is to pray and think about joining in <span class="optimus"><a href="#/initiative">The Multiply Initiative</a></span>. If you decide to participate then try to find someone to disciple you by the end of the week. Contact Nathan with any questions or if you need help finding someone.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

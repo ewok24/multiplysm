@@ -1,0 +1,19 @@
+﻿<div ng-controller="AboutController" class="row">
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
+  </div>
+
+  <div class="large-3 columns">
+    <ul class="side-nav">
+      <li ng-class="{active: isMissionStatement}" ng-click="getMissionStatement()"><a>Mission Statement</a></li>
+      <li ng-class="{active: isOurYouthPastor}" ng-click="getOurYouthPastor()"><a>Our Youth Pastor</a></li>
+      <li class="divider"></li>
+    </ul>
+  </div>
+  <div class="large-9 columns">
+    <div class="panel">
+      <h2>{{ subtitle }}</h2>
+      <p>{{ content }}</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+﻿<div ng-controller="UpcomingController">
+  <h1>{{title}}</h1>
+  <year>
+    <events></events>
+  </year>
+
+  <div ng-repeat="year in allUpcomingEvents">
+    <div>
+      <hr/>
+      <h1>{{year.year}}</h1>
+    </div>
+    <div ng-repeat="event in year.events">
+      <div class="small-12 large-12 columns">
+        <div class="panel shadowed-image">
+          <h2>{{event.title}}</h2>
+          <h3>{{event.dateText}}</h3>
+          <br/>
+          <div ng-bind-html-unsafe="event.content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
