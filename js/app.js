@@ -383,6 +383,7 @@
 	}]);
 
 	app.controller('podcastsController', ['$scope', function($scope) {
+
 		$('audio').mediaelementplayer();
 
 		$scope.playThis = function (pathToAudio) {
