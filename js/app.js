@@ -39,7 +39,6 @@
 				})
 			.when('/podcasts',
 				{
-					controller: 'podcastsController',
 					templateUrl: 'html/podcasts.html'
 				})
 			.when('/contact',
@@ -380,19 +379,6 @@
 
 	app.controller('InitializeController', [function (){
 		$(document).foundation();
-	}]);
-
-	app.controller('podcastsController', ['$scope', function($scope) {
-
-		$('audio').mediaelementplayer();
-
-		$scope.playThis = function (pathToAudio) {
-			//console.log(pathToAudio);
-			var player = new MediaElementPlayer('#podcastPlayer');
-			player.pause();
-			player.setSrc(pathToAudio);
-			player.play();
-		}
 	}]);
 
   /********************************************************************
@@ -1094,6 +1080,69 @@
     });
 	}]);	
 
+	app.controller('PodcastsController', ['$scope', 'httpService', function($scope, httpService) {
+		$('#podcastPlayer').mediaelementplayer();
+		var player = new MediaElementPlayer('#podcastPlayer');
+
+		$scope.playThis = function (pathToAudio) {
+			if ($scope.allPodcasts) {
+				if ($scope.allPodcasts[pathToAudio]) {
+					$scope.currentSermon = $scope.allPodcasts[pathToAudio];
+
+					var link = $scope.allPodcasts[pathToAudio].dblink;
+					player.pause();
+					player.setSrc(link);
+					player.play();
+				}
+			}
+		}
+
+		$scope.searchFilter = function (obj) {
+			var searchType = $scope.searchType;
+			var returnObject = {};
+			returnObject[searchType] = $scope.searchText;
+
+			//console.log('returnObject', returnObject);
+
+			return returnObject;
+		}
+
+		$scope.allPodcasts = {};
+
+  	httpService.getLabeledPost('$Podcasts').
+   	success(function(data, status, headers, config) {
+   		if (data.items[0]) {
+   			//console.log('data.items[0]', data.items[0]);
+   			var jsonContent = data.items[0].content;
+   			//console.log('jsonContent', jsonContent);
+   			var jsonString = jsonContent.toString();
+   			//console.log('jsonString', jsonString);
+
+   			if (jsonString) {
+   				var jsonObject = JSON.parse(jsonString);
+   				 console.log('jsonObject', jsonObject);
+   				if (jsonObject) { //Parse Successful
+   					angular.forEach(jsonObject, function(value, key) {
+   						var jDate = parseISO8601(value.date);
+   						value.dayNumber = jDate.getDate();
+   						value.day = getDayText(jDate.getDay());
+   						value.month = getMonthText(jDate.getMonth());
+   					});
+   					$scope.allPodcasts = jsonObject;
+   					if ($scope.allPodcasts) {
+   						$scope.currentSermon = $scope.allPodcasts[0];
+   						if ($scope.currentSermon) {
+   							player.setSrc($scope.currentSermon.dblink);
+   						}
+   					}
+   				}
+   			}
+   		}
+   	}).
+   	error(function(data, status, headers, config) {
+	  });
+	}]);
+
   app.controller('ContactController', ['$scope', 'httpService', function ($scope, httpService) {
 
   	httpService.getLabeledPost('$Contact').
@@ -1111,7 +1160,6 @@
    	error(function(data, status, headers, config) {
 	  });
 	}]);
-
 
   /********************************************************************
    *
@@ -1193,6 +1241,22 @@
 								'</div>',
 			link: function() {
 
+			}
+		}
+	});
+
+	app.directive('chosenPodcast', function() {
+		return {
+			restrict: 'E',
+			template: '<div class="panel">' +
+					        '<h2>{{currentSermon.title}}</h2>' +
+					        '<h3>{{currentSermon.speaker}}</h3>' +
+					        '<h3>{{currentSermon.series}}</h3>' +
+					        '<p>{{currentSermon.date}}</p>' +
+					        '<p><strong>{{currentSermon.passage}}</strong></p>' +
+					        '<p>{{currentSermon.description}}</p>' +
+					      '</div>',
+			link: function(scope, element, attrs, controller) {
 			}
 		}
 	});

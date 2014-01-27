@@ -1,172 +1,45 @@
-﻿<h1>Podcasts</h1>
-<div class="hide-mobile large-12 columns">
-  <audio id="podcastPlayer" src="audio/Podcasts/Nathan Camp Day 2.m4a" type="audio/mp3" controls="controls" style="width:100%;">
-  <!--
-	<audio id="audioplayer" preload="auto" controls style="width:100%;"><source src="audio/Nathan Camp Day 3.mp3" type="audio/mp3">Your browser doesn't support the HTML audio tag. You can still download the show, though!</audio>
-  -->
-</div>
-<div class="hide-mobile">
-  <br/>
-  <hr/>
-</div>
+﻿<div ng-controller="PodcastsController">
+  <div class="row">
+    <div class="large-6 columns" style="min-height: 200px; max-height: 568px; overflow: scroll;">
+      <audio id="podcastPlayer" src="audio/Podcasts/Nathan Camp Day 2.m4a" type="audio/mp3" controls="controls" style="width:100%;"></audio>
+      
+      <chosen-podcast></chosen-podcast>
 
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('https://dl.dropboxusercontent.com/s/5eww8xpn1g1vmxs/2013%2003%2020%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
+    </div>
+    <div class="large-6 columns">
+      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle"></input>
+      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker"></input>
+      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Series" ng-model="searchSeries"></input>
+      <select ng-model="searchType">
+        <option value="title">By Title</option>
+        <option value="speaker">By Speaker</option>
+        <option value="series">By Series</option>
+        <option value="passage">By Passage</option>
+      </select>
+      <div style="min-height: 200px; max-height: 568px; overflow: scroll; padding-right: 10px; background-color: #f0eeee; border: solid 2px #444;">
+        <ul style="margin: 0px;" ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }">
+          <li style="background-color: #f0eeee; margin: 0px; padding: 0px; border-bottom: solid 1px #444;" ng-click="playThis($index)">
+            <div style="background-color: inherit; margin: 0px; padding-left: 1em; padding-right: 1em; padding-top: 1px; padding-bottom: 1px; position: relative; top: -10px;">
+              <div class="row" style="background-color: inherit; margin-right: 1em;">
+                <div class="small-3 large-3 columns">
+                  <time datetime="2014-09-20" class="icon" style="font-size: 1em; display: block; position: relative; width: 5.1em; height: 5.1em; background-color: #fff; border-radius: 0.6em;">
+                    <em style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; bottom: 0.1em; color: #dc411c;">{{podcast.day}}</em>
+                    <strong style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; top: 0; color: #fff; background-color: #dc411c; box-shadow: 0 2px 0 #333; padding: 0;">{{podcast.month}}</strong>
+                    <span style="display: block; width: 100%; font-size: 1em; font-weight: bold; font-style: normal; text-align: center; font-size: 2.8em; letter-spacing: -0.05em; padding-top: 6px; color: #2f2f2f;">{{podcast.dayNumber}}</span>
+                  </time>
+                </div>
+                <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="small-9 large-9 columns">
+                  <i style="position: relative; top: 1.6em; float: right;" class="foundiconacc-speaker"></i>
+                  <p style="margin: 0px;"><strong>{{podcast.title}}</strong></p>
+                  <p style="margin: 0px;">{{podcast.speaker}} </p>
+                  <p style="margin: 0px;">{{podcast.series}}</p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="https://dl.dropboxusercontent.com/s/5eww8xpn1g1vmxs/2013%2003%2020%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3" download="https://dl.dropboxusercontent.com/s/5eww8xpn1g1vmxs/2013%2003%2020%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>January 25, 2014</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Nathan Ramirez</h3>
-    <h2>Test Podcast</h2>
-    <h3>Topical</h3>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="https://dl.dropboxusercontent.com/s/5eww8xpn1g1vmxs/2013%2003%2020%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3" download="https://dl.dropboxusercontent.com/s/5eww8xpn1g1vmxs/2013%2003%2020%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
+  	
 </div>
-
-
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('audio/Nathan Camp Final Exortation.mp3')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="audio/Nathan Camp Final Exortation.mp3" download="Nathan Camp Final Exortation.mp3" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>August 13, 2013</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Nathan Ramirez</h3>
-    <h2>Final Camp Exhortation</h2>
-    <h3>Topical</h3>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="audio/Nathan Camp Final Exortation.mp3" download="Nathan Camp Final Exortation.mp3"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
-</div>
-
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('audio/Brian Smelek- The value of Christ.mp3')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="audio/Brian Smelek- The value of Christ.mp3" download="Brian Smelek- The value of Christ.mp3" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>August 12, 2013</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Brian Smelek</h3>
-    <h2>The Value of Christ</h2>
-    <h3>Philippians 3:7-11</h3>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="audio/Brian Smelek- The value of Christ.mp3" download="Brian Smelek- The value of Christ.mp3"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
-</div>
-
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('audio/Nathan Camp Day 4.mp3')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="audio/Nathan Camp Day 4.mp3" download="Nathan Camp Day 4.mp3" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>August 11, 2013</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Nathan Ramirez</h3>
-    <h2>Camp Sermon 4</h2>
-    <h3>Hebrews 12:1-3</h3>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="audio/Nathan Camp Day 4.mp3" download="Nathan Camp Day 4.mp3"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
-</div>
-
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('audio/Jeremy Loftin- Compromised Christianity.mp3')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="audio/Jeremy Loftin- Compromised Christianity.mp3" download="Jeremy Loftin- Compromised Christianity.mp3" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>August 11, 2013</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Jerermy Loftin</h3>
-    <h2>Compromised Christianity</h2>
-    <h3>Genesis 19</h3>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="audio/Jeremy Loftin- Compromised Christianity.mp3" download="Jeremy Loftin- Compromised Christianity.mp3"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
-</div>
-
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('audio/Nathan Camp Day 3.mp3')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="audio/Nathan Camp Day 3.mp3" download="Nathan Camp Day 3.mp3" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>August 10, 2013</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Nathan Ramirez</h3>
-    <h2>Camp Sermon 3</h2>
-    <h3>Hebrews 12:1-3</h3>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="audio/Nathan Camp Day 3.mp3" download="Nathan Camp Day 3.mp3"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
-</div>
-
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('audio/Ray Caldwell- Doubting.mp3')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="audio/Ray Caldwell- Doubting.mp3" download="Ray Caldwell- Doubting.mp3" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>August 10, 2013</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Ray Caldwell</h3>
-    <h2>Doubting Christians</h2>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="audio/Ray Caldwell- Doubting.mp3" download="Ray Caldwell- Doubting.mp3"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
-</div>
-
-<div class="podcasts small-12 large-12 columns panel shadowed-image">
-  <div class="hide-mobile small-12 large-2 columns">
-    <a ng-click="playThis('audio/Nathan Camp Day 2.m4a')" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="hide-desktop small-12 large-2 columns">
-    <a href="audio/Nathan Camp Day 2.m4a" download="Nathan Camp Day 2.m4a" class="button"><i class="foundiconacc-speaker"></i> Listen </a>
-  </div>
-  <div class="small-12 large-2 columns">
-    <p>August 9, 2013</p>
-  </div>
-  <div class="small-12 large-6 columns">
-    <h3>Nathan Ramirez</h3>
-    <h2>Camp Sermon 2</h2>
-    <h3>Hebrews 12:1-3</h3>
-  </div>
-  <div class="hide-mobile small-12 large-2 columns">
-    <a href="audio/Nathan Camp Day 2.m4a" download="Nathan Camp Day 2.m4a"><i class="foundicongen-inbox"></i> Download </a>
-  </div>
-</div>
-	
