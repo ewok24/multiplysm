@@ -16,7 +16,7 @@
         <option value="series">By Series</option>
         <option value="passage">By Passage</option>
       </select>
-      <div style="min-height: 200px; max-height: 568px; overflow: scroll; padding-right: 10px; background-color: #f0eeee; border: solid 2px #444;">
+      <div style="min-height: 200px; max-height: 568px; overflow-y: scroll; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-right: 10px; background-color: #f0eeee; border: solid 2px #444;">
         <ul style="margin: 0px;" ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }">
           <li style="background-color: #f0eeee; margin: 0px; padding: 0px; border-bottom: solid 1px #444;" ng-click="playThis($index)">
             <div style="background-color: inherit; margin: 0px; padding-left: 1em; padding-right: 1em; padding-top: 1px; padding-bottom: 1px; position: relative; top: -10px;">
