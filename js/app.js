@@ -1153,6 +1153,8 @@
 
    						if (isNaN(value.dayNumber)) {
    							value.month = "No Date";
+   							value.dayNumber = "";
+   							value.day = "";
    						} else {
    							value.date = value.month + " " + value.dayNumber + ", " + jDate.getFullYear();
    						}
