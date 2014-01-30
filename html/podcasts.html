@@ -7,15 +7,12 @@
 
     </div>
     <div class="large-6 columns">
-      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle"></input>
-      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker"></input>
-      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Series" ng-model="searchSeries"></input>
-      <select ng-model="searchType">
-        <option value="title">By Title</option>
-        <option value="speaker">By Speaker</option>
-        <option value="series">By Series</option>
-        <option value="passage">By Passage</option>
-      </select>
+      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle" ng-show="show.title"></input>
+      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker" ng-show="show.speaker"></input>
+      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Series" ng-model="searchSeries" ng-show="show.series"></input>
+
+      <select ng-model="searchType" ng-change="switchType()" ng-options="c.type for c in searchTypes"></select>
+
       <div style="min-height: 200px; max-height: 568px; overflow-y: scroll; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-right: 10px; background-color: #f0eeee; border: solid 2px #444;">
         <ul style="margin: 0px;" ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }">
           <li style="background-color: #f0eeee; margin: 0px; padding: 0px; border-bottom: solid 1px #444;" ng-click="playThis($index)">

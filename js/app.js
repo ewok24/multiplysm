@@ -193,7 +193,6 @@
 	function sortBlogPosts(a,b) { // sorts items by date
 	  return a.date<b.date?-1:a.date>b.date?1:0;
 	}
-
   function findBibleRefs() {
   	Logos.ReferenceTagging.lbsBibleVersion = "ESV";
     Logos.ReferenceTagging.lbsLinksOpenNewWindow = true;
@@ -1097,15 +1096,39 @@
 			}
 		}
 
-		$scope.searchFilter = function (obj) {
-			var searchType = $scope.searchType;
-			var returnObject = {};
-			returnObject[searchType] = $scope.searchText;
-
-			//console.log('returnObject', returnObject);
-
-			return returnObject;
+		$scope.searchTypes = [
+			{ type: 'By Title' },
+			{ type: 'By Speaker' },
+			{ type: 'By Series' }
+			//{ type: 'By Passage' }
+		];
+		$scope.searchType = $scope.searchTypes[0];
+		$scope.show = {
+			title: true,
+			speaker: false,
+			series: false
 		}
+		
+		$scope.switchType = function() {
+			$scope.show.title = false;
+			$scope.show.speaker = false;
+			$scope.show.series = false;
+
+			switch($scope.searchType.type) {
+				case 'By Title':
+					$scope.show.title = true;
+					break;
+				case 'By Speaker':
+					$scope.show.speaker = true;
+					break;
+				case 'By Series':
+					$scope.show.series = true;
+					break;
+				default:
+					break;
+			}
+		}
+
 
 		$scope.allPodcasts = {};
 
@@ -1127,6 +1150,13 @@
    						value.dayNumber = jDate.getDate();
    						value.day = getDayText(jDate.getDay());
    						value.month = getMonthText(jDate.getMonth());
+
+   						if (isNaN(value.dayNumber)) {
+   							value.month = "No Date";
+   						} else {
+   							value.date = value.month + " " + value.dayNumber + ", " + jDate.getFullYear();
+   						}
+
    					});
    					$scope.allPodcasts = jsonObject;
    					if ($scope.allPodcasts) {
