@@ -2,6 +2,11 @@
  *    Global Styles
  **********************/
 
+body {
+
+	background: #f5f4f0 url('../img/site_background-medium.png') center top repeat;
+}
+
  @font-face {
 	font-family: optimus-princeps;
 	src: url('../fonts/OptimusPrinceps.ttf');
@@ -24,3 +29,11 @@ p {
 	font-weight: 500px;
 	font-size: 1.2em;
 }
+
+/* 
+Colors:
+
+Red1: dc411c
+Red2: ff2700
+
+*/
