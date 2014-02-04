@@ -1,35 +1,48 @@
-﻿<div ng-controller="HomeController">
-  <div class="slides row">
-    <div class="expand-on-small large-12 columns">
-      <div class="slideshow-wrapper">
-        <!--
-        <div class="preloader"></div>
-        -->
-        <ul data-orbit>
-          <li>
-            <img src="img/slide0-MainSlide.png" />
-          </li>
-          <li>
-            <a href="#/about">
-              <img src="img/slide1-MissionStatementSlide.png" />
-            </a>
-          </li>
-          <li>
-            <a href="#/initiative">
-              <img src="img/slide2-TMInitiative.png" />
-            </a>
-          </li>
-          <li>
-            <a href="http://foundersbaptist.org" target="_blank">
-              <img src="img/slide3-FoundersSlide.png" />
-            </a>
-          </li>
-        </ul>
-      </div>
+﻿<div ng-controller="NewHomeController">
+  <!--
+  <div class="row">
+    <div style="background-color: #03899c;" class="small-12 columns">
+      <h1 style="margin: 0; color: #dc411c;">Multiply</h1>
     </div>
   </div>
+  -->
+  <!-- 
+    07799f
+    03899c
+  -->
+  <!-- <Image Slider> -->
+  <div class="row">
+    <div class="small-12 columns">
+      <ul class="example-orbit" data-orbit>
+        <li>
+          <div style="position: absolute; top: 79px; left: 150px;">
+            <h3 style="margin: 0; padding: 0; color: #222;">Matthew 28:19-20</h3>
+            <h1 style="margin: 0; padding: 0; color: #fff; position: relative; top: -10px;">Multiply</h1>
+            <h3 style="margin: 0; padding: 0; color: #222; position: relative; top: -20px;">Student Ministry</h3>
+            <p style="position: absolute; left: 100px; width: 500px; color: #222;">
+              "Go Therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all that I have commanded you. And behold, I am with you always, to the end of the age."
+            </p>
+          </div>
+          <img src="img/main.png" alt="slide 1"/>
+        </li>
+        <li>
+          <img src="img/main-blue.png" alt="slide 2"/>
+          <div class="orbit-caption">
+            Caption Two.
+          </div>
+        </li>
+        <li>
+          <img src="http://placehold.it/1000x300/FDC43D/fff" alt="slide 3"/>
+          <div class="orbit-caption">
+            Caption Three.
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- </Image Slider> -->
 
-
+  <!-- <Connect Panel> -->
   <div class="row follow-us">
     <div class="small-12 large-12 columns">
       <hr/>
@@ -59,70 +72,6 @@
       </div>
     </div>
   </div>
-
-
-  <!--
-  <div ng-controller="OrbitController" class="row">
-    <div class="small-12 large-12 columns">
-      <hr/>
-      <h3>New to this Website?</h3>
-      <a ng-click="tour()" class="large button expand">Take A Tour!</a>
-    </div>
-  </div>
-  -->
-
-  <div class="row">
-    <div class="small-12 large-6 columns">
-      <hr/>
-      <h3>Weekly Events</h3>
-      <ul class="small-block-grid-2 large-block-grid-2">
-        <li class="link-red">
-          <a href="#/weekly#biblestudy"><img src="img/Revelation_s.png">
-          <h5>Weekly Bible Study</h5>
-          </a>
-          <h6>Thursdays: 7-9pm</h6>
-          <p>@ Wells Residence: <a href="https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16" target="_blank">1411 Kennoway Park, Spring TX, 77379</a></p>
-          <p>Here's the <a href="https://docs.google.com/spreadsheet/ccc?key=0AqBmfata5ABldEZKZmlwWHphSjF1a2FUVlRoak5RcXc&usp=sharing" target="_blank">sign up sheet</a> for bringing food to Bible Study.</p>
-        </li>
-        <li class="link-red">
-          <a href="#/weekly#sundayschool"><img src="img/proverbs_s.png">
-          <h5>Sunday School</h5>
-          </a>
-          <h6>Sundays: 9am</h6>
-          <p>@ Founders Baptist Church: <a href="https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77379&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16" target="_blank">24724 Aldine Westfield, Spring TX, 77379</a></p>
-        </li>
-      </ul>
-    </div>
-    <div class="small-12 large-6 columns">
-      <hr/>
-      <a href="#/upcoming">
-        <h3>Upcoming Ministry Events</h3>
-      </a>
-    </div>
-    <div class="expand-on-small upcoming-list small-12 large-6 columns link-red">
-      <ul class="small-block-grid-1 large-block-grid-1">
-        <li>
-          <div class="panel shadowed-image">
-            <h2>{{nextEvent.title}}</h2>
-            <h3>{{nextEvent.dateText}}</h3>
-            <br/>
-            <div ng-bind-html="nextEvent.content"></div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="news row">
-    <div class="small-12 large-12 columns">
-      <hr/>
-      <a href="#/news">
-        <h3>News/Updates</h3>
-      </a>
-    </div>
-    <div class="expand-on-small small-12 large-12 columns">
-      <news-item ng-repeat="news in currentNews"></news-item>
-    </div>
-  </div>
+  <!-- </Connect Panel> -->
 
 </div>

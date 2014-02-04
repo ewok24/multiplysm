@@ -218,6 +218,22 @@
 			{name: 'Contact', url: '#/contact'}
 		];
 
+		$scope.itemsLeft = [
+			{ name: 'Home', url: '#/' , dropdown: false, nested: [] },
+			{ name: 'About Us', url: '#/about', dropdown: false, nested: [] },
+			{ name: 'Ministries', url: '#/events', dropdown: true, nested: [
+				{ name: 'Weekly Ministries', url: '#/weekly#biblestudy', nested: [] },
+				{ name: 'The Multiply Initiative', url: '#/initiative', nested: [] },
+				{ name: 'Upcoming Ministry Events', url: '#/upcoming', nested: [] },
+			] }
+		];
+
+		$scope.itemsRight = [
+			{name: 'News/Updates', url: '#/news'},
+			{name: 'Podcasts', url: '#/podcasts'},
+			{name: 'Contact', url: '#/contact'}
+		];
+
 		var update = function() {
 			$scope.selected = selectedService.getSelected();
 		}
@@ -385,6 +401,32 @@
    *                         Page Controllers
    *
    ********************************************************************/
+
+  app.controller('NewHomeController', ['$scope', function($scope) {
+  	console.log('New Home controller');
+
+  	angular.element(document).foundation({
+  		orbit: {
+  			/*
+  			animation: 'slide',
+        timer_speed: 5000,
+        pause_on_hover: false,
+        resume_on_mouseout: false,
+        animation_speed: 250,
+        stack_on_small: false,
+        navigation_arrows: false,
+        slide_number: false,
+        bullets: true,
+        timer: true,
+        variable_height: true,
+        container_class: 'orbit-container'
+        //*/
+  		}
+  	});
+
+  }]);
+
+
   app.controller('HomeController', ['$scope', 'httpService', function ($scope, httpService) {
     //--------------------------------------
     var label = '$$Upcoming Ministry Events';
@@ -525,7 +567,9 @@
             //--------------------------------------
 
 		        //console.log('SlidesController');
+	    
 	    angular.element(document).foundation('orbit', {
+	    	/*
         animation: 'slide',
         timer_speed: 5000,
         pause_on_hover: false,

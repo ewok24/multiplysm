@@ -17,8 +17,6 @@
 
   <!-- Zurb: Foundation -->
   <link rel="stylesheet" href="css/foundation.min.css"/>
-
-  <!-- Zurb: Foundation Icons -->
   <link rel="stylesheet" href="css/general_foundicons.css"/>
   <link rel="stylesheet" href="css/social_foundicons.css"/>
   <link rel="stylesheet" href="css/accessibility_foundicons.css"/>
@@ -29,11 +27,68 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/site.css"/>
 
-  <script src="js/vendor/modernizr.js"></script>
+  <script src="js/vendor/custom.modernizr.js"></script>
 
+  <script>
+    /*
+    var _roost = _roost || [];
+    _roost.push(['appkey','a9439828ac2b41948c73cfdd9ce2b184']);
+
+    !function(d,s,id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if(!d.getElementById(id)){
+            js=d.createElement(s); js.id=id;
+            js.src='//get.roost.me/js/roost.js';
+            fjs.parentNode.insertBefore(js,fjs);
+        }
+    }(document, 'script', 'roost-js');
+    //*/
+  </script>
 </head>
 
 <body ng-controller="TopBar">
+  <div class="row inner-wrap">
+    <div class="large-12 columns top-banner">
+      <a href="#">
+        <img src="img/multiplybanner240.png" data-interchange="[img/multiplybanner240.png, (default)], [img/multiplybanner480.png, (small)]">
+      </a>
+    </div>
+  </div>
+
+  <!-- Top Bar HTML Start -->
+  <!--
+  <div ng-controller="TopBar">
+
+    <div id="sideNav">
+      <div class="fill-sidebar">
+        <div class="sidebar-close-button">
+          <a ng-click="toggleSlide()"><i class="foundicongen-remove"></i></a>
+        </div>
+        <ul>
+          <li class="menu-options" ng-repeat="item in items" ng-click="select(item)" ng-class="{active: item == selected}"><a href="{{item.url}}" ng-cloak>{{item.name}}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row slide-top-bar inner-wrap">
+      <div class="large-12 columns">
+        <div id="nav">
+          <ul class="left">
+            <li class="menu-options" ng-repeat="item in items" ng-click="select(item)" ng-class="{active: item == selected}"><a href="{{item.url}}" ng-cloak>{{item.name}}</a></li>
+          </ul>
+          <div class="sidebar-button">
+            <a ng-click="toggleSlide()"><img src="img/nav-icon.png"></a>
+          </div>
+          <ul id="socialMedia" class="right">
+            <li><a href="https://www.facebook.com/pages/Multiply-Student-Ministry/162835727236764" target="_blank"><i class="foundicon-facebook"></i></a></li>
+            <li><a href="https://twitter.com/MultiplySM" target="_blank"><i class="foundicon-twitter"></i></a></li>
+            <li><a href="http://www.youtube.com/channel/UC1_FvX4zpH6mjViinxhsQqg" target="_blank"><i class="foundicon-youtube"></i></a></li>
+            <li id="subscribeButton" class="subscribe"><a href="https://launch.alertrocket.com/register?appKey=a9439828ac2b41948c73cfdd9ce2b184" target="_blank"><i class="foundicongen-star"></i><span>Subscribe</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  -->
   <!-- Top Bar HTML End -->
   <div class="off-canvas-wrap">
     <div class="inner-wrap">
@@ -45,12 +100,6 @@
               <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
             </ul>
 
-            <ul style="height: 50px;" class="title-area">
-              <li class="name">
-                <img style="height: 50px;" src="img/multiplylogo-circle.png"/>
-              </li>
-              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-            </ul>
             <section class="top-bar-section">
               <!-- Right Nav Section -->
               <!--

@@ -6,88 +6,19 @@
 "passage": "2 Timothy 1:3-5",
 "series": "Non-Series - 2 Timothy",
 "description": "...",
-"dblink": "https://dl.dropboxusercontent.com/s/8rpsx1dbtr75z6w/2013%2008%2012%20Camp%20Unedited%40%20Brian%20Smelek%40.mp3",
+"dblink": "https://dl.dropboxusercontent.com/s/4s7iuattat2d0in/2013%2009%2025%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3",
 "filename": "2013 09 25 Wed. PM Edited@ Nathan Ramirez@.mp3"
 },
-{
-"title": "Jesus Prepares His Disciples for Pursecution",
-"speaker": "Nathan Ramirez",
-"date": "2013-08-30",
-"passage": "John 15",
-"series": "Non-Series - John",
-"description": "",
-"dblink": "https://dl.dropboxusercontent.com/s/6b0aw7j88zac8pl/01%20Jesus%20Prepares%20His%20Diciples%20for%20Pursecution.m4a",
-"filename": "01 Jesus Prepares His Disciples for Pursecution.m4a"
-},
-{
-"title": "Jacob's Ladder",
-"speaker": "Nathan Ramirez",
-"date": "2013-09-17",
-"passage": "Genesis 28",
-"series": "Old Testament",
-"description": "",
-"dblink": "https://dl.dropboxusercontent.com/s/a0jiqdo5p2xyv57/01%20Jacob%27s%20Ladder.m4a",
-"filename": "01 Jacob's Ladder.m4a"
-},
-{
-"title": "Jesus Christ Our Willing Sacrifice",
-"speaker": "Nathan Ramirez",
-"date": "2013-09-17",
-"passage": "Genesis 22",
-"series": "Old Testament",
-"description": "",
-"dblink": "https://dl.dropboxusercontent.com/s/qe3j4xyuiawv359/01%20Jesus%20Christ%20Our%20Willing%20Sacrifice.m4a",
-"filename": "01 Jesus Christ Our Willing Sacrifice.m4a"
-},
-{
-"title": "Moses Praying for Israel",
-"speaker": "Nathan Ramirez",
-"date": "2013-09-17",
-"passage": "Deuteronomy 9",
-"series": "Old Testament",
-"description": "",
-"dblink": "https://dl.dropboxusercontent.com/s/ebaw9z5enoc681f/01%20Moses%20Praying%20for%20Israel.m4a",
-"filename": "01 Moses Praying for Israel.m4a"
-},
-{
-"title": "The Most Difficult Commandment",
-"speaker": "Nathan Ramirez",
-"date": "2013-09-17",
-"passage": "Deuteronomy 7:1-4",
-"series": "Old Testament",
-"description": "",
-"dblink": "https://dl.dropboxusercontent.com/s/uvvr8wicgrm5old/01%20The%20Most%20Difficult%20Commandment.m4a",
-"filename": "01 The Most Difficult Commandment.m4a"
-},
+
 {
 "title": "Intro To Multiply Student Ministry",
 "speaker": "Nathan Ramirez",
-"date": "2013-09-17",
+"date": "2013-08-25",
 "passage": "Topical",
 "series": "",
 "description": "",
 "dblink": "https://dl.dropboxusercontent.com/s/mxt4txdutx8pub2/Intro%20to%20Multiply%27.m4a",
 "filename": "Intro to Multiply'.m4a"
-},
-{
-"title": "Final Camp Exhortation",
-"speaker": "Nathan Ramirez",
-"date": "2013-08-13",
-"passage": "Topical",
-"series": "Camp 2013",
-"description": "...",
-"dblink": "https://dl.dropboxusercontent.com/s/ho56i3r83y3b74i/2013%2008%2013%20Camp%20Unedited%40%20Nathan%20Ramirez%40.mp3",
-"filename": "2013 08 13 Camp Unedited@ Nathan Ramirez@.mp3"
-},
-{
-"title": "Final Camp Exhortation",
-"speaker": "Nathan Ramirez",
-"date": "2013-08-13",
-"passage": "Topical",
-"series": "Camp 2013",
-"description": "...",
-"dblink": "https://dl.dropboxusercontent.com/s/ho56i3r83y3b74i/2013%2008%2013%20Camp%20Unedited%40%20Nathan%20Ramirez%40.mp3",
-"filename": "2013 08 13 Camp Unedited@ Nathan Ramirez@.mp3"
 },
 {
 "title": "Final Camp Exhortation",
@@ -180,3 +111,58 @@
 "filename": "2013 03 20 Wed. PM Edited@ Nathan Ramirez@.mp3"
 }
 ]
+
+
+
+// Unused for now:
+
+{
+"title": "Jesus Prepares His Disciples for Persecution",
+"speaker": "Nathan Ramirez",
+"date": "",
+"passage": "John 15",
+"series": "Non-Series - John",
+"description": "",
+"dblink": "https://dl.dropboxusercontent.com/s/ygw38losyzhanjj/01%20Jesus%20Prepares%20His%20Disciples%20for%20Pursecution.m4a",
+"filename": "01 Jesus Prepares His Disciples for Persecution.m4a"
+},
+{
+"title": "Jacob's Ladder",
+"speaker": "Nathan Ramirez",
+"date": "",
+"passage": "Genesis 28",
+"series": "Old Testament",
+"description": "",
+"dblink": "https://dl.dropboxusercontent.com/s/a0jiqdo5p2xyv57/01%20Jacob%27s%20Ladder.m4a",
+"filename": "01 Jacob's Ladder.m4a"
+},
+{
+"title": "Jesus Christ Our Willing Sacrifice",
+"speaker": "Nathan Ramirez",
+"date": "",
+"passage": "Genesis 22",
+"series": "Old Testament",
+"description": "",
+"dblink": "https://dl.dropboxusercontent.com/s/qe3j4xyuiawv359/01%20Jesus%20Christ%20Our%20Willing%20Sacrifice.m4a",
+"filename": "01 Jesus Christ Our Willing Sacrifice.m4a"
+},
+{
+"title": "Moses Praying for Israel",
+"speaker": "Nathan Ramirez",
+"date": "",
+"passage": "Deuteronomy 9",
+"series": "Old Testament",
+"description": "",
+"dblink": "https://dl.dropboxusercontent.com/s/ebaw9z5enoc681f/01%20Moses%20Praying%20for%20Israel.m4a",
+"filename": "01 Moses Praying for Israel.m4a"
+},
+{
+"title": "The Most Difficult Commandment",
+"speaker": "Nathan Ramirez",
+"date": "",
+"passage": "Deuteronomy 7:1-4",
+"series": "Old Testament",
+"description": "",
+"dblink": "https://dl.dropboxusercontent.com/s/uvvr8wicgrm5old/01%20The%20Most%20Difficult%20Commandment.m4a",
+"filename": "01 The Most Difficult Commandment.m4a"
+},
