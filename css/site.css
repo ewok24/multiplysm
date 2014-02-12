@@ -2,11 +2,6 @@
  *    Global Styles
  **********************/
 
-body {
-
-	background: #f5f4f0 url('../img/site_background-medium.png') center top repeat;
-}
-
  @font-face {
 	font-family: optimus-princeps;
 	src: url('../fonts/OptimusPrinceps.ttf');
