@@ -424,6 +424,27 @@
   		}
   	});
 
+  	console.log('howdy initialize swipe');
+    var mySwipe = Swipe(document.getElementById('slider'), {
+    	startSlide: 1,
+		  speed: 400,
+		  auto: 3000,
+		  continuous: true,
+		  disableScroll: false,
+		  stopPropagation: true,
+		  callback: function(index, elem) {},
+		  transitionEnd: function(index, elem) {}
+    });
+    console.log('mySwipe', mySwipe);
+
+    $scope.prevSlide = function() {
+    	mySwipe.prev();
+    };
+
+    $scope.nextSlide = function() {
+    	mySwipe.next();
+    };
+
   }]);
 
 
