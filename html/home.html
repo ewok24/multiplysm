@@ -105,46 +105,26 @@
   
   <!-- <Image Slider> -->
   <div class="row">
-    <div style="padding: 0; top: -10px;" class="small-12 columns">
-      <ul class="example-orbit" data-orbit>
-        <li>
-          <!--
-          <div class="hide-for-small" style="position: absolute; top: 79px; left: 150px;">
-            <h3 style="margin: 0; padding: 0; color: #222;">Matthew 28:19-20</h3>
-            <h1 style="margin: 0; padding: 0; color: #fff; position: relative; top: -10px;">Multiply</h1>
-            <h3 style="margin: 0; padding: 0; color: #222; position: relative; top: -20px;">Student Ministry</h3>
-            <p style="position: absolute; left: 100px; width: 500px; color: #222;">
-              "Go Therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all that I have commanded you. And behold, I am with you always, to the end of the age."
-            </p>
+    <div class="small-12 columns" style="padding-left: 0; padding-right: 0;">
+      <div id='slider' class='swipe'>
+        <div class='swipe-wrap'>
+          <div>
+            <img src="img/slide0-MainSlide.png"/>
           </div>
-          <div class="show-for-small" style="position: absolute; top: 30px; left: 40px;">
-            <h3 style="font-size: 0.8em; margin: 0; padding: 0; color: #222;">Matthew 28:19-20</h3>
-            <h1 style="font-size: 1em; margin: 0; padding: 0; color: #fff; position: relative; top: -10px;">Multiply</h1>
-            <h3 style="font-size: 0.8em; margin: 0; padding: 0; color: #222; position: relative; top: -20px;">Student Ministry</h3>
-            <p style="font-size: 0.1em; position: absolute; left: 0px; top: 50px; width: 200px; color: #222;">
-              "Go Therefore and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all that I have commanded you. And behold, I am with you always, to the end of the age."
-            </p>
+          <div>
+            <a href="#/about">
+              <img src="img/slide1-Welcome.png"/>
+            </a>
           </div>
-          -->
-          <img src="img/slide0-MainSlide.png">
-        </li>
-        <li>
-          <img src="img/slide1-Welcome.png" alt="slide 2"/>
-          <div class="orbit-caption">
-            Caption Two.
+          <div>
+            <img src="img/slide1-Welcome.png"/>
           </div>
-        </li>
-        <li>
-          <img style="width: 100%;" src="img/slide3-multiplyinitiative-transparent.png" alt="slide 3"/>
-        </li>
-        <li>
-          <img src="http://placehold.it/1000x300/FDC43D/fff" alt="slide 4"/>
-          <div class="orbit-caption">
-            Caption Four.
-          </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
+
+    <a class="button" ng-click="prevSlide()">Previous</a>
+    <a class="button" ng-click="nextSlide()">Next</a>
   </div>
   <!-- </Image Slider> -->
 
@@ -194,29 +174,4 @@
   </div>
   <!-- </Connect Panel> -->
 
-  <hr>
-
-  <!-- <Test Slider> -->
-  <div class="row">
-    <div class="small-12 columns" style="padding-left: 0; padding-right: 0;">
-      <h2>Swipe.js Test</h2>
-      <div id='slider' class='swipe'>
-        <div class='swipe-wrap'>
-          <div>
-            <img src="img/slide0-MainSlide.png"/>
-          </div>
-          <div>
-            <img src="img/slide1-Welcome.png"/>
-          </div>
-          <div>
-            <img src="img/slide1-Welcome.png"/>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <a class="button" ng-click="prevSlide()">Previous</a>
-    <a class="button" ng-click="nextSlide()">Next</a>
-  </div>
-  <!-- </Test Slider> -->
 </div>
