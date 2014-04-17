@@ -426,9 +426,9 @@
 
   	console.log('howdy initialize swipe');
     var mySwipe = Swipe(document.getElementById('slider'), {
-    	startSlide: 1,
+    	startSlide: 0,
 		  speed: 400,
-		  auto: 3000,
+		  auto: 5000,
 		  continuous: true,
 		  disableScroll: true,
 		  stopPropagation: true,
@@ -1485,6 +1485,13 @@
 
 		//*/
 	}]);
+
+	/********************************************************************
+   *
+   *                            Animations
+   *
+   ********************************************************************/
+
 
 })();
 
