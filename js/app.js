@@ -402,8 +402,52 @@
    *
    ********************************************************************/
 
-	app.controller('NewHomeController', ['$scope', function($scope) {
+  app.controller('NewHomeController', ['$scope', function($scope) {
+  	$scope.slides = [
+  		{ url: '', src: 'img/slide0-MainSlide.png' }, 
+  		{ url: '#/about', src: 'img/slide1-Welcome.png' }, 
+  		{ url: '', src: 'img/slide1-Welcome.png' }, 
+  	];
 
+  	$scope.bullets = [
+  		{ number: 0 },
+  		{ number: 1 },
+  		{ number: 2 },
+  	];
+
+  	$scope.selectedBullet = $scope.bullets[0];
+
+    var mySwipe = Swipe(document.getElementById('slider'), {
+    	startSlide: 0,
+		  speed: 400,
+		  auto: 5000,
+		  continuous: true,
+		  disableScroll: true,
+		  stopPropagation: true,
+		  callback: function(index, elem) {
+		  	$scope.changeActive(index);
+		  },
+		  transitionEnd: function(index, elem) {}
+    });
+
+    $scope.changeActive = function(index) {
+    	$scope.selectedBullet = $scope.bullets[index];
+
+    	if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
+    };
+    $scope.click = function(bullet) {
+    	$scope.selectedBullet = $scope.bullets[bullet.number];
+    	mySwipe.slide(bullet.number);
+    };
+
+    $scope.prevSlide = function() {
+    	mySwipe.prev();
+    };
+    $scope.nextSlide = function() {
+    	mySwipe.next();
+    };
   }]);
 
 
