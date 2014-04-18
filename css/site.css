@@ -27,7 +27,7 @@ p {
 
 .top-bar-section li.active:not(.has-form) a:not(.button) {
 	background: #d02000;
-	
+
 	/* background: #ff2701; */
 	/* background: #911703; */
 	/* background: #dc411c; */
@@ -35,6 +35,13 @@ p {
 
 .top-bar-section li.active:not(.has-form) a:not(.button):hover {
 	background: #a61a00;
+}
+
+.side-nav li a:not(.button) {
+	color: #a61a00;
+}
+.side-nav li.active>a:first-child:not(.button) {
+	color: #ff2701;	
 }
 
 .orbit-container .orbit-bullets li {

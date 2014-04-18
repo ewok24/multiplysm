@@ -238,7 +238,11 @@
 			$scope.selected = selectedService.getSelected();
 		}
 		
-		$scope.selected = $scope.items[0];
+		for (var i=0; i<$scope.items.length; i++) {
+			if ($scope.items[i].url == document.location.hash) {
+				$scope.selected = $scope.items[i];
+			}
+		}
 
 		$scope.select = function (item) {
       //console.log('Item', item);
