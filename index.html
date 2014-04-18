@@ -15,14 +15,8 @@
   <link rel="apple-touch-icon" href="img/multiplylogo.png"/>
   <link rel="apple-touch-icon-precomposed" href="img/multiplylogo.png"/>
 
-  <!-- Zurb: Foundation -->
-  <link rel="stylesheet" href="css/normalize.css"/>
-  <link rel="stylesheet" href="css/foundation.min.css"/>
-
-  <!-- Zurb: Foundation Icons -->
-  <link rel="stylesheet" href="css/general_foundicons.css"/>
-  <link rel="stylesheet" href="css/social_foundicons.css"/>
-  <link rel="stylesheet" href="css/accessibility_foundicons.css"/>
+  <!-- Zurb: All Foundation CSS Files -->
+  <link rel="stylesheet" href="css/foundationCSS.min.css"/>
 
   <!-- MediaElement.js -->
   <link rel="stylesheet" href="css/mediaelementplayer.min.css"/>
@@ -48,20 +42,6 @@
       }
     }
   </style>
-
-  <script>
-    var _roost = _roost || [];
-    _roost.push(['appkey','a9439828ac2b41948c73cfdd9ce2b184']);
-
-    !function(d,s,id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if(!d.getElementById(id)){
-            js=d.createElement(s); js.id=id;
-            js.src='//get.roost.me/js/roost.js';
-            fjs.parentNode.insertBefore(js,fjs);
-        }
-    }(document, 'script', 'roost-js');
-  </script>
 </head>
 <body ng-controller="TopBar">
   <!-- Top Bar HTML End -->
@@ -79,41 +59,15 @@
             <ul class="title-area">
               <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
             </ul>
-
-            <!--
-            <ul style="height: 50px;" class="title-area">
-              <li class="name">
-                <img style="height: 50px;" src="img/multiplylogo-circle.png"/>
-              </li>
-              <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-            </ul>
-            -->
+            
             <section class="top-bar-section">
               <!-- Right Nav Section -->
-              <!--
-              <ul class="right">
-
-                <li class="active"><a href="#">Right Nav Button Active</a></li>
-                <li class="has-dropdown">
-                  <a href="#">Right Button with Dropdown</a>
-                  <ul class="dropdown">
-                    <li><a href="#">First link in dropdown</a></li>
-                  </ul>
-                </li>
-              </ul>
-              -->
 
               <!-- Left Nav Section -->
               <ul class="left menu-options">
                 <li class="" ng-repeat="item in items" ng-click="select(item)" ng-class="{active: item == selected}">
                   <a href="{{item.url}}" ng-cloak>{{item.name}}</a>
                 </li>
-                <!--
-                <li><a href="https://www.facebook.com/pages/Multiply-Student-Ministry/162835727236764" target="_blank"><i class="foundicon-facebook"></i></a></li>
-                <li><a href="https://twitter.com/MultiplySM" target="_blank"><i class="foundicon-twitter"></i></a></li>
-                <li><a href="http://www.youtube.com/channel/UC1_FvX4zpH6mjViinxhsQqg" target="_blank"><i class="foundicon-youtube"></i></a></li>
-                <li id="subscribeButton" class="subscribe"><a href="https://launch.alertrocket.com/register?appKey=a9439828ac2b41948c73cfdd9ce2b184" target="_blank"><i class="foundicongen-star"></i><span>Subscribe</span></a></li>
-                -->
               </ul>
             </section>
           </nav>
@@ -128,7 +82,8 @@
         </section>
 
         <section class="middle tab-bar-section">
-          <h1 class="title">Multiply Student Ministry</h1>
+          <h1 class="title hide-for-small-only">Multiply Student Ministry</h1>
+          <h1 class="title show-for-small-only">Multiply</h1>
         </section>
       </nav>
       <!-- </New Off Canvas HTML> -->
@@ -163,89 +118,19 @@
     </div>
   </div>
 
-  <!--
-  <div>
-    <ul class="joyride-list" data-joyride>
-      <li data-button="Take the Tour">
-        <p>Hello and welcome to the <span class="optimus">Multiply Student Ministry</span> website!</p>
-        <p>Click the following button to take a tour of this website.</p>
-      </li>
-      <li data-id="nav" data-class="custom so-awesome" data-text="Next" data-options="tipLocation:bottom">
-        <h4>Navigation Menu</h4>
-        <p>From here you can access all the pages of this website from events to podcasts.</p>
-      </li>
-      <li data-id="socialMedia" data-class="custom so-awesome" data-text="Next" data-options="tipLocation:bottom">
-        <h4>Social Media Links</h4>
-        <p>These links bring you to our Facebook, Twitter, and Youtube pages.</p>
-      </li>
-      <li data-id="subscribeButton" data-class="custom so-awesome" data-button="Next" data-options="tipLocation:bottom">
-        <h4>Subscribe</h4>
-        <p>Here you can subscribe to push-notifications for your mobile device to keep you updated whenever there is new content.</p>
-      </li>
-      <li data-button="End">
-        <h4>Stop #3</h4>
-        <p>It works as a modal too!</p>
-      </li>
-    </ul>
-  </div>
-  -->
-
-  <!-- Zurb: Foundation -->
-  <script src="js/vendor/jquery.js"></script>
-  <script src="js/foundation.min.js"></script>
-  <script src="js/vendor/fastclick.js"></script>
-
-  <script>
-    $(document).foundation();
-  </script>
-
-  <!-- Google: AngularJS -->  
-  <script src="js/angular/angular.min.js"></script>
-  <script src="js/angular/angular-route.min.js"></script>
-  <!--
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
-  -->
-  <script src="js/angular/angular-sanitize.min.js"></script>
-
-  <script src="js/angulartics.min.js"></script>
-  <script src="js/angulartics-google-analytics.min.js"></script>
-  
-  <!-- MediaElement.js -->    
-  <script src="js/mediaelement-and-player.min.js"></script>
-
-  <!-- Swipe.js -->
-  <script src="js/swipe.js"></script>
+  <!-- All Static JS Files: Foundation, Angular, MediaElement, SwipeJS -->
+  <script src="js/combinedStatic.js"></script>
 
   <!-- Custom Javascript -->  
   <script src="js/app.js"></script>
 
-  <!-- Google Analytics -->
   <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-44418703-1', 'multiplystudentministry.com');
-    //ga('send', 'pageview');
+    $(document).foundation();var _roost=_roost||[];_roost.push(["appkey","a9439828ac2b41948c73cfdd9ce2b184"]);!function(e,a,f){var c,b=e.getElementsByTagName(a)[0];if(!e.getElementById(f)){c=e.createElement(a);c.id=f;c.src="//get.roost.me/js/roost.js";b.parentNode.insertBefore(c,b)}}(document,"script","roost-js");(function(d,e,j,h,f,c,b){d.GoogleAnalyticsObject=f;d[f]=d[f]||function(){(d[f].q=d[f].q||[]).push(arguments)},d[f].l=1*new Date();c=e.createElement(j),b=e.getElementsByTagName(j)[0];c.async=1;c.src=h;b.parentNode.insertBefore(c,b)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-44418703-1","multiplystudentministry.com");var refTagger={settings:{bibleVersion:"ESV"}};(function(e,a){var c=e.createElement(a),b=e.getElementsByTagName(a)[0];c.src="//api.reftagger.com/v2/RefTagger.js";b.parentNode.insertBefore(c,b)}(document,"script"));
   </script>
 
-  <!-- RefTagger from Logos. Visit http://www.logos.com/reftagger. This code should appear directly before the </body> tag. -->
   <!--
   <script src="http://bible.logos.com/jsapi/referencetagging.js"></script>
   -->
-  <script>
-    var refTagger = {
-      settings: {
-        bibleVersion: "ESV"     
-      }
-    };
-    (function(d, t) {
-      var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-      g.src = "//api.reftagger.com/v2/RefTagger.js";
-      s.parentNode.insertBefore(g, s);
-    }(document, "script"));
-  </script>
     
 </body>
 </html>
