@@ -109,22 +109,28 @@
       <div id='slider' class='swipe'>
         <div class='swipe-wrap'>
           <div>
-            <img src="img/slide0-MainSlide.png"/>
-          </div>
-          <div>
-            <a href="#/about">
-              <img src="img/slide1-Welcome.png"/>
+            <a href="">
+              <img ng-src="img/slide0-MainSlide.png"/>
             </a>
           </div>
           <div>
-            <img src="img/slide1-Welcome.png"/>
+            <a href="#/about">
+              <img ng-src="img/slide1-Welcome.png"/>
+            </a>
+          </div>
+          <div>
+            <a href="">
+              <img ng-src="img/slide1-Welcome.png"/>
+            </a>
           </div>
         </div>
       </div>
-    </div>
 
-    <a class="button" ng-click="prevSlide()">Previous</a>
-    <a class="button" ng-click="nextSlide()">Next</a>
+      <ol class="orbit-bullets">
+        <li class="" ng-repeat="bullet in bullets" ng-click="click(bullet)" ng-class="{active: bullet === selectedBullet}" data-orbit-slide="bullet.number">
+        </li>
+      </ol>
+    </div>
   </div>
   <!-- </Image Slider> -->
 

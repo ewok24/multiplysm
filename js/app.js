@@ -404,27 +404,21 @@
 
   app.controller('NewHomeController', ['$scope', function($scope) {
   	console.log('New Home controller');
+  	
+  	$scope.slides = [
+  		{ url: '', src: 'img/slide0-MainSlide.png' }, 
+  		{ url: '#/about', src: 'img/slide1-Welcome.png' }, 
+  		{ url: '', src: 'img/slide1-Welcome.png' }, 
+  	];
 
-  	angular.element(document).foundation({
-  		orbit: {
-  			/*
-  			animation: 'slide',
-        timer_speed: 5000,
-        pause_on_hover: false,
-        resume_on_mouseout: false,
-        animation_speed: 250,
-        stack_on_small: false,
-        navigation_arrows: false,
-        slide_number: false,
-        bullets: true,
-        timer: true,
-        variable_height: true,
-        container_class: 'orbit-container'
-        //*/
-  		}
-  	});
+  	$scope.bullets = [
+  		{ number: 0 },
+  		{ number: 1 },
+  		{ number: 2 },
+  	];
 
-  	console.log('howdy initialize swipe');
+  	$scope.selectedBullet = $scope.bullets[0];
+
     var mySwipe = Swipe(document.getElementById('slider'), {
     	startSlide: 0,
 		  speed: 400,
@@ -432,15 +426,27 @@
 		  continuous: true,
 		  disableScroll: true,
 		  stopPropagation: true,
-		  callback: function(index, elem) {},
+		  callback: function(index, elem) {
+		  	$scope.changeActive(index);
+		  },
 		  transitionEnd: function(index, elem) {}
     });
-    console.log('mySwipe', mySwipe);
+
+    $scope.changeActive = function(index) {
+    	$scope.selectedBullet = $scope.bullets[index];
+
+    	if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
+    };
+    $scope.click = function(bullet) {
+    	$scope.selectedBullet = $scope.bullets[bullet.number];
+    	mySwipe.slide(bullet.number);
+    };
 
     $scope.prevSlide = function() {
     	mySwipe.prev();
     };
-
     $scope.nextSlide = function() {
     	mySwipe.next();
     };

@@ -25,6 +25,11 @@ p {
 	font-size: 1.2em;
 }
 
+.orbit-bullets li {
+	background: #fff;
+	cursor: pointer;
+}
+
 /* 
 Colors:
 
