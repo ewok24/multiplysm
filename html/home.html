@@ -102,7 +102,7 @@
   </div>
   <hr/>
   <!-- </Sub Header> -->
-  
+
   <!-- <Image Slider> -->
   <div class="row">
     <div class="small-12 columns" style="padding-left: 0; padding-right: 0;">
@@ -110,26 +110,35 @@
         <div class='swipe-wrap'>
           <div>
             <a href="">
-              <img ng-src="img/slide0-MainSlide.png"/>
+              <img class="show-for-large-up" src="img/slide0-MainSlide-large.png">
+              <img class="show-for-medium" src="img/slide0-MainSlide-medium.png">
+              <img class="show-for-small" src="img/slide0-MainSlide-small.png">
             </a>
           </div>
           <div>
             <a href="#/about">
-              <img ng-src="img/slide1-Welcome.png"/>
+              <img class="show-for-large-up" src="img/slide1-Welcome-large.png">
+              <img class="show-for-medium" src="img/slide1-Welcome-medium.png">
+              <img class="show-for-small" src="img/slide1-Welcome-small.png">
             </a>
           </div>
           <div>
             <a href="http://foundersbaptist.org/" target="_blank">
-              <img ng-src="img/slide2-FoundersSlide.png"/>
+              <img class="show-for-large-up" src="img/slide2-FoundersSlide-large.png">
+              <img class="show-for-medium" src="img/slide2-FoundersSlide-medium.png">
+              <img class="show-for-small" src="img/slide2-FoundersSlide-small.png">
             </a>
           </div>
         </div>
       </div>
 
+    <div class="orbit-container">
       <ol class="orbit-bullets">
-        <li class="" ng-repeat="bullet in bullets" ng-click="click(bullet)" ng-class="{active: bullet === selectedBullet}" data-orbit-slide="bullet.number">
+        <li class="" ng-repeat="bullet in bullets" ng-click="click(bullet)" ng-class="{active: bullet === selectedBullet}" data-orbit-slide-number="bullet.number">
         </li>
       </ol>
+    </div>
+      
     </div>
   </div>
   <!-- </Image Slider> -->

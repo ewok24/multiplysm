@@ -448,8 +448,9 @@
     $scope.nextSlide = function() {
     	mySwipe.next();
     };
-  }]);
 
+    //angular.element(document).foundation('orbit', {});
+  }]);
 
   app.controller('HomeController', ['$scope', 'httpService', function ($scope, httpService) {
     //--------------------------------------

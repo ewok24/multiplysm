@@ -25,7 +25,19 @@ p {
 	font-size: 1.2em;
 }
 
-.orbit-bullets li {
+.top-bar-section li.active:not(.has-form) a:not(.button) {
+	background: #d02000;
+	
+	/* background: #ff2701; */
+	/* background: #911703; */
+	/* background: #dc411c; */
+}
+
+.top-bar-section li.active:not(.has-form) a:not(.button):hover {
+	background: #a61a00;
+}
+
+.orbit-container .orbit-bullets li {
 	background: #fff;
 	cursor: pointer;
 }
