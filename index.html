@@ -90,9 +90,10 @@
 
       <aside class="left-off-canvas-menu">
         <ul class="off-canvas-list">
-          <li><label>Foundation</label></li>
-          <li><a href="#">The Psychohistorians</a></li>
-          ...
+          <li><label>Multiply Student Ministry</label></li>
+          <li class="" ng-repeat="item in items" ng-click="select(item)" ng-class="{active: item == selected}">
+            <a href="{{item.url}}" ng-cloak>{{item.name}}</a>
+          </li>
         </ul>
       </aside>
 
