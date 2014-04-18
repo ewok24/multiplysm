@@ -47,6 +47,20 @@
       }
     }
   </style>
+
+  <script>
+    var _roost = _roost || [];
+    _roost.push(['appkey','a9439828ac2b41948c73cfdd9ce2b184']);
+
+    !function(d,s,id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if(!d.getElementById(id)){
+            js=d.createElement(s); js.id=id;
+            js.src='//get.roost.me/js/roost.js';
+            fjs.parentNode.insertBefore(js,fjs);
+        }
+    }(document, 'script', 'roost-js');
+  </script>
 </head>
 <body ng-controller="TopBar">
   <!-- Top Bar HTML End -->
@@ -137,7 +151,7 @@
               <dl ng-controller="TopBar" class="sub-nav" ng-cloak>
                 <dd ng-repeat="item in items" ng-click="select(item)"><a href="{{item.url}}" ng-cloak  style="color: #333;">{{item.name}}</a></dd>
               </dl>
-              <p>&copy; Copyright 2014 <a href="http://foundersbaptist.org">Founders Baptist Church</a></p>
+              <p>&copy; Copyright 2014 <a href="http://foundersbaptist.org" target="_blank">Founders Baptist Church</a></p>
             </footer>
           </div>
         </div>
@@ -216,7 +230,21 @@
   </script>
 
   <!-- RefTagger from Logos. Visit http://www.logos.com/reftagger. This code should appear directly before the </body> tag. -->
-  <script src="http://bible.logos.com/jsapi/referencetagging.js"></script> 
+  <!--
+  <script src="http://bible.logos.com/jsapi/referencetagging.js"></script>
+  -->
+  <script>
+    var refTagger = {
+      settings: {
+        bibleVersion: "ESV"     
+      }
+    };
+    (function(d, t) {
+      var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      g.src = "//api.reftagger.com/v2/RefTagger.js";
+      s.parentNode.insertBefore(g, s);
+    }(document, "script"));
+  </script>
     
 </body>
 </html>
