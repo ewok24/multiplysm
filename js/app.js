@@ -1307,7 +1307,7 @@
 				  speed: 400,
 				  auto: 0,
 				  continuous: false,
-				  disableScroll: true,
+				  disableScroll: false,
 				  stopPropagation: false,
 				  callback: function(index, elem) {},
 				  transitionEnd: function(index, elem) {}
