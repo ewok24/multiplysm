@@ -23,17 +23,19 @@
   </div>
 
 
-  <div class="large-3 columns hide-for-touch">
-    <ul class="side-nav">
-      <li ng-class="{active: isMissionStatement}" ng-click="getMissionStatement()"><a>Mission Statement</a></li>
-      <li ng-class="{active: isOurYouthPastor}" ng-click="getOurYouthPastor()"><a>Our Youth Pastor</a></li>
-      <li class="divider"></li>
-    </ul>
-  </div>
-  <div class="expand-on-small large-9 columns">
-    <div class="panel">
-      <h2>{{ subtitle }}</h2>
-      <p>{{ content }}</p>
+  <div class="hide-for-touch">
+    <div class="large-3 columns">
+      <ul class="side-nav">
+        <li ng-class="{active: isMissionStatement}" ng-click="getMissionStatement()"><a>Mission Statement</a></li>
+        <li ng-class="{active: isOurYouthPastor}" ng-click="getOurYouthPastor()"><a>Our Youth Pastor</a></li>
+        <li class="divider"></li>
+      </ul>
+    </div>
+    <div class="expand-on-small large-9 columns">
+      <div class="panel">
+        <h2>{{ subtitle }}</h2>
+        <p>{{ content }}</p>
+      </div>
     </div>
   </div>
 </div>
