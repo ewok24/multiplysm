@@ -44,6 +44,10 @@ p {
 	color: #ff2701;	
 }
 
+.side-nav li a:not(.button):hover, .side-nav li a:not(.button):focus {
+	color: #ffffff;	
+}
+
 .orbit-container .orbit-bullets li {
 	background: #fff;
 	cursor: pointer;

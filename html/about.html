@@ -3,9 +3,8 @@
     <h1>{{title}}</h1>
   </div>
 
-  <div class="large-12 columns">
+  <div class="large-12 columns show-for-touch">
     <select ng-model="currentOption" ng-change="switchOption()" ng-options="option.title for option in options">
-      <option value="">Menu</option>
     </select>
     
     <div class='swipe' swipejs>
@@ -24,7 +23,7 @@
   </div>
 
 
-  <div class="large-3 columns">
+  <div class="large-3 columns hide-for-touch">
     <ul class="side-nav">
       <li ng-class="{active: isMissionStatement}" ng-click="getMissionStatement()"><a>Mission Statement</a></li>
       <li ng-class="{active: isOurYouthPastor}" ng-click="getOurYouthPastor()"><a>Our Youth Pastor</a></li>
