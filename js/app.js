@@ -1314,9 +1314,10 @@
 				  disableScroll: false,
 				  stopPropagation: false,
 				  callback: function(index, elem) {
-				  	scope.callback(index);
 				  },
-				  transitionEnd: function(index, elem) {}
+				  transitionEnd: function(index, elem) {
+				  	scope.callback(index);
+				  }
 		    });
 	    }
 	    scope.prevSlide = function() {
