@@ -657,6 +657,7 @@
   	};
 
   	$scope.callback = function(index) {
+  		window.alert('index', index);
   		$scope.currentOption = $scope.options[index];
   	};
 
