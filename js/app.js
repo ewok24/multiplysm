@@ -637,6 +637,27 @@
 	}]);
 
   app.controller('AboutController', ['$scope', 'httpService', function ($scope, httpService) {
+  	
+  	$scope.options = [
+  		{ value: 0, title: 'temp', content: 'temp' },
+  		{ value: 1, title: 'temp', content: 'temp' },
+  	];
+
+  	$scope.switchOption = function() {
+  		if ($scope.currentOption != null) {
+
+  			if ($scope.currentOption.value === 0) {
+  				$scope.getMissionStatement();
+  			} else if ($scope.currentOption.value === 1) {
+  				$scope.getOurYouthPastor();
+  			}
+
+  			$scope.swipe.slide($scope.currentOption.value);
+  		}
+  	};
+
+  	//************************************
+    //************************************
 
   	var container = {
   		missionStatement : {},
@@ -674,7 +695,14 @@
 
    			$scope.getMissionStatement();
 
-   			findBibleRefs();
+   			$scope.options[0].title = missionStatementData.title;
+   			$scope.options[0].content = missionStatementData.content;
+   			
+   			$scope.options[1].title = ourYouthPastorData.title;
+   			$scope.options[1].content = ourYouthPastorData.content;
+
+	    	$scope.createSwipe();
+
    		} else {
    			$scope.title = "Page Error";
    		}
@@ -688,14 +716,12 @@
 			$scope.content = container.missionStatement.content;
 			$scope.isMissionStatement = true;
 			$scope.isOurYouthPastor = false;
-			findBibleRefs();
 		}
 		$scope.getOurYouthPastor = function() {
 			$scope.subtitle = container.ourYouthPastor.title;
 			$scope.content = container.ourYouthPastor.content;
 			$scope.isMissionStatement = false;
 			$scope.isOurYouthPastor = true;
-			findBibleRefs();
 		}
 	}]);
 
@@ -1271,6 +1297,25 @@
    *                            Directives
    *
    ********************************************************************/
+	app.directive('swipejs', function() {
+	  return function(scope, element, attrs) {
+	    console.log('element[0]', element[0]);
+
+	    scope.createSwipe = function() {
+	    	scope.swipe = Swipe(element[0], {
+		    	startSlide: 0,
+				  speed: 400,
+				  auto: 0,
+				  continuous: false,
+				  disableScroll: true,
+				  stopPropagation: false,
+				  callback: function(index, elem) {},
+				  transitionEnd: function(index, elem) {}
+		    });
+	    }
+	  };
+	});
+
 	app.directive('newsItem', function() {
 		return {
 			restrict: 'E',

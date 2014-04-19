@@ -3,6 +3,27 @@
     <h1>{{title}}</h1>
   </div>
 
+  <div class="large-12 columns">
+    <select ng-model="currentOption" ng-change="switchOption()" ng-options="option.title for option in options">
+      <option value="">Menu</option>
+    </select>
+    
+    <div class='swipe' swipejs>
+      <div class='swipe-wrap'>
+        
+        <div ng-repeat="option in options">
+          <div class="panel">
+            <h2>{{ option.title }}</h2>
+            <p>{{ option.content }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+  </div>
+
+
   <div class="large-3 columns">
     <ul class="side-nav">
       <li ng-class="{active: isMissionStatement}" ng-click="getMissionStatement()"><a>Mission Statement</a></li>
