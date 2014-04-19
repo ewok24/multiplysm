@@ -3,7 +3,7 @@
     <h1>{{title}}</h1>
   </div>
 
-  <div class="large-12 columns show-for-touch">
+  <div class="large-12 columns hide-for-large-up">
     <select ng-model="currentOption" ng-change="switchOption()" ng-options="option.title for option in options">
     </select>
     
@@ -19,11 +19,10 @@
 
       </div>
     </div>
-    
   </div>
 
 
-  <div class="hide-for-touch">
+  <div class="show-for-large-up">
     <div class="large-3 columns">
       <ul class="side-nav">
         <li ng-class="{active: isMissionStatement}" ng-click="getMissionStatement()"><a>Mission Statement</a></li>

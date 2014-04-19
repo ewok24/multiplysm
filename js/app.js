@@ -656,6 +656,10 @@
   		}
   	};
 
+  	$scope.callback = function(index) {
+  		$scope.currentOption = $scope.options[index];
+  	};
+
   	//************************************
     //************************************
 
@@ -701,6 +705,7 @@
    			$scope.options[1].title = ourYouthPastorData.title;
    			$scope.options[1].content = ourYouthPastorData.content;
 
+   			$scope.currentOption = $scope.options[0];
 	    	$scope.createSwipe();
 
    		} else {
@@ -1299,8 +1304,6 @@
    ********************************************************************/
 	app.directive('swipejs', function() {
 	  return function(scope, element, attrs) {
-	    console.log('element[0]', element[0]);
-
 	    scope.createSwipe = function() {
 	    	scope.swipe = Swipe(element[0], {
 		    	startSlide: 0,
@@ -1309,10 +1312,18 @@
 				  continuous: false,
 				  disableScroll: false,
 				  stopPropagation: false,
-				  callback: function(index, elem) {},
+				  callback: function(index, elem) {
+				  	scope.callback(index);
+				  },
 				  transitionEnd: function(index, elem) {}
 		    });
 	    }
+	    scope.prevSlide = function() {
+    		scope.swipe.prev();
+    	};
+    	scope.nextSlide = function() {
+	    	scope.swipe.next();
+	    };
 	  };
 	});
 
