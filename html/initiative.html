@@ -1,42 +1,71 @@
 <div ng-controller="InitiativeController" class="row">
+  <!-- <Page Title> -->
 	<div class="small-12 large-12 columns">
   	<h1>{{title}}</h1>
   </div>
-  <div ng-show="hasImage" class="expand-on-small small-12 large-12 columns">
-    <img class="show-for-small" src={{image}} data-interchange="[img/NT_EPISTLES.png, (default)], [img/NT_EPISTLES.png, (small)]">
-  </div>
+  <!-- </Page Title> -->
 
-  <div class="large-3 columns">
-  	<ul class="side-nav">
-  		<li data-ng-repeat="tab in mainTabs | orderBy:'index':number" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.data, tab.index)"><a>{{tab.title}}</a></li>
-  		<li class="divider"></li>
-		</ul>
-  </div>
+  <!-- <View for Small/Medium Screens> -->
+  <div class="small-12 columns hide-for-large-up">
+    <select ng-model="currentOption" ng-change="switchOption()" ng-options="option.title for option in options">
+    </select>
+    
+    <div class='swipe' swipejs>
+      <div class='swipe-wrap'>
+        
+        <div ng-repeat="option in options">
+          <img ng-src="{{ option.img }}"/>
+          <div class="panel">
+            <h2>{{ option.title }}</h2>
+            <div ng-bind-html="option.content"></div>
+            <a href={{option.mapLink}} target="_blank"><img class="bordered-image" ng-src="{{option.mapImg}}"/></img></a>
+          </div>
+        </div>
 
-  <div class="expand-on-small large-9 columns">
-    <div style="margin-bottom: 15px" class="large-12 columns show-for-medium-up">
-      <img ng-show="hasImage" class="" src={{image}}>
+      </div>
+    </div>
+  </div>
+  <!-- </View for Small/Medium Screens> -->
+
+  <!-- <View for Large Screens> -->
+  <div class="show-for-large-up">
+    <div ng-show="hasImage" class="expand-on-small small-12 large-12 columns">
+      <img class="show-for-small" ng-src="{{image}}" data-interchange="[img/NT_EPISTLES.png, (default)], [img/NT_EPISTLES.png, (small)]">
     </div>
 
-    <div class="large-12 columns show-for-medium-up">
-      <div ng-repeat="meditation in displayed">
+    <div class="large-3 columns">
+      <ul class="side-nav">
+        <li data-ng-repeat="tab in mainTabs | orderBy:'index':number" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.data, tab.index)"><a>{{tab.title}}</a></li>
+        <li class="divider"></li>
+      </ul>
+    </div>
+
+    <div class="expand-on-small large-9 columns">
+      <div style="margin-bottom: 15px" class="large-12 columns show-for-medium-up">
+        <img ng-show="hasImage" class="" src={{image}}>
+      </div>
+
+      <div class="large-12 columns show-for-medium-up">
+        <div ng-repeat="meditation in displayed">
+          <div class="panel">
+            <h2>{{meditation.title}}</h2>
+            <h3>{{meditation.dateText}}</h3>
+            <br/>
+            <div ng-bind-html="meditation.content"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="show-for-small" ng-repeat="meditation in displayed">
         <div class="panel">
           <h2>{{meditation.title}}</h2>
           <h3>{{meditation.dateText}}</h3>
           <br/>
-          <div ng-bind-html="meditation.content"></div>
+          <div ng-bind-html-unsafe="meditation.content"></div>
         </div>
       </div>
+      
     </div>
-
-    <div class="show-for-small" ng-repeat="meditation in displayed">
-      <div class="panel">
-        <h2>{{meditation.title}}</h2>
-        <h3>{{meditation.dateText}}</h3>
-        <br/>
-        <div ng-bind-html-unsafe="meditation.content"></div>
-      </div>
-    </div>
-  	
   </div>
+  <!-- </View for Large Screens> -->
 </div>

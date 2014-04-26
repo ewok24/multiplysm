@@ -1,9 +1,12 @@
 ﻿<div ng-controller="WeeklyController" class="row">
+  <!-- <Page Title> -->
   <div class="small-12 large-12 columns">
     <h1>{{title}}</h1>
   </div>
+  <!-- </Page Title> -->
 
-  <div class="large-12 columns hide-for-large-up">
+  <!-- <View for Small/Medium Screens> -->
+  <div class="small-12 columns hide-for-large-up">
     <select ng-model="currentOption" ng-change="switchOption()" ng-options="option.title for option in options">
     </select>
     
@@ -22,8 +25,9 @@
       </div>
     </div>
   </div>
+  <!-- </View for Small/Medium Screens> -->
 
-
+  <!-- <View for Large Screens> -->
   <div class="show-for-large-up">
     <div class="large-3 columns">
     	<ul class="side-nav">
@@ -41,4 +45,5 @@
       </div>
     </div>
   </div>
+  <!-- <View for Large Screens> -->
 </div>

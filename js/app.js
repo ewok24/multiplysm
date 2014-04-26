@@ -1,5 +1,5 @@
-
 (function () {
+	'use strict';
 
 	$(function() {
 		FastClick.attach(document.body);
@@ -730,7 +730,7 @@
    			
    			$scope.options[1].title = ourYouthPastorData.title;
    			$scope.options[1].content = ourYouthPastorData.content;
-   			$scope.options[1].img = ' ';
+   			$scope.options[1].img = 'img/about-us-2-banner.png';
 
    			$scope.currentOption = $scope.options[0];
 	    	$scope.createSwipe();
@@ -753,7 +753,7 @@
 		$scope.getOurYouthPastor = function() {
 			$scope.subtitle = container.ourYouthPastor.title;
 			$scope.content = container.ourYouthPastor.content;
-			$scope.img = ' ';
+			$scope.img = 'img/about-us-2-banner.png';
 			$scope.isMissionStatement = false;
 			$scope.isOurYouthPastor = true;
 		}
@@ -893,10 +893,6 @@
   	};
   	var weeklyData = {};
 
-  	//$scope.mainTabs = mainTabs;
-
-  	$scope.image = 'img/NT_EPISTLES.png'; //default image
-
   	$scope.loadTemplate = function(data, index) {
   		mainTabs[activeIndex].isActive = false;
   		mainTabs[index].isActive = true;
@@ -908,20 +904,11 @@
   			$scope.hasImage = true;
   		}
 
-  		if (index > 1) {
-  			var weekNumber = parseInt(mainTabs[index].title.substr(5, mainTabs[index].title.length-5));
-  			//console.log('weekNumber', weekNumber);
-	  		if (weekNumber < 7) {
-	  			$scope.image = 'img/EcclesiatesXL.png';
-	  		} else {
-	  			$scope.image = 'img/NT_EPISTLES.png';
-	  		}
+  		if (index > 1 || index === 0) {
+	  		$scope.image = 'img/initiative-meditations-banner-medium.png';
   		}
 
   		$scope.displayed = data;
-
-  		findBibleRefs();
-  		//console.log('displayed', data, $scope.displayed);
   	}
 
   	httpService.getLabeledPost('$$$The Multiply Initiative').
