@@ -3,20 +3,42 @@
     <h1>{{title}}</h1>
   </div>
 
-  <div class="large-3 columns">
-  	<ul class="side-nav">
-		  <li ng-class="{active: isBibleStudy}" ng-click="getBibleStudyTemplate()"><a>Bible Study</a></li>
-		  <li ng-class="{active: isSundaySchool}" ng-click="getSundaySchoolTemplate()"><a>Sunday School</a></li>
-		  <li class="divider"></li>
-		</ul>
+  <div class="large-12 columns hide-for-large-up">
+    <select ng-model="currentOption" ng-change="switchOption()" ng-options="option.title for option in options">
+    </select>
+    
+    <div class='swipe' swipejs>
+      <div class='swipe-wrap'>
+        
+        <div ng-repeat="option in options">
+          <img ng-src="{{ option.img }}"/>
+          <div class="panel">
+            <h2>{{ option.title }}</h2>
+            <div ng-bind-html="option.content"></div>
+            <a href={{option.mapLink}} target="_blank"><img class="bordered-image" ng-src="{{option.mapImg}}"/></img></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
-  <div class="expand-on-small large-9 columns">
-    <img class="shadowed-image" src={{image}}>
-    <hr/>
-    <div class="panel">
-      <h2>{{subtitle}}</h2>
-      <div ng-bind-html="content"></div>
-      <a href={{mapLink}} target="_blank"><img class="bordered-image" src={{mapImg}}></img></a>
+
+
+  <div class="show-for-large-up">
+    <div class="large-3 columns">
+    	<ul class="side-nav">
+  		  <li ng-class="{active: isBibleStudy}" ng-click="getBibleStudyTemplate()"><a>Bible Study</a></li>
+  		  <li ng-class="{active: isSundaySchool}" ng-click="getSundaySchoolTemplate()"><a>Sunday School</a></li>
+  		  <li class="divider"></li>
+  		</ul>
+    </div>
+    <div class="expand-on-small large-9 columns">
+      <img ng-src="{{image}}" />
+      <div class="panel">
+        <h2>{{subtitle}}</h2>
+        <div ng-bind-html="content"></div>
+        <a href={{mapLink}} target="_blank"><img class="bordered-image" src={{mapImg}}></img></a>
+      </div>
     </div>
   </div>
 </div>

@@ -94,8 +94,9 @@
       <aside class="left-off-canvas-menu">
         <ul class="off-canvas-list">
           <li><label>Multiply Student Ministry</label></li>
-          <li class="" ng-repeat="item in items" ng-click="select(item)" ng-class="{active: item == selected}">
-            <a href="{{item.url}}" ng-cloak>{{item.name}}</a>
+          <li class="" ng-repeat="item in sideBarItems" ng-click="select(item)" ng-class="{active: item == selected}">
+            <label ng-if="item.label" ng-click="go(item.path)">{{item.name}}</label>
+            <a ng-if="!item.label" href="{{item.url}}" ng-cloak>{{item.name}}</a>
           </li>
         </ul>
       </aside>
@@ -104,7 +105,9 @@
         <div class="row">
           <div class="small-12 columns">
             
+            <!-- < NG VIEW > -->
             <div data-ng-view></div>
+            <!-- </ NG VIEW > -->
 
             <hr/>
             <!-- <Connect Panel> -->

@@ -208,7 +208,24 @@
    *                            Controllers
    *
    ********************************************************************/
-	app.controller('TopBar', ['$scope', '$route', 'selectedService', function($scope, $route, selectedService) {
+	app.controller('TopBar', ['$scope', '$route', '$location', 'selectedService', function($scope, $route, $location, selectedService) {
+		$scope.go = function (path) {
+			console.log('path', path);
+		  $location.path(path);
+		};
+
+		$scope.sideBarItems = [
+			{name: 'Home', url: '#/', label: false, path: '' },
+			{name: 'About Us', url: '#/about', label: false, path: 'about' },
+			{name: 'Ministries', url: '#/events', label: true, path: 'events' },
+			{name: 'Weekly Ministries', url: '#/weekly#biblestudy', label: false, path: 'weekly#biblestudy' },
+			{name: 'The Multiply Initiative', url: '#/initiative', label: false, path: 'initiative' },
+			{name: 'Upcoming Ministry Events', url: '#/upcoming', label: false, path: 'upcoming' },
+			{name: 'News/Updates', url: '#/news', label: false, path: 'news' },
+			{name: 'Podcasts', url: '#/podcasts', label: false, path: 'podcasts' },
+			{name: 'Contact', url: '#/contact', label: false, path: 'contact' }
+		];
+
 		$scope.items = [
 			{name: 'Home', url: '#/'},
 			{name: 'About Us', url: '#/about'},
@@ -704,9 +721,11 @@
 
    			$scope.options[0].title = missionStatementData.title;
    			$scope.options[0].content = missionStatementData.content;
+   			$scope.options[0].img = 'img/about-us-1-banner.png';
    			
    			$scope.options[1].title = ourYouthPastorData.title;
    			$scope.options[1].content = ourYouthPastorData.content;
+   			$scope.options[1].img = ' ';
 
    			$scope.currentOption = $scope.options[0];
 	    	$scope.createSwipe();
@@ -722,71 +741,109 @@
 		$scope.getMissionStatement = function() {
 			$scope.subtitle = container.missionStatement.title;
 			$scope.content = container.missionStatement.content;
+			$scope.img = 'img/about-us-1-banner.png';
 			$scope.isMissionStatement = true;
 			$scope.isOurYouthPastor = false;
 		}
 		$scope.getOurYouthPastor = function() {
 			$scope.subtitle = container.ourYouthPastor.title;
 			$scope.content = container.ourYouthPastor.content;
+			$scope.img = ' ';
 			$scope.isMissionStatement = false;
 			$scope.isOurYouthPastor = true;
 		}
 	}]);
 
 	app.controller('WeeklyController', ['$scope', 'httpService', function ($scope, httpService) {
+		$scope.options = [
+  		{ value: 0, title: 'temp', content: 'temp' },
+  		{ value: 1, title: 'temp', content: 'temp' },
+  	];
+
+  	$scope.switchOption = function() {
+  		if ($scope.currentOption != null) {
+
+  			if ($scope.currentOption.value === 0) {
+  				$scope.getBibleStudyTemplate();
+  			} else if ($scope.currentOption.value === 1) {
+  				$scope.getSundaySchoolTemplate();
+  			}
+
+  			$scope.swipe.slide($scope.currentOption.value);
+  		}
+  	};
+
+  	$scope.callback = function(index) {
+  		$scope.currentOption = $scope.options[index];
+  		if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
+  	};
+
+  	//************************************
+    //************************************
 
 		var container = {
-            bibleStudy : {},
-  		    	sundaySchool : {}
-  	    };
-  	    var bibleStudyData;
-  	    var sundaySchoolData;
+      bibleStudy : {},
+    	sundaySchool : {}
+  	};
+    var bibleStudyData;
+    var sundaySchoolData;
 
-  	    httpService.getLabeledPost('$$Weekly Ministries').
-   	    success(function(data, status, headers, config) {
-   		    if (data.items[0] && data.items[1]) {
+    httpService.getLabeledPost('$$Weekly Ministries').
+	    success(function(data, status, headers, config) {
+		    if (data.items[0] && data.items[1]) {
 
-   			    var title = data.items[0].labels[0];
-                //console.log(data.items);
+			    var title = data.items[0].labels[0];
 
-                
+			    if (title.substr(0,2) === '$$') {
+            $scope.title = 'Weekly Ministries';
+			    } else {
+				    $scope.title = "Page Error";
+				    return '';
+			    }
 
-   			    if (title.substr(0,2) === '$$') {
-   				    //$scope.title = title.substr(2,title.length);
-                    $scope.title = 'Weekly Ministries';
-   			    } else {
-   				    $scope.title = "Page Error";
-   				    return '';
-   			    }
+			    if (data.items[0].title === 'Weekly Bible Study') {
+				    bibleStudyData = data.items[0];
+				    sundaySchoolData = data.items[1];
+			    } else {
+				    bibleStudyData = data.items[1];
+				    sundaySchoolData = data.items[0];
+			    }
 
-   			    if (data.items[0].title === 'Weekly Bible Study') {
-   				    bibleStudyData = data.items[0];
-   				    sundaySchoolData = data.items[1];
-   			    } else {
-   				    bibleStudyData = data.items[1];
-   				    sundaySchoolData = data.items[0];
-   			    }
+			    container.sundaySchool.title = sundaySchoolData.title;
+			    container.sundaySchool.content = sundaySchoolData.content;
 
-   			    container.sundaySchool.title = sundaySchoolData.title;
-   			    container.sundaySchool.content = sundaySchoolData.content;
+			    container.bibleStudy.title = bibleStudyData.title;
+			    container.bibleStudy.content = bibleStudyData.content;
 
-   			    container.bibleStudy.title = bibleStudyData.title;
-   			    container.bibleStudy.content = bibleStudyData.content;
+			    $scope.getBibleStudyTemplate();
 
-   			    $scope.getBibleStudyTemplate();
+	   			$scope.options[0].title = sundaySchoolData.title;
+	   			$scope.options[0].content = sundaySchoolData.content;
+	   			$scope.options[0].img = 'img/weekly-1-banner.png';
+	   			$scope.options[0].mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
+					$scope.options[0].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=1411+kennoway+park,+Spring+TX,+77379&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C1411+kennoway+park,+Spring+TX,+77379&sensor=false';
+	   			
+	   			$scope.options[1].title = bibleStudyData.title;
+	   			$scope.options[1].content = bibleStudyData.content;
+	   			$scope.options[1].img = 'img/weekly-2-banner.png';
+	   			$scope.options[1].mapLink = 'https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77373&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16';
+					$scope.options[1].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
 
-   			    findBibleRefs();
-   		    } else {
-   			    $scope.title = "Page Error";
-   		    }
+	   			$scope.currentOption = $scope.options[0];
+		    	$scope.createSwipe();
+		    } else {
+			    $scope.title = "Page Error";
+		    }
 
-   	    }).
-   	    error(function(data, status, headers, config) {
-        });
+	    }).
+	    error(function(data, status, headers, config) {
+    });
 
 		$scope.getBibleStudyTemplate = function() {
 			//$scope.url = 'html/test/biblestudy.html';
-			$scope.image = 'img/Revelation_s.png';
+			$scope.image = 'img/weekly-1-banner.png';
 			$scope.subtitle = container.bibleStudy.title;
 			$scope.content = container.bibleStudy.content;
 			$scope.mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
@@ -797,7 +854,7 @@
 		}
 		$scope.getSundaySchoolTemplate = function() {
 			//$scope.url = 'html/test/sundayschool.html';
-			$scope.image = 'img/proverbs_s.png';
+			$scope.image = 'img/weekly-2-banner.png';
 			$scope.subtitle = container.sundaySchool.title;
 			$scope.content = container.sundaySchool.content;
 			$scope.mapLink = 'https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77373&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16';
