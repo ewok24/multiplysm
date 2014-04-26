@@ -210,7 +210,6 @@
    ********************************************************************/
 	app.controller('TopBar', ['$scope', '$route', '$location', 'selectedService', function($scope, $route, $location, selectedService) {
 		$scope.go = function (path) {
-			console.log('path', path);
 		  $location.path(path);
 		};
 
@@ -238,11 +237,16 @@
 		$scope.itemsLeft = [
 			{ name: 'Home', url: '#/' , dropdown: false, nested: [] },
 			{ name: 'About Us', url: '#/about', dropdown: false, nested: [] },
+			/*
 			{ name: 'Ministries', url: '#/events', dropdown: true, nested: [
 				{ name: 'Weekly Ministries', url: '#/weekly#biblestudy', nested: [] },
 				{ name: 'The Multiply Initiative', url: '#/initiative', nested: [] },
 				{ name: 'Upcoming Ministry Events', url: '#/upcoming', nested: [] },
-			] }
+			] },
+			{ name: 'News/Updates', url: '#/news', dropdown: false, nested: [] },
+			{ name: 'Podcasts', url: '#/podcasts', dropdown: false, nested: [] },
+			{ name: 'Contact', url: '#/contact', dropdown: false, nested: [] }
+			//*/
 		];
 
 		$scope.itemsRight = [
@@ -262,6 +266,7 @@
 		}
 
 		$scope.select = function (item) {
+			$scope.ministrySelected = false;
       //console.log('Item', item);
       if (item.name === 'Home') {
         window.open('#', '_self');

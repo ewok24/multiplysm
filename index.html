@@ -68,7 +68,18 @@
 
               <!-- Left Nav Section -->
               <ul class="left menu-options">
-                <li class="" ng-repeat="item in items" ng-click="select(item)" ng-class="{active: item == selected}">
+                <li class="" ng-repeat="item in itemsLeft" ng-click="select(item)" ng-class="{active: item === selected}">
+                  <a href="{{item.url}}" ng-cloak>{{item.name}}</a>
+                </li>
+                <li class="has-dropdown" ng-click="ministrySelected=true; selected=null;" ng-class="{active: ministrySelected}">
+                  <a href="#/events">Ministries</a>
+                  <ul class="dropdown">
+                    <li><a style="background: #333;" href="#/weekly#biblestudy">Weekly Ministries</a></li>
+                    <li><a style="background: #333;" href="#/initiative">The Multiply Initiative</a></li>
+                    <li><a style="background: #333;" href="#/upcoming">Upcoming Ministry Events</a></li>
+                  </ul>
+                </li>
+                <li class="" ng-repeat="item in itemsRight" ng-click="select(item)" ng-class="{active: item === selected}">
                   <a href="{{item.url}}" ng-cloak>{{item.name}}</a>
                 </li>
               </ul>
