@@ -217,7 +217,7 @@
 		$scope.sideBarItems = [
 			{name: 'Home', url: '#/', label: false, path: '' },
 			{name: 'About Us', url: '#/about', label: false, path: 'about' },
-			{name: 'Ministries', url: '#/events', label: true, path: 'events' },
+			{name: 'Ministries', url: '#/events', label: false, path: 'events' },
 			{name: 'Weekly Ministries', url: '#/weekly#biblestudy', label: false, path: 'weekly#biblestudy' },
 			{name: 'The Multiply Initiative', url: '#/initiative', label: false, path: 'initiative' },
 			{name: 'Upcoming Ministry Events', url: '#/upcoming', label: false, path: 'upcoming' },
