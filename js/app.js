@@ -1046,7 +1046,7 @@
  			});
 
 			//$scope.options.splice(lastKey+3, totalKeys-lastKey);
-			$scope.options.splice(30, totalKeys-30);
+			$scope.options.splice(30+3, totalKeys-30);
 
 			if (!mainTabs[0].data[0]) {
 				mainTabs[0].data = new Array(dateDataMaps[mostRecentDate]);
