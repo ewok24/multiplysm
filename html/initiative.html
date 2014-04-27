@@ -29,7 +29,7 @@
       <a class="hide-for-touch no-text-select right" ng-click="nextSlide()"><i class="foundicongen-right-arrow" style="color: #ff2701; font-size: 3em;"></i></a>
       <h1 class="text-center">{{ subtitle }}</h1>
     </div>
-    <div class='swipe' swipejs>
+    <div style="max-height: 1200px; overflow-y: scroll; -webkit-overflow-scrolling: touch;" class='swipe' swipejs>
       <div class='swipe-wrap'>
         
         <div ng-repeat="option in options">
