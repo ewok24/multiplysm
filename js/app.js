@@ -889,11 +889,20 @@
   		if ($scope.currentOption != null) {
   			$scope.swipe.slide($scope.currentOption.shiftedIndex);
   		}
+
+  		mainTabs[activeIndex].isActive = false;
+  		mainTabs[$scope.currentOption.index].isActive = true;
+  		activeIndex = $scope.currentOption.index;
   	};
 
   	$scope.callback = function(index) {
   		$scope.currentOption = $scope.mainTabs[shiftIndexMap[index]];
-  		if (!$scope.$$phase) {
+    	if (index === 1) {
+    		$scope.subtitle = 'About';
+    	} else {
+    		$scope.subtitle = 'Meditations';
+    	}
+    	if (!$scope.$$phase) {
     		$scope.$apply();
     	}
   	};
@@ -906,7 +915,7 @@
   	$scope.subtitle = 'Meditations';
 
   	var startDate = parseISO8601('2013-10-20');
-  	var activeIndex = 0;
+  	var activeIndex = 1;
 
   	var mainTabs = {
   		0 : {
@@ -918,7 +927,7 @@
   		1 : {
   			index: 1,
   			title: "The Multiply Initiative",
-  			isActive: false,
+  			isActive: true,
   			data: {}
   		}
   	};
@@ -928,23 +937,13 @@
   	};
   	var weeklyData = {};
 
-  	$scope.loadTemplate = function(data, index) {
+  	$scope.loadTemplate = function(index) {
   		mainTabs[activeIndex].isActive = false;
   		mainTabs[index].isActive = true;
   		activeIndex = index;
 
-  		if (index === 1) {
-  			$scope.hasImage = false;
-  		} else {
-  			$scope.hasImage = true;
-  		}
-
-  		if (index > 1 || index === 0) {
-	  		$scope.image = 'img/initiative-meditations-banner-medium.png';
-  		}
-
-  		$scope.displayed = data;
-  	}
+  		$scope.swipe.slide(mainTabs[index].shiftedIndex);
+  	};
 
   	httpService.getLabeledPost('$$$The Multiply Initiative').
    	success(function(data, status, headers, config) {
@@ -962,7 +961,6 @@
 
    	httpService.getLabeledPostRecursive('$$$Meditations').
    	then(function(data, status, headers, config) {
-   		//console.log('data', data);
 
    		var today = new Date();
    		var maxWeek = -1;
@@ -1090,18 +1088,11 @@
 			});
 			$scope.options.splice(lastKey+3, totalKeys-lastKey);
 
-			console.log('mainTabs', mainTabs);
-			console.log('mainTabsArray', mainTabsArray);
-			console.log('shiftIndexMap', shiftIndexMap);
-			console.log('$scope.options', $scope.options);
-
 			$scope.createSwipe();
 			$scope.mainTabs = mainTabsArray;
-			//$scope.swipe.slide(1);
-			$scope.currentOption = mainTabs[1];
-			//$scope.loadTemplate(mainTabs[1].data, 1);
+			$scope.swipe.slide(1);
 		});
-   	//.error(function(data, status, headers, config) {
+		//.error(function(data, status, headers, config) {
 	  //});
 	}]);
 
@@ -1408,8 +1399,6 @@
 	app.directive('swipejs', function() {
 	  return function(scope, element, attrs) {
 	    scope.createSwipe = function() {
-	    	console.log('creating Swipe');
-
 	    	scope.swipe = Swipe(element[0], {
 		    	startSlide: 0,
 				  speed: 400,

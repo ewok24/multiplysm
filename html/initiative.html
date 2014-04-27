@@ -16,7 +16,7 @@
   <div class="show-for-large-up">
     <div class="large-3 columns">
       <ul class="side-nav">
-        <li data-ng-repeat="tab in mainTabs | orderBy:'index':number" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.data, tab.index)"><a>{{ tab.title }}</a></li>
+        <li data-ng-repeat="tab in mainTabs | orderBy:'index':number" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.index)"><a>{{ tab.title }}</a></li>
         <li class="divider"></li>
       </ul>
     </div>
