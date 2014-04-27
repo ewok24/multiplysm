@@ -889,14 +889,15 @@
   		if ($scope.currentOption != null) {
   			$scope.swipe.slide($scope.currentOption.shiftedIndex);
   		}
-
-  		mainTabs[activeIndex].isActive = false;
-  		mainTabs[$scope.currentOption.index].isActive = true;
-  		activeIndex = $scope.currentOption.index;
   	};
 
   	$scope.callback = function(index) {
   		$scope.currentOption = $scope.mainTabs[shiftIndexMap[index]];
+
+  		mainTabs[activeIndex].isActive = false;
+  		mainTabs[$scope.currentOption.index].isActive = true;
+  		activeIndex = $scope.currentOption.index;
+  		
     	if (index === 1) {
     		$scope.subtitle = 'About';
     	} else {
@@ -1171,8 +1172,6 @@
    		//console.log('post-sorted', sortedEvents);
 
    		$scope.allUpcomingEvents = upcomingEvents;
-
-   		findBibleRefs();
    	});
 	}]);
 
