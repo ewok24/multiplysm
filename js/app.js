@@ -897,7 +897,7 @@
   		mainTabs[activeIndex].isActive = false;
   		mainTabs[$scope.currentOption.index].isActive = true;
   		activeIndex = $scope.currentOption.index;
-  		
+
     	if (index === 1) {
     		$scope.subtitle = 'About';
     	} else {
@@ -1278,7 +1278,6 @@
 	    //console.log('news', mainTabs)
 
 	    $scope.loadTemplate(mainTabs[0].data, activeIndex);
-      findBibleRefs();
     });
 	}]);	
 
@@ -1395,7 +1394,7 @@
    	error(function(data, status, headers, config) {
 	  });
 	}]);
-
+	
   /********************************************************************
    *
    *                            Directives
