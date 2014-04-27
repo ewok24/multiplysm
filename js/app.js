@@ -882,7 +882,7 @@
   			});
   		}
   	};
-  	var totalKeys = 500;
+  	var totalKeys = 300;
   	fillOptions(totalKeys);
 
   	$scope.switchOption = function() {
