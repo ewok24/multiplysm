@@ -967,20 +967,18 @@
    		var mostRecentDate;
    		var dateDataMaps = {};
 
+   		var startKey = 0;
+   		var lastKey = 0;
    		angular.forEach(data.items, function(value, key) {
    			var divider = value.title.indexOf(':');
    			var titleDate = value.title.substr(0,divider);
    			var title = value.title.substr(divider+1, value.title.length);
 
-   			//var d = new Date(titleDate);
    			var d = parseISO8601(titleDate);
    			var day = d.getDate();
    			var weekday = getDayText(d.getDay());
    			var month = getMonthText(d.getMonth());
    			var year = d.getFullYear();
-
-   			//console.log('d', titleDate, d);
-   			//console.log('parse', titleDate, parseISO8601(titleDate));
 
    			value.title = title;
    			value.date = d;
@@ -995,7 +993,6 @@
    			dateDataMaps[d] = value;
 
    			if (isSameDate(today, d)) { // add to Today's Meditation
-   				//console.log('today!');
    				var week = Math.ceil(dateDiff(startDate, d)/7);
    				if (week > maxWeek) {
    					maxWeek = week;
@@ -1008,6 +1005,19 @@
    				weeklyData[week].data.push(value);
 
    				mainTabs[0].data = new Array(value);
+
+   				$scope.options[0].title = value.title;
+					$scope.options[0].dateText = value.dateText;
+					$scope.options[0].content = value.content;
+
+					if ($scope.options[key-startKey+2]) {
+						$scope.options[key-startKey+2].title = value.title;
+						$scope.options[key-startKey+2].dateText = value.dateText;
+						$scope.options[key-startKey+2].content = value.content;
+						lastKey = key;
+					} else {
+						console.log('ERROR: $scope.options is not large enough');
+					}
    			} else if (d <= today) {
    				var week = Math.ceil(dateDiff(startDate, d)/7);
    				if (week > maxWeek) {
@@ -1019,10 +1029,22 @@
    					};
    				}
    				weeklyData[week].data.push(value);
+
+   				if ($scope.options[key-startKey+2]) {
+						$scope.options[key-startKey+2].title = value.title;
+						$scope.options[key-startKey+2].dateText = value.dateText;
+						$scope.options[key-startKey+2].content = value.content;
+						lastKey = key;
+					} else {
+						console.log('ERROR: $scope.options is not large enough');
+					}
    			} else { //upcoming
+   				startKey += 1;
    				// don't post
    			}
  			});
+
+			$scope.options.splice(lastKey+3, totalKeys-lastKey);
 
 			if (!mainTabs[0].data[0]) {
 				mainTabs[0].data = new Array(dateDataMaps[mostRecentDate]);
@@ -1071,22 +1093,6 @@
    		angular.forEach(mainTabs, function (value, key) {
    			mainTabsArray.push(value);
    		});
-
-			var lastKey = 0;
-			$scope.options[0].title = data.items[0].title;
-			$scope.options[0].dateText = data.items[0].dateText;
-			$scope.options[0].content = data.items[0].content;
-
-			angular.forEach(data.items, function(value, key) {
-				if ($scope.options[key]) {
-					$scope.options[key+2].title = value.title;
-					$scope.options[key+2].dateText = value.dateText;
-					$scope.options[key+2].content = value.content;
-					lastKey = key;
-				} else {
-				}
-			});
-			$scope.options.splice(lastKey+3, totalKeys-lastKey);
 
 			$scope.createSwipe();
 			$scope.mainTabs = mainTabsArray;
