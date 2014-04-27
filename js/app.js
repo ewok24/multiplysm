@@ -897,7 +897,7 @@
   		mainTabs[activeIndex].isActive = false;
   		mainTabs[$scope.currentOption.index].isActive = true;
   		activeIndex = $scope.currentOption.index;
-  		
+
     	if (index === 1) {
     		$scope.subtitle = 'About';
     	} else {
@@ -1409,8 +1409,8 @@
 				  speed: 400,
 				  auto: 0,
 				  continuous: false,
-				  disableScroll: false,
-				  stopPropagation: false,
+				  disableScroll: true,
+				  stopPropagation: true,
 				  callback: function(index, elem) {
 				  },
 				  transitionEnd: function(index, elem) {
