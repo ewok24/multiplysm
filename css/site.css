@@ -79,3 +79,9 @@ Red2: ff2700
 .swipe-wrap img {
 	width:100%;
 }
+
+.no-text-select {
+	-webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}

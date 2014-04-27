@@ -448,8 +448,8 @@
 		  speed: 400,
 		  auto: 5000,
 		  continuous: true,
-		  disableScroll: true,
-		  stopPropagation: true,
+		  disableScroll: false,
+		  stopPropagation: false,
 		  callback: function(index, elem) {
 		  	$scope.changeActive(index);
 		  },
@@ -871,8 +871,39 @@
   }]);
 
 	app.controller('InitiativeController', ['$scope', 'httpService', function ($scope, httpService) {
+		$scope.options = [];
+
+  	function fillOptions (total) {
+  		for (var i = 0; i < total; i++) {
+  			$scope.options.push({ 
+  				value: i, title: 'temp' + i,
+  				dateText: 'temp' + i,
+  				content: 'temp' + i,
+  			});
+  		}
+  	};
+  	var totalKeys = 500;
+  	fillOptions(totalKeys);
+
+  	$scope.switchOption = function() {
+  		if ($scope.currentOption != null) {
+  			$scope.swipe.slide($scope.currentOption.shiftedIndex);
+  		}
+  	};
+
+  	$scope.callback = function(index) {
+  		$scope.currentOption = $scope.mainTabs[shiftIndexMap[index]];
+  		if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
+  	};
+
+  	//************************************
+    //************************************
+
   	var label = '$$The Multiply Initiative';
   	$scope.title = label.substr(2, label.length);
+  	$scope.subtitle = 'Meditations';
 
   	var startDate = parseISO8601('2013-10-20');
   	var activeIndex = 0;
@@ -890,6 +921,10 @@
   			isActive: false,
   			data: {}
   		}
+  	};
+  	var shiftIndexMap = {
+  		0: 0,
+  		1: 1,
   	};
   	var weeklyData = {};
 
@@ -916,6 +951,10 @@
    		if (data.items[0]) {
    			mainTabs[1].title = data.items[0].title;
    			mainTabs[1].data = new Array(data.items[0]);
+
+   			$scope.options[1].title = data.items[0].title;
+				$scope.options[1].dateText = data.items[0].dateText;
+				$scope.options[1].content = data.items[0].content;
    		}
    	}).
    	error(function(data, status, headers, config) {
@@ -923,7 +962,7 @@
 
    	httpService.getLabeledPostRecursive('$$$Meditations').
    	then(function(data, status, headers, config) {
-   		console.log('data', data);
+   		//console.log('data', data);
 
    		var today = new Date();
    		var maxWeek = -1;
@@ -987,15 +1026,11 @@
    			}
  			});
 
-			//console.log(dateDataMaps);
-
 			if (!mainTabs[0].data[0]) {
 				mainTabs[0].data = new Array(dateDataMaps[mostRecentDate]);
 			}
 
-			//console.log('mainTabs', mainTabs);
-
- 			//console.log('maxWeek', maxWeek);
+			var shiftIndex = 0;
    		for (var i = 2; i<maxWeek + 2; i++) {
    			var number = maxWeek + 2 - i;
    			//console.log('number', number);
@@ -1007,48 +1042,64 @@
    					data: new Array()
    				}
    			}
+
+   			if (i === 2) {
+   				shiftIndex = i;
+   			}
+
    			mainTabs[i] = {
    				index: i,
+   				shiftedIndex: shiftIndex,
    				title: 'Week ' + number,
    				isActive: false,
    				data: weeklyData[number].data
    			}
+
+   			for (var j = shiftIndex; j < shiftIndex + weeklyData[number].data.length; j++) {
+   				shiftIndexMap[j] = i;
+   			}
+
+   			shiftIndex += weeklyData[number].data.length;
    		}
+   		mainTabs[0].shiftedIndex = 0;
+   		mainTabs[1].shiftedIndex = 1;
 
    		angular.forEach(mainTabs, function (value, key) {
    			value.data.sort(sortBlogPosts);
    			value.data.reverse();
    		});
 
-   		//console.log(weeklyData);
-   		//console.log(mainTabs);
    		var mainTabsArray = new Array();
    		angular.forEach(mainTabs, function (value, key) {
    			mainTabsArray.push(value);
    		});
-   		/*
 
-   			if (today > d) {
-   				if (!oldEvents[year]) {
-	   				oldEvents[year] = {
-	   					year: year,
-	   					events: new Array(),
-	   				};
-	   			}
-	   			oldEvents[year].events.push(value);
-   			} else {
-   				if (!upcomingEvents[year]) {
-	   				upcomingEvents[year] = {
-	   					year: year,
-	   					events: new Array(),
-	   				};
-	   			}
-	   			upcomingEvents[year].events.push(value);
-   			}
-			//*/
-			//console.log('mainTabsArray', mainTabsArray)
+			var lastKey = 0;
+			$scope.options[0].title = data.items[0].title;
+			$scope.options[0].dateText = data.items[0].dateText;
+			$scope.options[0].content = data.items[0].content;
+
+			angular.forEach(data.items, function(value, key) {
+				if ($scope.options[key]) {
+					$scope.options[key+2].title = value.title;
+					$scope.options[key+2].dateText = value.dateText;
+					$scope.options[key+2].content = value.content;
+					lastKey = key;
+				} else {
+				}
+			});
+			$scope.options.splice(lastKey+3, totalKeys-lastKey);
+
+			console.log('mainTabs', mainTabs);
+			console.log('mainTabsArray', mainTabsArray);
+			console.log('shiftIndexMap', shiftIndexMap);
+			console.log('$scope.options', $scope.options);
+
+			$scope.createSwipe();
 			$scope.mainTabs = mainTabsArray;
-			$scope.loadTemplate(mainTabs[1].data, 1);
+			//$scope.swipe.slide(1);
+			$scope.currentOption = mainTabs[1];
+			//$scope.loadTemplate(mainTabs[1].data, 1);
 		});
    	//.error(function(data, status, headers, config) {
 	  //});
@@ -1357,6 +1408,8 @@
 	app.directive('swipejs', function() {
 	  return function(scope, element, attrs) {
 	    scope.createSwipe = function() {
+	    	console.log('creating Swipe');
+
 	    	scope.swipe = Swipe(element[0], {
 		    	startSlide: 0,
 				  speed: 400,
@@ -1370,13 +1423,34 @@
 				  	scope.callback(index);
 				  }
 		    });
-	    }
+	    };
 	    scope.prevSlide = function() {
     		scope.swipe.prev();
     	};
     	scope.nextSlide = function() {
 	    	scope.swipe.next();
 	    };
+
+	    $(document).keyup(function (e) {
+	    	if(e.which === 37) {
+	    		scope.prevSlide();
+	    	}
+	    	if(e.which === 39) {
+	    		scope.nextSlide();
+	    	}
+			});
+			/*
+			.keydown(function (e) {
+		    if(e.which === 37){
+		    	console.log('keydown left arrow');
+		    	isCtrl=true;
+		    }
+		    if(e.which === 39) {
+	    		console.log('keydown right arrow');
+	    		isCtrl=false;
+	    	}
+			});
+			//*/
 	  };
 	});
 
