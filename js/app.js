@@ -883,6 +883,14 @@
   		}
   	};
   	var totalKeys = 300;
+  	var visibleKeys = 30;
+  	var prevFirstKey = 0;
+  	var prevLastKey = 0;
+  	var nextFirstKey = visibleKeys;
+  	var nextLastKey = nextFirstKey + visibleKeys + 2;
+
+  	var allOptions = {};
+
   	fillOptions(totalKeys);
 
   	$scope.switchOption = function() {
@@ -890,6 +898,43 @@
   			$scope.swipe.slide($scope.currentOption.shiftedIndex);
   		}
   	};
+
+  	function nextTabs() {
+  		if (nextLastKey === allOptions.length) { // already reached end
+  			console.log('already reached the end');
+  			console.log('nextFirstKey', nextFirstKey);
+  			console.log('nextLastKey', nextLastKey);
+
+  			angular.forEach(allOptions, function(value, key) {
+	  			if (key > nextFirstKey+2 && key < nextLastKey) {
+	  				$scope.options[key-nextFirstKey+3].title = value.title;
+						$scope.options[key-nextFirstKey+3].dateText = value.dateText;
+						$scope.options[key-nextFirstKey+3].content = value.content;
+	  			}
+	  		});
+  		} else {
+  			angular.forEach(allOptions, function(value, key) {
+	  			if (key > nextFirstKey && key < nextLastKey) {
+	  				$scope.options[key-nextFirstKey+1].title = value.title;
+						$scope.options[key-nextFirstKey+1].dateText = value.dateText;
+						$scope.options[key-nextFirstKey+1].content = value.content;
+	  			}
+	  		});
+	  		prevFirstKey = nextFirstKey;
+	  		prevLastKey = nextLastKey;
+
+	  		nextLastKey += visibleKeys - 1;
+	  		if (nextLastKey > allOptions.length) {
+	  			nextLastKey = allOptions.length;
+	  			nextFirstKey = nextLastKey - visibleKeys;
+	  		} else {
+	  			nextFirstKey += visibleKeys - 1;
+	  		}
+  		}
+  		if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
+  	}
 
   	$scope.callback = function(index) {
   		$scope.currentOption = $scope.mainTabs[shiftIndexMap[index]];
@@ -903,9 +948,25 @@
     	} else {
     		$scope.subtitle = 'Meditations';
     	}
+    	
+    	if (index === visibleKeys + 2) {
+    		console.log('reached the end!');
+    		//nextTabs
+    		if ($scope.options[index].dateText != allOptions[allOptions.length-1].dateText) {
+    			nextTabs();
+
+    			console.log('allOptions', allOptions);
+    		}
+    	}
+    	if (prevFirstKey > 0 && index === prevFirstKey) {
+    		//previousTabs
+    		console.log('reached the beginning!');
+    	}
+
     	if (!$scope.$$phase) {
     		$scope.$apply();
     	}
+    	console.log('index', index);
   	};
 
   	//************************************
@@ -1045,8 +1106,10 @@
    			}
  			});
 
-			//$scope.options.splice(lastKey+3, totalKeys-lastKey);
-			$scope.options.splice(30+3, totalKeys-30);
+			allOptions= angular.copy($scope.options);
+			allOptions.splice(lastKey+3, totalKeys-lastKey);
+
+			$scope.options.splice(visibleKeys+3, totalKeys-visibleKeys);
 
 			if (!mainTabs[0].data[0]) {
 				mainTabs[0].data = new Array(dateDataMaps[mostRecentDate]);
