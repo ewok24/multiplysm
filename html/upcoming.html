@@ -8,14 +8,26 @@
       <hr/>
       <h1>{{year.year}}</h1>
     </div>
+
     <div ng-repeat="event in year.events">
       <div class="expand-on-small small-12 large-12 columns">
-        <div class="panel shadowed-image">
-          <h2>{{event.title}}</h2>
-          <h3>{{event.dateText}}</h3>
-          <br/>
-          <div ng-bind-html="event.content"></div>
+        
+        <!-- Swipe Banner -->
+        <div class='swipe' swipe-event style="height: 300px; margin-bottom: 20px;">
+          <div class='swipe-wrap'>
+            <div>
+              <img ng-src="img/upcoming-1-evangelism.png" ng-click="toggle()"/>
+            </div>
+            <div class="panel" ng-click="toggle()" style="height: 300px; overflow-y: scroll;">
+              <h2>{{event.title}}</h2>
+              <h3>{{event.dateText}}</h3>
+              <br/>
+              <div ng-bind-html="event.content"></div>
+            </div>
+          </div>
         </div>
+        <!-- Swipe Banner -->
+
       </div>
     </div>
   </div>

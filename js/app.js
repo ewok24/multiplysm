@@ -882,12 +882,14 @@
   			});
   		}
   	};
+
   	var totalKeys = 300;
   	var visibleKeys = 30;
   	var prevFirstKey = 0;
   	var prevLastKey = 0;
   	var nextFirstKey = visibleKeys;
   	var nextLastKey = nextFirstKey + visibleKeys + 2;
+  	var skipIndex = 0;
 
   	var allOptions = {};
 
@@ -899,12 +901,13 @@
   		}
   	};
 
-  	function nextTabs() {
-  		if (nextLastKey === allOptions.length) { // already reached end
-  			console.log('already reached the end');
-  			console.log('nextFirstKey', nextFirstKey);
-  			console.log('nextLastKey', nextLastKey);
+  	var reachedEnd = false;
 
+  	function nextTabs() {
+  		skipIndex++;
+  		if (nextLastKey === allOptions.length) { // already reached very end
+  			//console.log('already reached the very end');
+  			
   			angular.forEach(allOptions, function(value, key) {
 	  			if (key > nextFirstKey+2 && key < nextLastKey) {
 	  				$scope.options[key-nextFirstKey+3].title = value.title;
@@ -912,6 +915,11 @@
 						$scope.options[key-nextFirstKey+3].content = value.content;
 	  			}
 	  		});
+
+	  		var result = visibleKeys - (nextLastKey - prevLastKey) + 2;
+    		$scope.swipe.slide(result, 1);
+
+    		reachedEnd = true;
   		} else {
   			angular.forEach(allOptions, function(value, key) {
 	  			if (key > nextFirstKey && key < nextLastKey) {
@@ -934,14 +942,70 @@
   		if (!$scope.$$phase) {
     		$scope.$apply();
     	}
+    	if (!reachedEnd) {
+    		$scope.swipe.slide(3, 1);
+    	} else {
+    	}
+  	}
+  	function previousTabs() {
+  		skipIndex--;
+
+  		var current = prevFirstKey - visibleKeys + 1;
+  		angular.forEach(allOptions, function(value, key) {
+  			if (key > current && key < (prevLastKey - visibleKeys + 1)) {
+  				$scope.options[key-current+1].title = value.title;
+					$scope.options[key-current+1].dateText = value.dateText;
+					$scope.options[key-current+1].content = value.content;
+  			}
+  		});
+
+  		nextFirstKey = prevFirstKey;
+  		nextLastKey = prevLastKey;
+
+  		prevLastKey -= visibleKeys - 1;
+  		prevFirstKey -= visibleKeys - 1;
+
+  		if (!reachedEnd) {
+  			$scope.swipe.slide(visibleKeys + 1, 1);
+  		} else {
+  			//$scope.swipe.slide(visibleKeys + 1, 1);
+  			//console.log('$scope.options', $scope.options);
+  			reachedEnd = false;
+  		}
   	}
 
+  	var currentIndex = 1;
   	$scope.callback = function(index) {
-  		$scope.currentOption = $scope.mainTabs[shiftIndexMap[index]];
+  		console.log('skipIndex', skipIndex);
+  		console.log('official index', index);
+  		if (index > 1) {
+  			if (reachedEnd) {
+  				//console.log('nextFirstKey', nextFirstKey);
+  				//console.log('nextLastKey', nextLastKey);
+  				//console.log('nextFirstKey + index', nextFirstKey + index - 3);
+  				//console.log('calculation', (visibleKeys - (nextFirstKey - prevFirstKey) + 3));
+  				currentIndex = nextFirstKey + index - 3;
+  			} else {
+  				currentIndex = (skipIndex * visibleKeys) + index;
+  				if (currentIndex < 0) {
+		  			currentIndex = index;
+		  		}
+  			}
+  		} else {
+  			currentIndex = index;
+  		}
+
+  		//console.log('CURRENT INDEX', index);
+  		//console.log('skipIndex', skipIndex);
+  		console.log('currentIndex', currentIndex);
+
+  		$scope.currentOption = $scope.mainTabs[shiftIndexMap[currentIndex]];
 
   		mainTabs[activeIndex].isActive = false;
   		mainTabs[$scope.currentOption.index].isActive = true;
   		activeIndex = $scope.currentOption.index;
+
+  		currentIndex = index;
 
     	if (index === 1) {
     		$scope.subtitle = 'About';
@@ -950,23 +1014,38 @@
     	}
     	
     	if (index === visibleKeys + 2) {
-    		console.log('reached the end!');
+    		//console.log('reached the end!');
     		//nextTabs
     		if ($scope.options[index].dateText != allOptions[allOptions.length-1].dateText) {
     			nextTabs();
 
-    			console.log('allOptions', allOptions);
+    			//console.log('allOptions', allOptions);
     		}
     	}
-    	if (prevFirstKey > 0 && index === prevFirstKey) {
-    		//previousTabs
+    	/*
+    	console.log('prevFirstKey', prevFirstKey);
+    	console.log('prevLastKey', prevLastKey);
+    	console.log('nextFirstKey', nextFirstKey);
+    	console.log('nextLastKey', nextLastKey);
+    	console.log('index', index);
+    	//*/
+    	if (prevFirstKey > 0) {
+    		if (!reachedEnd && index === 2) {
+    			console.log('jump back all the way!');
+    			previousTabs();
+    		} else if (reachedEnd && index === (visibleKeys - (nextFirstKey - prevFirstKey) + 3) ) {
+    			console.log('jump back a little!');
+    			previousTabs();
+    		} else {
+    			// ERROR
+    		}
     		console.log('reached the beginning!');
     	}
 
     	if (!$scope.$$phase) {
     		$scope.$apply();
     	}
-    	console.log('index', index);
+    	//console.log('index', index);
   	};
 
   	//************************************
@@ -1000,11 +1079,95 @@
   	var weeklyData = {};
 
   	$scope.loadTemplate = function(index) {
+  		console.log('index', index);
+
+  		console.log('index >>', mainTabs[index].shiftedIndex);
+  		console.log('activeIndex >>', mainTabs[activeIndex].shiftedIndex);
+  		console.log('index>> - activeIndex >>', mainTabs[index].shiftedIndex - mainTabs[activeIndex].shiftedIndex);
+  		console.log('/ visibleKeys', (mainTabs[index].shiftedIndex - mainTabs[activeIndex].shiftedIndex) / visibleKeys);
+
+  		var skipTimes = (mainTabs[index].shiftedIndex - mainTabs[activeIndex].shiftedIndex) / visibleKeys;
+
   		mainTabs[activeIndex].isActive = false;
   		mainTabs[index].isActive = true;
   		activeIndex = index;
 
-  		$scope.swipe.slide(mainTabs[index].shiftedIndex);
+  		var newIndex = mainTabs[index].shiftedIndex;
+  		//console.log('mainTabs[index].shiftedIndex', newIndex);
+  		//var skipTimes = ((newIndex) - (visibleKeys * skipIndex)) / visibleKeys;
+  		console.log('skipTimes', skipTimes);
+
+  		function recursiveSkip(skip) {
+  			if (skip >= 1) {
+  				nextTabs();
+  				recursiveSkip(skip-1);
+  			} else {
+  				//console.log('prevFirstKey', prevFirstKey);
+  				//console.log('nextFirstKey', nextFirstKey);
+  				//var skipTo = Math.round(skip * visibleKeys);
+  				var skipTo = newIndex - prevFirstKey;
+  				//console.log('move right :', skipTo, newIndex - prevFirstKey);
+
+  				if (skipTo > visibleKeys) {
+  					nextTabs();
+  					skipTo = newIndex - nextFirstKey;
+
+  					//console.log('prevFirstKey', prevFirstKey);
+  					//console.log('nextFirstKey', nextFirstKey);
+  					//console.log('move right :', skipTo, newIndex - nextFirstKey);
+  					
+  					//console.log('$scope.options', $scope.options);
+  					$scope.swipe.slide(skipTo + 3);
+
+  				} else {
+  					//console.log('mainTabs', mainTabs);
+  					$scope.swipe.slide(skipTo + 1);
+  				}
+  			}
+  		}
+  		function recursiveBack(skip) {
+  			if (skip >= 1) {
+  				previousTabs();
+  				recursiveBack(skip-1);
+  			} else {
+  				console.log('prevFirstKey', prevFirstKey);
+  				console.log('nextFirstKey', nextFirstKey);
+  				console.log('newIndex', newIndex);
+  				//var skipTo = Math.round(skip * visibleKeys);
+  				var skipTo = newIndex - nextFirstKey;
+  				console.log('move left :', skipTo, newIndex - nextFirstKey);
+
+  				if (skipTo > visibleKeys) {
+  					previousTabs();
+  					skipTo = newIndex - nextFirstKey;
+
+  					console.log('prevFirstKey', prevFirstKey);
+  					console.log('nextFirstKey', nextFirstKey);
+  					console.log('move left :', skipTo, newIndex - nextFirstKey);
+  					
+  					//console.log('$scope.options', $scope.options);
+  					$scope.swipe.slide(skipTo + 3);
+
+  				} else {
+  					console.log('mainTabs', mainTabs);
+  					$scope.swipe.slide(skipTo + 1);
+  				}
+  			}
+  		}
+  		//console.log('allOptions', allOptions);
+
+  		if (index < 2) {
+  			$scope.swipe.slide(index);
+  		} else {
+  			if (skipTimes < 0) {
+  				console.log("SKIP BACK!!");
+  				recursiveBack(Math.abs(skipTimes));
+  			} else {
+  				recursiveSkip(skipTimes);
+  			}
+  		}
+
+  		//$scope.swipe.slide(mainTabs[index].shiftedIndex);
   	};
 
   	httpService.getLabeledPost('$$$The Multiply Initiative').
@@ -1031,6 +1194,8 @@
 
    		var startKey = 0;
    		var lastKey = 0;
+   		var noTodaysMeditation = true;
+
    		angular.forEach(data.items, function(value, key) {
    			var divider = value.title.indexOf(':');
    			var titleDate = value.title.substr(0,divider);
@@ -1071,6 +1236,7 @@
    				$scope.options[0].title = value.title;
 					$scope.options[0].dateText = value.dateText;
 					$scope.options[0].content = value.content;
+					noTodaysMeditation = false;
 
 					if ($scope.options[key-startKey+2]) {
 						$scope.options[key-startKey+2].title = value.title;
@@ -1091,6 +1257,22 @@
    					};
    				}
    				weeklyData[week].data.push(value);
+
+   				if (noTodaysMeditation) {
+   					if ($scope.options[0].d) {
+   						if (d > $scope.options[0].d) {
+   							$scope.options[0].title = value.title;
+								$scope.options[0].dateText = value.dateText;
+								$scope.options[0].content = value.content;
+								$scope.options[0].d = d;
+   						}
+   					} else {
+   						$scope.options[0].title = value.title;
+							$scope.options[0].dateText = value.dateText;
+							$scope.options[0].content = value.content;
+							$scope.options[0].d = d;
+   					}
+   				}
 
    				if ($scope.options[key-startKey+2]) {
 						$scope.options[key-startKey+2].title = value.title;
@@ -1168,6 +1350,11 @@
 	}]);
 
 	app.controller('UpcomingController', ['$scope', 'httpService', function ($scope, httpService) {
+		$scope.callback = function(index) {
+  	};
+
+  	//************************************
+    //************************************
 
   	var label = '$$Upcoming Ministry Events';
   	$scope.title = label.substr(2, label.length);
@@ -1236,6 +1423,9 @@
    		//console.log('post-sorted', sortedEvents);
 
    		$scope.allUpcomingEvents = upcomingEvents;
+
+   		console.log('$scope', $scope);
+   		//$scope.createSwipe();
    	});
 	}]);
 
@@ -1475,6 +1665,7 @@
 				  disableScroll: false,
 				  stopPropagation: false,
 				  callback: function(index, elem) {
+				  	//scope.callback(index);
 				  },
 				  transitionEnd: function(index, elem) {
 				  	scope.callback(index);
@@ -1509,6 +1700,52 @@
 			});
 			//*/
 	  };
+	});
+
+	app.directive('swipeEvent', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs, controller) {
+				//console.log('swipe-event scope', scope);
+				//console.log('scope.$parent', scope.$parent.$parent);
+				//var parentScope = scope.$parent.$parent;
+				var firstSlide = true;
+
+				scope.createSwipe = function() {
+		    	scope.swipe = Swipe(element[0], {
+			    	startSlide: 0,
+					  speed: 400,
+					  auto: 0,
+					  continuous: false,
+					  disableScroll: false,
+					  stopPropagation: true,
+					  callback: function(index, elem) {
+					  },
+					  transitionEnd: function(index, elem) {
+					  	//console.log('index');
+					  }
+			    });
+		    };
+
+		    scope.createSwipe();
+
+		    scope.toggle = function() {
+		    	if (firstSlide) {
+		    		scope.swipe.next();
+		    	} else {
+		    		scope.swipe.prev();
+		    	}
+		    	firstSlide = !firstSlide;
+		    };
+
+		    scope.prevSlide = function() {
+	    		scope.swipe.prev();
+	    	};
+	    	scope.nextSlide = function() {
+		    	scope.swipe.next();
+		    };
+			}
+		}
 	});
 
 	app.directive('newsItem', function() {
