@@ -27,7 +27,9 @@
     <div class="clearfix">
       <a class="hide-for-touch no-text-select left" ng-click="prevSlide()"><i class="foundicongen-left-arrow" style="color: #ff2701; font-size: 3em;"></i></a>
       <a class="hide-for-touch no-text-select right" ng-click="nextSlide()"><i class="foundicongen-right-arrow" style="color: #ff2701; font-size: 3em;"></i></a>
-      <h1 class="text-center">{{ subtitle }}</h1>
+      <h1 class="text-center" style="margin: 0;">{{ subtitle }}</h1>
+      <h2 class="hide-for-touch text-center" style="margin: 0;"><small>Use arrow keys to navigate</small></h2>
+      <h2 class="show-for-touch text-center" style="margin: 0;"><small>Swipe to navigate</small></h2>
     </div>
     <div class='swipe' swipejs>
       <div class='swipe-wrap'>
