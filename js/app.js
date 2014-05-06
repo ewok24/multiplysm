@@ -726,11 +726,11 @@
 
    			$scope.options[0].title = missionStatementData.title;
    			$scope.options[0].content = missionStatementData.content;
-   			$scope.options[0].img = 'img/about-us-1-banner.png';
+   			$scope.options[0].img = 'img/Smushed/about-us-1-banner.jpg';
    			
    			$scope.options[1].title = ourYouthPastorData.title;
    			$scope.options[1].content = ourYouthPastorData.content;
-   			$scope.options[1].img = 'img/about-us-2-banner.png';
+   			$scope.options[1].img = 'img/Smushed/about-us-2-banner.jpg';
 
    			$scope.currentOption = $scope.options[0];
 	    	$scope.createSwipe();
@@ -746,14 +746,14 @@
 		$scope.getMissionStatement = function() {
 			$scope.subtitle = container.missionStatement.title;
 			$scope.content = container.missionStatement.content;
-			$scope.img = 'img/about-us-1-banner.png';
+			$scope.img = 'img/Smushed/about-us-1-banner.jpg';
 			$scope.isMissionStatement = true;
 			$scope.isOurYouthPastor = false;
 		}
 		$scope.getOurYouthPastor = function() {
 			$scope.subtitle = container.ourYouthPastor.title;
 			$scope.content = container.ourYouthPastor.content;
-			$scope.img = 'img/about-us-2-banner.png';
+			$scope.img = 'img/Smushed/about-us-2-banner.jpg';
 			$scope.isMissionStatement = false;
 			$scope.isOurYouthPastor = true;
 		}
@@ -1353,6 +1353,41 @@
 		$scope.callback = function(index) {
   	};
 
+  	var setCover = function(data) {
+
+  		data.imgLarge = 'img/upcoming-default.png';
+  		data.visible = true;
+
+  		for (var i = 0; i < data.labels.length; i++) {
+  			//console.log('data', data.title.substr(0,15));
+  			if (data.title.indexOf('Multiply Beach') > -1) {
+  				data.imgSmall = 'img/upcoming-beach.png';
+  				data.imgLarge = 'img/upcoming-beach.png';
+  				break;
+  			} else if (data.title.indexOf('Crawdad') > -1) {
+  				data.imgSmall = 'img/upcoming-crawdad-small.png';
+  				data.imgLarge = 'img/upcoming-crawdad.png';
+  				data.visible = false;
+  				break;
+  			} else if (data.title.indexOf('Summer Lock-In') > -1) {
+  				data.imgSmall = 'img/upcoming-lock-in.jpg';
+  				data.imgLarge = 'img/upcoming-lock-in.jpg';
+  				break;
+  			} else if (data.labels[i] === 'Evangelism') {
+  				data.imgSmall = 'img/upcoming-evangelism.png';
+  				data.imgLarge = 'img/upcoming-evangelism.png';
+  				break;
+  			} else if (data.labels[i] === 'Afterglow') {
+  				break;
+  			} else if (data.labels[i] === 'Afterglow') {
+  				break;
+  			} else if (data.labels[i] === 'Afterglow') {
+  				break;
+  			} else {
+  			}
+  		}
+  	};
+
   	//************************************
     //************************************
 
@@ -1389,6 +1424,8 @@
    			value.title = title;
    			value.date = d;
    			value.dateText = weekday + ', ' + month + ' ' + day;
+   			setCover(value);
+
 
    			if (today > d) {
    				if (!oldEvents[year]) {
@@ -1744,6 +1781,23 @@
 	    	scope.nextSlide = function() {
 		    	scope.swipe.next();
 		    };
+			}
+		}
+	});
+
+	app.directive('backImg', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs, controller) {
+				var url = attrs.backImg;
+
+				scope.setImg = function() {
+					element.css({
+            'background-image': 'url(' + url +')'
+	        });
+				};
+
+				scope.setImg();
 			}
 		}
 	});
