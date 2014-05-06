@@ -826,13 +826,13 @@
 
 	   			$scope.options[0].title = sundaySchoolData.title;
 	   			$scope.options[0].content = sundaySchoolData.content;
-	   			$scope.options[0].img = 'img/weekly-1-banner.png';
+	   			$scope.options[0].img = 'img/Smushed/weekly-1-banner.jpg';
 	   			$scope.options[0].mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
 					$scope.options[0].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=1411+kennoway+park,+Spring+TX,+77379&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C1411+kennoway+park,+Spring+TX,+77379&sensor=false';
 	   			
 	   			$scope.options[1].title = bibleStudyData.title;
 	   			$scope.options[1].content = bibleStudyData.content;
-	   			$scope.options[1].img = 'img/weekly-2-banner.png';
+	   			$scope.options[1].img = 'img/Smushed/weekly-2-banner.jpg';
 	   			$scope.options[1].mapLink = 'https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77373&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16';
 					$scope.options[1].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
 
@@ -848,7 +848,7 @@
 
 		$scope.getBibleStudyTemplate = function() {
 			//$scope.url = 'html/test/biblestudy.html';
-			$scope.image = 'img/weekly-1-banner.png';
+			$scope.image = 'img/Smushed/weekly-1-banner.jpg';
 			$scope.subtitle = container.bibleStudy.title;
 			$scope.content = container.bibleStudy.content;
 			$scope.mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
@@ -859,7 +859,7 @@
 		}
 		$scope.getSundaySchoolTemplate = function() {
 			//$scope.url = 'html/test/sundayschool.html';
-			$scope.image = 'img/weekly-2-banner.png';
+			$scope.image = 'img/Smushed/weekly-2-banner.jpg';
 			$scope.subtitle = container.sundaySchool.title;
 			$scope.content = container.sundaySchool.content;
 			$scope.mapLink = 'https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77373&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16';
