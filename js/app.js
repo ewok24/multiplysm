@@ -1355,27 +1355,27 @@
 
   	var setCover = function(data) {
 
-  		data.imgLarge = 'img/upcoming-default.png';
+  		data.imgLarge = 'img/Smushed/upcoming-default.jpg';
   		data.visible = true;
 
   		for (var i = 0; i < data.labels.length; i++) {
   			//console.log('data', data.title.substr(0,15));
   			if (data.title.indexOf('Multiply Beach') > -1) {
-  				data.imgSmall = 'img/upcoming-beach.png';
-  				data.imgLarge = 'img/upcoming-beach.png';
+  				data.imgSmall = 'img/Smushed/upcoming-beach.jpg';
+  				data.imgLarge = 'img/Smushed/upcoming-beach.jpg';
   				break;
   			} else if (data.title.indexOf('Crawdad') > -1) {
-  				data.imgSmall = 'img/upcoming-crawdad-small.png';
-  				data.imgLarge = 'img/upcoming-crawdad.png';
+  				data.imgSmall = 'img/Smushed/upcoming-crawdad-small.jpg';
+  				data.imgLarge = 'img/Smushed/upcoming-crawdad.jpg';
   				data.visible = false;
   				break;
   			} else if (data.title.indexOf('Summer Lock-In') > -1) {
-  				data.imgSmall = 'img/upcoming-lock-in.jpg';
-  				data.imgLarge = 'img/upcoming-lock-in.jpg';
+  				data.imgSmall = 'img/Smushed/upcoming-lock-in.jpg';
+  				data.imgLarge = 'img/Smushed/upcoming-lock-in.jpg';
   				break;
   			} else if (data.labels[i] === 'Evangelism') {
-  				data.imgSmall = 'img/upcoming-evangelism.png';
-  				data.imgLarge = 'img/upcoming-evangelism.png';
+  				data.imgSmall = 'img/Smushed/upcoming-evangelism.jpg';
+  				data.imgLarge = 'img/Smushed/upcoming-evangelism.jpg';
   				break;
   			} else if (data.labels[i] === 'Afterglow') {
   				break;
