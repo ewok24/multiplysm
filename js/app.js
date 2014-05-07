@@ -1467,6 +1467,33 @@
 	}]);
 
 	app.controller('NewsController', ['$scope', 'httpService', function ($scope, httpService) {
+		$scope.options = [];
+
+  	function fillOptions (total) {
+  		for (var i = 0; i < total; i++) {
+  			$scope.options.push({ 
+  				value: i, title: 'temp' + i,
+  				dateText: 'temp' + i,
+  				content: 'temp' + i,
+  			});
+  		}
+  	};
+
+  	var totalKeys = 300;
+  	fillOptions(totalKeys);
+
+  	$scope.switchOption = function() {
+  		if ($scope.currentOption != null) {
+  			//$scope.swipe.slide($scope.currentOption.shiftedIndex);
+  		}
+  	};
+
+  	$scope.callback = function(index) {
+
+  	};
+
+  	//************************************
+    //************************************
 
 		var label = '$News/Updates';
     $scope.title = label.substr(1, label.length);
@@ -1497,9 +1524,15 @@
 	    mainTabs[index].isActive = true;
 	    activeIndex = index;
 
-	    $scope.allNews = data;
+	    if (index === 0) {
+	    	$scope.currentOption = $scope.options[0];
+	    	$scope.swipe.slide(0);
+	    } else {
+	    	$scope.currentOption = $scope.options[mainTabs[0].data.length];
+	    	$scope.swipe.slide(mainTabs[0].data.length);
+	    }
+	    //$scope.allNews = data;
 
-	    findBibleRefs();
 	    //console.log('displayed', data, $scope.displayed);
     }
 
@@ -1507,8 +1540,6 @@
 
     httpService.getLabeledPostRecursive(label).
     then(function(data, status, headers, config) {
-    	console.log('data', data);
-
 	    var today = new Date();
 
 	    angular.forEach(data.items, function(value, key) {
@@ -1566,7 +1597,38 @@
 		    value.data.reverse();
 	    });
 
-	    //console.log('news', mainTabs)
+	    console.log('news', mainTabs)
+	    var lastKey1 = 0;
+	    angular.forEach(mainTabs[0].data, function(value, key) {
+	    	$scope.options[key].title = value.title;
+				$scope.options[key].dateText = value.dateText;
+				$scope.options[key].content = value.content;
+
+				if (key > lastKey) {
+					lastKey = key;
+				}
+	    });
+	    var lastKey12= 0;
+	    angular.forEach(mainTabs[1].data, function(value, key) {
+	    	$scope.options[mainTabs[0].data.length + key].title = value.title;
+				$scope.options[mainTabs[0].data.length + key].dateText = value.dateText;
+				$scope.options[mainTabs[0].data.length + key].content = value.content;
+
+				if (key > lastKey) {
+					lastKey = key;
+				}
+	    });
+	    //$scope.options = $scope.options.concat(mainTabs[0].data);
+	    //$scope.options = $scope.options.concat(mainTabs[1].data);
+	    $scope.createSwipe();
+	    $scope.options.splice(lastKey, $scope.options.length-lastKey);
+
+	    console.log('$scope.options', $scope.options);
+	    console.log('lastKey', lastKey);
+
+	    $scope.swipe.slide(0);
+	    
+	    //$scope.currentOption = mainTabs[0];
 
 	    $scope.loadTemplate(mainTabs[0].data, activeIndex);
     });
