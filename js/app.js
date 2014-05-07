@@ -1598,7 +1598,8 @@
 	    });
 
 	    console.log('news', mainTabs)
-	    var lastKey1 = 0;
+	    
+	    var lastKey = 0;
 	    angular.forEach(mainTabs[0].data, function(value, key) {
 	    	$scope.options[key].title = value.title;
 				$scope.options[key].dateText = value.dateText;
@@ -1608,16 +1609,20 @@
 					lastKey = key;
 				}
 	    });
-	    var lastKey12= 0;
+	    lastKey++;
+
+	    var lastKey2= 0;
 	    angular.forEach(mainTabs[1].data, function(value, key) {
 	    	$scope.options[mainTabs[0].data.length + key].title = value.title;
 				$scope.options[mainTabs[0].data.length + key].dateText = value.dateText;
 				$scope.options[mainTabs[0].data.length + key].content = value.content;
 
-				if (key > lastKey) {
-					lastKey = key;
+				if (key > lastKey2) {
+					lastKey2 = key;
 				}
 	    });
+	    lastKey2++;
+	    lastKey += lastKey2;
 	    //$scope.options = $scope.options.concat(mainTabs[0].data);
 	    //$scope.options = $scope.options.concat(mainTabs[1].data);
 	    $scope.createSwipe();
