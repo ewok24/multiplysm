@@ -15,7 +15,7 @@
   <!-- <View for Large Screens> -->
   <div class="show-for-large-up large-3 columns">
     <ul class="side-nav">
-      <li ng-repeat="tab in mainTabs" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.data, $index)"><a>{{tab.title}}</a></li>
+      <li ng-repeat="tab in mainTabs" ng-class="{active: tab.isActive}" ng-click="loadTemplate($index)"><a>{{tab.title}}</a></li>
       <li class="divider"></li>
     </ul>
   </div>

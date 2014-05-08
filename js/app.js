@@ -1496,7 +1496,6 @@
   	};
 
   	$scope.callback = function(index) {
-  		console.log('index', index);
 	    if (index < mainTabs[0].data.length) {
 	    	mainTabs[activeIndex].isActive = false;
 		    mainTabs[0].isActive = true;
@@ -1628,8 +1627,6 @@
 		    value.data.sort(sortBlogPosts);
 		    value.data.reverse();
 	    });
-
-	    console.log('news', mainTabs)
 	    
 	    var lastKey = 0;
 	    angular.forEach(mainTabs[0].data, function(value, key) {
@@ -1659,9 +1656,6 @@
 	    //$scope.options = $scope.options.concat(mainTabs[1].data);
 	    $scope.createSwipe();
 	    $scope.options.splice(lastKey, $scope.options.length-lastKey);
-
-	    console.log('$scope.options', $scope.options);
-	    console.log('lastKey', lastKey);
 
 	    $scope.loadTemplate(activeIndex);
     });
