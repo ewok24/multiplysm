@@ -7,7 +7,7 @@
 
   <!-- <View for Small/Medium Screens> -->
   <div class="hide-for-large-up small-12 columns">
-    <select ng-model="currentOption" ng-change="switchOption()" ng-options="option.title for option in options">
+    <select ng-model="currentOption" ng-change="switchOption()" ng-options="selectOption.title for selectOption in selectOptions">
     </select>
   </div>
   <!-- </View for Small/Medium Screens> -->
@@ -44,6 +44,6 @@
 
       </div>
     </div>
-    
+
   </div>
 </div>

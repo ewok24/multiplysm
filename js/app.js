@@ -1482,13 +1482,39 @@
   	var totalKeys = 300;
   	fillOptions(totalKeys);
 
-  	$scope.switchOption = function() {
+  	$scope.switchOption = function(index) {
   		if ($scope.currentOption != null) {
+  			if ($scope.currentOption === $scope.selectOptions[0]) {
+  				$scope.loadTemplate(0);
+  			} else if ($scope.currentOption === $scope.selectOptions[1]) {
+  				$scope.loadTemplate(1);
+  			} else {
+  				// ERROR
+  			}
   			//$scope.swipe.slide($scope.currentOption.shiftedIndex);
   		}
   	};
 
   	$scope.callback = function(index) {
+  		console.log('index', index);
+	    if (index < mainTabs[0].data.length) {
+	    	mainTabs[activeIndex].isActive = false;
+		    mainTabs[0].isActive = true;
+		    activeIndex = 0;
+
+	    	$scope.currentOption = $scope.selectOptions[0];
+	    } else if (index >= mainTabs[0].data.length) {
+	    	mainTabs[activeIndex].isActive = false;
+		    mainTabs[1].isActive = true;
+		    activeIndex = 1;
+
+	    	$scope.currentOption = $scope.selectOptions[1];
+	    } else {
+	    	//ERROR
+	    }
+	    if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
 
   	};
 
@@ -1516,24 +1542,30 @@
 		    data: {}
 	    }
     };
+
+    $scope.selectOptions = [
+    	{ 
+    		title: 'Current News/Updates',
+    	},
+    	{
+    		title: 'Old News/Updates',
+    	},
+    ];
 	
     $scope.mainTabs = mainTabs;
 
-    $scope.loadTemplate = function(data, index) {
+    $scope.loadTemplate = function(index) {
 	    mainTabs[activeIndex].isActive = false;
 	    mainTabs[index].isActive = true;
 	    activeIndex = index;
 
 	    if (index === 0) {
-	    	$scope.currentOption = $scope.options[0];
+	    	$scope.currentOption = $scope.selectOptions[0];
 	    	$scope.swipe.slide(0);
 	    } else {
-	    	$scope.currentOption = $scope.options[mainTabs[0].data.length];
+	    	$scope.currentOption = $scope.selectOptions[1];
 	    	$scope.swipe.slide(mainTabs[0].data.length);
 	    }
-	    //$scope.allNews = data;
-
-	    //console.log('displayed', data, $scope.displayed);
     }
 
     httpService.resetRecursiveGet();
@@ -1631,11 +1663,7 @@
 	    console.log('$scope.options', $scope.options);
 	    console.log('lastKey', lastKey);
 
-	    $scope.swipe.slide(0);
-	    
-	    //$scope.currentOption = mainTabs[0];
-
-	    $scope.loadTemplate(mainTabs[0].data, activeIndex);
+	    $scope.loadTemplate(activeIndex);
     });
 	}]);	
 
