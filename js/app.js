@@ -1665,11 +1665,11 @@
 		angular.element('#podcastPlayer').mediaelementplayer();
 		var player = new MediaElementPlayer('#podcastPlayer', {
 			// force iPad's native controls
-			iPadUseNativeControls: true,
+			iPadUseNativeControls: false,
     	// force iPhone's native controls
-    	iPhoneUseNativeControls: true, 
+    	iPhoneUseNativeControls: false, 
     	// force Android's native controls
-    	AndroidUseNativeControls: true,
+    	AndroidUseNativeControls: false,
 		});
 
 		$scope.albumArt = 'img/Smushed/jpg/podcasts-art.jpg';
