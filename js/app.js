@@ -1663,7 +1663,14 @@
 
 	app.controller('PodcastsController', ['$scope', 'httpService', function($scope, httpService) {
 		angular.element('#podcastPlayer').mediaelementplayer();
-		var player = new MediaElementPlayer('#podcastPlayer');
+		var player = new MediaElementPlayer('#podcastPlayer', {
+			// force iPad's native controls
+			iPadUseNativeControls: true,
+    	// force iPhone's native controls
+    	iPhoneUseNativeControls: true, 
+    	// force Android's native controls
+    	AndroidUseNativeControls: true,
+		});
 
 		$scope.albumArt = 'img/Smushed/jpg/podcasts-art.jpg';
 
