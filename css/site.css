@@ -25,6 +25,10 @@ p {
 	font-size: 1.2em;
 }
 
+/********************** 
+ *  Foundation Styles
+ **********************/
+
 .top-bar-section li.active:not(.has-form) a:not(.button) {
 	background: #d02000;
 
@@ -60,6 +64,47 @@ Red1: dc411c
 Red2: ff2700
 
 */
+
+/********************** 
+ *   MediaElementJS
+ **********************/
+
+.mejs-container {
+	height: 130px !important;
+}
+.mejs-controls {
+	top: 0 !important;
+}
+.mejs-playpause-button {
+	display: none !important;
+	position: absolute !important;
+	top: 25px;
+}
+.mejs-time-rail {
+	width: calc(100% - 70px) !important;
+}
+.mejs-mute {
+	position: absolute !important;
+	top: 100px !important;
+}
+.mejs-horizontal-volume-slider {
+	position: absolute !important;
+	top: 100px !important;
+	left: 26px !important;
+	width: calc(100% - 52px) !important;
+}
+.mejs-horizontal-volume-total {
+	width: 100% !important;
+}
+
+/*
+mejs-button mejs-playpause-button mejs-play
+*/
+
+
+/********************** 
+ *    	 SwipeJS
+ **********************/
 
 .swipe {
 	overflow: hidden;

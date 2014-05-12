@@ -826,13 +826,13 @@
 
 	   			$scope.options[0].title = sundaySchoolData.title;
 	   			$scope.options[0].content = sundaySchoolData.content;
-	   			$scope.options[0].img = 'img/Smushed/weekly-1-banner.jpg';
+	   			$scope.options[0].img = 'img/Smushed/weekly-2-banner.jpg';
 	   			$scope.options[0].mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
 					$scope.options[0].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=1411+kennoway+park,+Spring+TX,+77379&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C1411+kennoway+park,+Spring+TX,+77379&sensor=false';
 	   			
 	   			$scope.options[1].title = bibleStudyData.title;
 	   			$scope.options[1].content = bibleStudyData.content;
-	   			$scope.options[1].img = 'img/Smushed/weekly-2-banner.jpg';
+	   			$scope.options[1].img = 'img/Smushed/weekly-1-banner.jpg';
 	   			$scope.options[1].mapLink = 'https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77373&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16';
 					$scope.options[1].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
 
@@ -1662,8 +1662,10 @@
 	}]);	
 
 	app.controller('PodcastsController', ['$scope', 'httpService', function($scope, httpService) {
-		$('#podcastPlayer').mediaelementplayer();
+		angular.element('#podcastPlayer').mediaelementplayer();
 		var player = new MediaElementPlayer('#podcastPlayer');
+
+		$scope.albumArt = 'img/Smushed/jpg/podcasts-art.jpg';
 
 		$scope.playThis = function (pathToAudio) {
 			if ($scope.allPodcasts) {
@@ -1677,6 +1679,23 @@
 				}
 			}
 		}
+
+		$scope.isPlaying = false;
+		$scope.currentClass = 'fi-play-circle';
+		$scope.currentColor = { 'color' : '#fff' };
+
+		$scope.playPodcast = function () {
+			if (!$scope.isPlaying) {
+				$scope.currentClass = 'fi-play-circle';
+				$scope.currentColor = { 'color' : '#d02000' };
+				player.play();
+			} else {
+				$scope.currentClass = 'fi-play-circle';
+				$scope.currentColor = { 'color' : '#fff' };
+				player.pause();
+			}
+			$scope.isPlaying = !$scope.isPlaying;
+		};
 
 		$scope.searchTypes = [
 			{ type: 'By Title' },
@@ -1710,7 +1729,6 @@
 					break;
 			}
 		}
-
 
 		$scope.allPodcasts = {};
 
@@ -1973,12 +1991,12 @@
 	app.directive('chosenPodcast', function() {
 		return {
 			restrict: 'E',
-			template: '<div class="panel">' +
-					        '<h2>{{currentSermon.title}}</h2>' +
-					        '<h3>{{currentSermon.speaker}}</h3>' +
-					        '<h3>{{currentSermon.series}}</h3>' +
+			template: '<div style="height: 250px; overflow-y: scroll;">' +
+					        '<h3>{{currentSermon.title}}</h3>' +
+					        '<h4>{{currentSermon.speaker}}</h4>' +
+					        '<h4>{{currentSermon.series}}</h4>' +
 					        '<p>{{currentSermon.date}}</p>' +
-					        '<p><strong>{{currentSermon.passage}}</strong></p>' +
+					        '<p><strong>Passage/Topic: {{currentSermon.passage}}</strong></p>' +
 					        '<p>{{currentSermon.description}}</p>' +
 					      '</div>',
 			link: function(scope, element, attrs, controller) {

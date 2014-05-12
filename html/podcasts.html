@@ -1,13 +1,18 @@
 ﻿<div ng-controller="PodcastsController">
   <br>
   <div class="row">
-    <div class="large-6 columns" style="min-height: 200px; max-height: 568px; overflow: scroll;">
-      <audio id="podcastPlayer" src="audio/Podcasts/Nathan Camp Day 2.m4a" type="audio/mp3" controls="controls" style="width:100%;"></audio>
-      
+    <div class="small-12 large-6 columns" style="min-height: 200px;">
+      <!--
+      <img ng-src="{{ albumArt }}"/>
+      -->
       <chosen-podcast></chosen-podcast>
+      <div ng-style="currentColor">
+        <i ng-class="currentClass" style="font-size: 70px; position: absolute; top: 270px; left: calc(50% - 30px); z-index: 10; padding: 10px;" ng-click="playPodcast()"></i>
+      </div>
+      <audio id="podcastPlayer" src="audio/Podcasts/Nathan Camp Day 2.m4a" type="audio/mp3" controls="controls" style="width:100%;"></audio>
 
     </div>
-    <div class="large-6 columns">
+    <div class="small-12 large-6 columns">
       <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle" ng-show="show.title"></input>
       <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker" ng-show="show.speaker"></input>
       <input style="margin: 0px;" type="search" placeholder="Search for sermon by Series" ng-model="searchSeries" ng-show="show.series"></input>
