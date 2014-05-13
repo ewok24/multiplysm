@@ -1991,14 +1991,15 @@
 		return {
 			restrict: 'E',
 			template: '<div style="height: 300px; background: #f5f4f0 url(\'img/Smushed/podcasts-art.jpg\') center top repeat-y; background-size: cover">' +
-									'<div class="small-6 columns" style="height: 300px; overflow-y: scroll; color: #fff;">' +
+									'<div class="small-12 medium-6 columns" style="height: 300px; overflow-y: scroll; color: #fff;">' +
 						        '<h3 style="color: #fff;">{{currentSermon.title}}</h3>' +
 						        '<h4 style="color: #fff;">{{currentSermon.speaker}}</h4>' +
 						        '<h4 style="color: #fff;">{{currentSermon.series}}</h4>' +
 						        '<p>{{currentSermon.date}}</p>' +
 						        '<p><strong>Passage/Topic: {{currentSermon.passage}}</strong></p>' +
+						        '<p class="show-for-small">{{currentSermon.description}}</p>' +
 					        '</div>' + 
-					        '<div class="small-6 columns" style="height: 300px; overflow-y: scroll; color: #fff;">' +
+					        '<div class="hide-for-small small-12 medium-6 columns" style="height: 300px; overflow-y: scroll; color: #fff;">' +
 					        	'<p>{{currentSermon.description}}</p>' +
 				        	'</div>' + 
 					      '</div>',
