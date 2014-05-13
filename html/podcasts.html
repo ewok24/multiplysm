@@ -1,48 +1,75 @@
-﻿<div ng-controller="PodcastsController">
-  <br>
-  <div class="row">
-    <div class="small-12 large-6 columns" style="min-height: 200px;">
-      <!--
-      <img ng-src="{{ albumArt }}"/>
-      -->
-      <chosen-podcast></chosen-podcast>
-      <div ng-style="currentColor">
-        <i ng-class="currentClass" style="font-size: 70px; position: absolute; top: 270px; left: calc(50% - 30px); z-index: 10; padding: 10px;" ng-click="playPodcast()"></i>
-      </div>
-      <audio id="podcastPlayer" src="audio/Podcasts/Nathan Camp Day 2.m4a" type="audio/mp3" controls="controls" style="width:100%;"></audio>
+﻿<div ng-controller="PodcastsController" class="row">
+  <!-- <Page Title> -->
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
+  </div>
+  <!-- </Page Title> -->
 
+  <div class="small-12 columns">
+    <div class="clearfix">
+      <a class="hide-for-touch no-text-select left" ng-click="prevSlide()"><i class="fi-arrow-left" style="color: #ff2701; font-size: 3em;"></i></a>
+      <a class="hide-for-touch no-text-select right" ng-click="nextSlide()"><i class="fi-arrow-right" style="color: #ff2701; font-size: 3em;"></i></a>
+      <h2 class="hide-for-touch text-center" style="margin: 0;"><small>Use arrow keys to navigate</small></h2>
+      <h2 class="show-for-touch text-center" style="margin: 0;"><small>Swipe to navigate</small></h2>
     </div>
-    <div class="small-12 large-6 columns">
-      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle" ng-show="show.title"></input>
-      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker" ng-show="show.speaker"></input>
-      <input style="margin: 0px;" type="search" placeholder="Search for sermon by Series" ng-model="searchSeries" ng-show="show.series"></input>
+    <!-- <Swipe.js> -->
+    <div class='swipe' swipejs style="height: 350px;">
+      <div class='swipe-wrap'>
 
-      <select ng-model="searchType" ng-change="switchType()" ng-options="c.type for c in searchTypes"></select>
+        <!-- Audio Player and Current Podcast -->
+        <div>
+          <!--
+          <img ng-src="{{ albumArt }}"/>
+          -->
+          <chosen-podcast></chosen-podcast>
+          <!--
+          <div ng-style="currentColor">
+            <i ng-class="currentClass" style="font-size: 70px; position: absolute; top: 270px; left: calc(50% - 30px); z-index: 10; padding: 10px;" ng-click="playPodcast()"></i>
+          </div>
+          
+          <audio id="podcastPlayer" src="audio/Podcasts/Nathan Camp Day 2.m4a" type="audio/mp3" controls="controls" style="width:100%;"></audio>
+          -->
 
-      <div style="min-height: 200px; max-height: 568px; overflow-y: scroll; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-right: 10px; background-color: #f0eeee; border: solid 2px #444;">
-        <ul style="margin: 0px;" ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }">
-          <li style="background-color: #f0eeee; margin: 0px; padding: 0px; border-bottom: solid 1px #444;" ng-click="playThis($index)">
-            <div style="background-color: inherit; margin: 0px; padding-left: 1em; padding-right: 1em; padding-top: 1px; padding-bottom: 1px; position: relative; top: -10px;">
-              <div class="row" style="background-color: inherit; margin-right: 1em;">
-                <div class="small-3 large-3 columns">
-                  <time datetime="2014-09-20" class="icon" style="font-size: 1em; display: block; position: relative; width: 5.1em; height: 5.1em; background-color: #fff; border-radius: 0.6em;">
-                    <em style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; bottom: 0.1em; color: #dc411c;">{{podcast.day}}</em>
-                    <strong style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; top: 0; color: #fff; background-color: #dc411c; box-shadow: 0 2px 0 #333; padding: 0;">{{podcast.month}}</strong>
-                    <span style="display: block; width: 100%; font-size: 1em; font-weight: bold; font-style: normal; text-align: center; font-size: 2.8em; letter-spacing: -0.05em; padding-top: 6px; color: #2f2f2f;">{{podcast.dayNumber}}</span>
-                  </time>
+          <audio id="audioPlayer" src="https://dl.dropboxusercontent.com/s/4s7iuattat2d0in/2013%2009%2025%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3" preload="auto" controls></audio>
+        </div>
+        <!-- Podcast Playlist -->
+        <div>
+          <!-- <Filter Options> -->
+          <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle" ng-show="show.title"></input>
+          <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker" ng-show="show.speaker"></input>
+          <input style="margin: 0px;" type="search" placeholder="Search for sermon by Series" ng-model="searchSeries" ng-show="show.series"></input>
+
+          <select ng-model="searchType" ng-change="switchType()" ng-options="c.type for c in searchTypes"></select>
+          <!-- </Filter Options> -->
+
+          <div style="max-height: 250px; overflow-y: scroll; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-right: 10px; background-color: #f0eeee; border: solid 2px #444;">
+            <ul style="margin: 0px;" ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }">
+              <li style="background-color: #f0eeee; margin: 0px; padding: 0px; border-bottom: solid 1px #444;" ng-click="playThis($index)">
+                <div style="background-color: inherit; margin: 0px; padding-left: 1em; padding-right: 1em; padding-top: 1px; padding-bottom: 1px; position: relative; top: -10px;">
+                  <div class="row" style="background-color: inherit; margin-right: 1em;">
+                    <div class="small-3 large-3 columns">
+                      <time datetime="2014-09-20" class="icon" style="font-size: 1em; display: block; position: relative; width: 5.1em; height: 5.1em; background-color: #fff; border-radius: 0.6em;">
+                        <em style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; bottom: 0.1em; color: #dc411c;">{{podcast.day}}</em>
+                        <strong style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; top: 0; color: #fff; background-color: #dc411c; box-shadow: 0 2px 0 #333; padding: 0;">{{podcast.month}}</strong>
+                        <span style="display: block; width: 100%; font-size: 1em; font-weight: bold; font-style: normal; text-align: center; font-size: 2.8em; letter-spacing: -0.05em; padding-top: 6px; color: #2f2f2f;">{{podcast.dayNumber}}</span>
+                      </time>
+                    </div>
+                    <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="small-9 large-9 columns">
+                      <i style="position: relative; top: 1.6em; float: right;" class="foundiconacc-speaker"></i>
+                      <p style="margin: 0px;"><strong>{{podcast.title}}</strong></p>
+                      <p style="margin: 0px;">{{podcast.speaker}} </p>
+                      <p style="margin: 0px;">{{podcast.series}}</p>
+                    </div>
+                  </div>
                 </div>
-                <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="small-9 large-9 columns">
-                  <i style="position: relative; top: 1.6em; float: right;" class="foundiconacc-speaker"></i>
-                  <p style="margin: 0px;"><strong>{{podcast.title}}</strong></p>
-                  <p style="margin: 0px;">{{podcast.speaker}} </p>
-                  <p style="margin: 0px;">{{podcast.series}}</p>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </div>
+    <!-- </Swipe.js> -->
   </div>
   	
 </div>

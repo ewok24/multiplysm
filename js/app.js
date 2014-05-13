@@ -1662,17 +1662,23 @@
 	}]);	
 
 	app.controller('PodcastsController', ['$scope', 'httpService', function($scope, httpService) {
-		angular.element('#podcastPlayer').mediaelementplayer();
-		var player = new MediaElementPlayer('#podcastPlayer', {
-			// force iPad's native controls
-			iPadUseNativeControls: false,
-    	// force iPhone's native controls
-    	iPhoneUseNativeControls: false, 
-    	// force Android's native controls
-    	AndroidUseNativeControls: false,
+		angular.element( '#audioPlayer' ).audioPlayer({
+	    classPrefix: 'audioplayer',
+	    strPlay: 'Play',
+	    strPause: 'Pause',
+	    strVolume: 'Volume',
 		});
+		var player = document.getElementById('audioPlayer');
 
-		$scope.albumArt = 'img/Smushed/jpg/podcasts-art.jpg';
+		function updateSource (newSrc) {
+      player.src = newSrc;
+      player.load();
+    }
+    function playSource () {
+    	player.play();
+    }
+
+		$scope.callback = function(index) {};
 
 		$scope.playThis = function (pathToAudio) {
 			if ($scope.allPodcasts) {
@@ -1680,30 +1686,14 @@
 					$scope.currentSermon = $scope.allPodcasts[pathToAudio];
 
 					var link = $scope.allPodcasts[pathToAudio].dblink;
-					player.pause();
-					player.setSrc(link);
-					player.play();
+					updateSource(link);
+					$scope.prevSlide();
+					playSource();
 				}
 			}
 		}
-
-		$scope.isPlaying = false;
-		$scope.currentClass = 'fi-play-circle';
-		$scope.currentColor = { 'color' : '#fff' };
-
-		$scope.playPodcast = function () {
-			if (!$scope.isPlaying) {
-				$scope.currentClass = 'fi-play-circle';
-				$scope.currentColor = { 'color' : '#d02000' };
-				player.play();
-			} else {
-				$scope.currentClass = 'fi-play-circle';
-				$scope.currentColor = { 'color' : '#fff' };
-				player.pause();
-			}
-			$scope.isPlaying = !$scope.isPlaying;
-		};
-
+		
+		//** Podcast Search **/
 		$scope.searchTypes = [
 			{ type: 'By Title' },
 			{ type: 'By Speaker' },
@@ -1716,7 +1706,6 @@
 			speaker: false,
 			series: false
 		}
-		
 		$scope.switchType = function() {
 			$scope.show.title = false;
 			$scope.show.speaker = false;
@@ -1736,17 +1725,18 @@
 					break;
 			}
 		}
+		//********************/
+
+		var label = '$Podcasts';
+  	$scope.title = label.substr(1, label.length);
 
 		$scope.allPodcasts = {};
 
-  	httpService.getLabeledPost('$Podcasts').
+  	httpService.getLabeledPost(label).
    	success(function(data, status, headers, config) {
    		if (data.items[0]) {
-   			//console.log('data.items[0]', data.items[0]);
    			var jsonContent = data.items[0].content;
-   			//console.log('jsonContent', jsonContent);
    			var jsonString = jsonContent.toString();
-   			//console.log('jsonString', jsonString);
 
    			if (jsonString) {
    				var jsonObject = JSON.parse(jsonString);
@@ -1771,7 +1761,9 @@
    					if ($scope.allPodcasts) {
    						$scope.currentSermon = $scope.allPodcasts[0];
    						if ($scope.currentSermon) {
-   							player.setSrc($scope.currentSermon.dblink);
+   							console.log($scope.currentSermon.dblink);
+   							updateSource($scope.currentSermon.dblink);
+   							$scope.createSwipe();
    						}
    					}
    				}
@@ -1998,13 +1990,17 @@
 	app.directive('chosenPodcast', function() {
 		return {
 			restrict: 'E',
-			template: '<div style="height: 250px; overflow-y: scroll;">' +
-					        '<h3>{{currentSermon.title}}</h3>' +
-					        '<h4>{{currentSermon.speaker}}</h4>' +
-					        '<h4>{{currentSermon.series}}</h4>' +
-					        '<p>{{currentSermon.date}}</p>' +
-					        '<p><strong>Passage/Topic: {{currentSermon.passage}}</strong></p>' +
-					        '<p>{{currentSermon.description}}</p>' +
+			template: '<div style="height: 300px; background: #f5f4f0 url(\'img/Smushed/podcasts-art.jpg\') center top repeat-y; background-size: cover">' +
+									'<div class="small-6 columns" style="height: 300px; overflow-y: scroll; color: #fff;">' +
+						        '<h3 style="color: #fff;">{{currentSermon.title}}</h3>' +
+						        '<h4 style="color: #fff;">{{currentSermon.speaker}}</h4>' +
+						        '<h4 style="color: #fff;">{{currentSermon.series}}</h4>' +
+						        '<p>{{currentSermon.date}}</p>' +
+						        '<p><strong>Passage/Topic: {{currentSermon.passage}}</strong></p>' +
+					        '</div>' + 
+					        '<div class="small-6 columns" style="height: 300px; overflow-y: scroll; color: #fff;">' +
+					        	'<p>{{currentSermon.description}}</p>' +
+				        	'</div>' + 
 					      '</div>',
 			link: function(scope, element, attrs, controller) {
 			}
