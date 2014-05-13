@@ -44,8 +44,8 @@
 
           <div style="max-height: 250px; overflow-y: scroll; overflow-x: hidden; -webkit-overflow-scrolling: touch; background-color: #f0eeee; border: solid 2px #444;">
             <ul style="margin: 0px;">
-              <li ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }" style="background-color: #f0eeee; border-bottom: solid 1px #444; height: 108px; overflow-x: hidden;" ng-click="playThis($index)">
-                <div style="height: inherit; padding: 1em;">
+              <li ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }" style="background-color: #f0eeee; border-bottom: solid 1px #444; height: 108px; overflow: hidden;" ng-click="playThis($index)">
+                <div style="overflow: hidden; height: inherit; padding: 1em;">
                   <time datetime="2014-09-20" class="icon" style="font-size: 1em; display: block; position: relative; width: 5.1em; height: 5.1em; background-color: #fff; border-radius: 0.6em;">
                     <em style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; bottom: 0.1em; color: #dc411c;">{{podcast.day}}</em>
                     <strong style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; top: 0; color: #fff; background-color: #dc411c; box-shadow: 0 2px 0 #333; padding: 0;">{{podcast.month}}</strong>
