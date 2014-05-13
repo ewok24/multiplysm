@@ -6,34 +6,23 @@
   <!-- </Page Title> -->
 
   <div class="small-12 columns">
-    <div class="clearfix">
-      <a class="hide-for-touch no-text-select left" ng-click="prevSlide()"><i class="fi-arrow-left" style="color: #ff2701; font-size: 3em;"></i></a>
-      <a class="hide-for-touch no-text-select right" ng-click="nextSlide()"><i class="fi-arrow-right" style="color: #ff2701; font-size: 3em;"></i></a>
-      <h2 class="hide-for-touch text-center" style="margin: 0;"><small>Use arrow keys to navigate</small></h2>
-      <h2 class="show-for-touch text-center" style="margin: 0;"><small>Swipe to navigate</small></h2>
-    </div>
     <!-- <Swipe.js> -->
-    <div class='swipe' swipejs style="height: 350px;">
+    <div class='swipe' swipejs style="height: 390px;">
       <div class='swipe-wrap'>
 
         <!-- Audio Player and Current Podcast -->
         <div>
-          <!--
-          <img ng-src="{{ albumArt }}"/>
-          -->
-          <chosen-podcast></chosen-podcast>
-          <!--
-          <div ng-style="currentColor">
-            <i ng-class="currentClass" style="font-size: 70px; position: absolute; top: 270px; left: calc(50% - 30px); z-index: 10; padding: 10px;" ng-click="playPodcast()"></i>
+          <div class="clearfix" style="height: 40px;">
+            <a class="no-text-select right" ng-click="nextSlide()"><h3>Playlist &gt; </h3></a>
           </div>
-          
-          <audio id="podcastPlayer" src="audio/Podcasts/Nathan Camp Day 2.m4a" type="audio/mp3" controls="controls" style="width:100%;"></audio>
-          -->
-
+          <chosen-podcast></chosen-podcast>
           <audio id="audioPlayer" src="https://dl.dropboxusercontent.com/s/4s7iuattat2d0in/2013%2009%2025%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3" preload="auto" controls></audio>
         </div>
         <!-- Podcast Playlist -->
         <div>
+          <div class="clearfix" style="height: 40px;">
+            <a class="no-text-select left" ng-click="prevSlide()"><h3>&lt; Back</h3></a>
+          </div>
           <!-- <Filter Options> -->
           <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle" ng-show="show.title"></input>
           <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker" ng-show="show.speaker"></input>
