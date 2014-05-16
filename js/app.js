@@ -1740,7 +1740,7 @@
 
    			if (jsonString) {
    				var jsonObject = JSON.parse(jsonString);
-   				 console.log('jsonObject', jsonObject);
+   				 //console.log('jsonObject', jsonObject);
    				if (jsonObject) { //Parse Successful
    					angular.forEach(jsonObject, function(value, key) {
    						var jDate = parseISO8601(value.date);
@@ -1761,7 +1761,7 @@
    					if ($scope.allPodcasts) {
    						$scope.currentSermon = $scope.allPodcasts[0];
    						if ($scope.currentSermon) {
-   							console.log($scope.currentSermon.dblink);
+   							//console.log($scope.currentSermon.dblink);
    							updateSource($scope.currentSermon.dblink);
    							$scope.createSwipe();
    						}
