@@ -1404,6 +1404,8 @@
    	then(function(data, status, headers, config) {
    		var today = new Date();
 
+   		console.log('data', data);
+
    		//data.items.reverse();
 
    		angular.forEach(data.items, function(value, key) {
@@ -1413,12 +1415,12 @@
 
    			//var d = new Date(titleDate);
    			var d = parseISO8601(titleDate);
+   			d.setDate(d.getDate() + 1);
    			var day = d.getDate();
    			var weekday = getDayText(d.getDay());
    			var month = getMonthText(d.getMonth());
    			var year = d.getFullYear();
 
-   			//console.log('d', titleDate, d);
    			//console.log('parse', titleDate, parseISO8601(titleDate));
 
    			value.title = title;
