@@ -1415,7 +1415,8 @@
 
    			//var d = new Date(titleDate);
    			var d = parseISO8601(titleDate);
-   			d.setDate(d.getDate() + 1);
+   			var dPlusOne = parseISO8601(titleDate);
+   			dPlusOne.setDate(dPlusOne.getDate() + 1);
    			var day = d.getDate();
    			var weekday = getDayText(d.getDay());
    			var month = getMonthText(d.getMonth());
@@ -1429,7 +1430,7 @@
    			setCover(value);
 
 
-   			if (today > d) {
+   			if (today > dPlusOne) {
    				if (!oldEvents[year]) {
 	   				oldEvents[year] = {
 	   					year: year,
