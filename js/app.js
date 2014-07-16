@@ -1360,9 +1360,9 @@
 
   		for (var i = 0; i < data.labels.length; i++) {
   			//console.log('data', data.title.substr(0,15));
-  			if (data.title.indexOf('Multiply Beach') > -1) {
-  				data.imgSmall = 'img/Smushed/upcoming-beach.jpg';
-  				data.imgLarge = 'img/Smushed/upcoming-beach.jpg';
+  			if (data.title.indexOf('Youth Mission Trip') > -1) {
+  				data.imgSmall = 'img/Smushed/upcoming-youth-mission-trip.jpg';
+  				data.imgLarge = 'img/Smushed/upcoming-youth-mission-trip.jpg';
   				break;
   			} else if (data.title.indexOf('Crawdad') > -1) {
   				data.imgSmall = 'img/Smushed/upcoming-crawdad-small.jpg';

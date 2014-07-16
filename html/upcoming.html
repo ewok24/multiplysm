@@ -16,7 +16,8 @@
         <div class='swipe' swipe-event style="height: 360px; margin-bottom: 20px;">
           <div class='swipe-wrap'>
             <div back-img="{{event.imgLarge}}" style="width: 100%; height: 360px; background: left top; background-repeat: no-repeat; background-size: cover;" ng-click="toggle() ">
-              <div ng-show='event.visible'>
+              <div style="position: absolute; width: 100%; height: 100%; z-index: 2; background: linear-gradient(165deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.4) 80%, rgba(0, 0, 0, 0.8) 100%);"></div>
+              <div ng-show='event.visible' style="position: absolute; width: 100%; height: 100%; z-index: 3;">
                 <h1 style="padding-top: 10px; padding-left: 10px; color: #fff; ">{{event.title}}</h1>
                 <h2 style="padding-top: 10px; padding-left: 10px; color: #fff; ">{{event.dateText}}</h2>
 
@@ -49,4 +50,3 @@
   </div>
 
 </div>
-
