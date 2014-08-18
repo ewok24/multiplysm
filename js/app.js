@@ -7,7 +7,7 @@
 
 	var app = angular.module('msmApp', ['ngRoute', 'ngSanitize', 'angulartics', 'angulartics.google.analytics']);
 
-	app.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+	app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProvider) {
 		$routeProvider
 			.when('/',
 				{
@@ -54,6 +54,7 @@
 					templateUrl: 'html/blog.html'
 				})
 			.otherwise({ redirectTo: '/' });
+		$logProvider.debugEnabled(true);
 	}]);
 
 	app.service('selectedService', function() {
@@ -194,6 +195,7 @@
 	  return a.date<b.date?-1:a.date>b.date?1:0;
 	}
   function findBibleRefs() {
+  	/*
   	Logos.ReferenceTagging.lbsBibleVersion = "ESV";
     Logos.ReferenceTagging.lbsLinksOpenNewWindow = true;
     Logos.ReferenceTagging.lbsLogosLinkIcon = "dark";
@@ -201,6 +203,7 @@
     Logos.ReferenceTagging.lbsTargetSite = "biblia";
     Logos.ReferenceTagging.lbsCssOverride = true;
     Logos.ReferenceTagging.tag();
+    //*/
   }
 
   /********************************************************************
@@ -208,7 +211,7 @@
    *                            Controllers
    *
    ********************************************************************/
-	app.controller('TopBar', ['$scope', '$route', '$location', 'selectedService', function($scope, $route, $location, selectedService) {
+	app.controller('TopBar', ['$scope', '$route', '$location', 'selectedService', function ($scope, $route, $location, selectedService) {
 		$scope.go = function (path) {
 		  $location.path(path);
 		};
@@ -224,7 +227,6 @@
 			{name: 'Podcasts', url: '#/podcasts', label: false, path: 'podcasts' },
 			{name: 'Contact', url: '#/contact', label: false, path: 'contact' }
 		];
-
 		$scope.items = [
 			{name: 'Home', url: '#/'},
 			{name: 'About Us', url: '#/about'},
@@ -233,7 +235,6 @@
 			{name: 'Podcasts', url: '#/podcasts'},
 			{name: 'Contact', url: '#/contact'}
 		];
-
 		$scope.itemsLeft = [
 			{ name: 'Home', url: '#/' , dropdown: false, nested: [] },
 			{ name: 'About Us', url: '#/about', dropdown: false, nested: [] },
@@ -248,7 +249,6 @@
 			{ name: 'Contact', url: '#/contact', dropdown: false, nested: [] }
 			//*/
 		];
-
 		$scope.itemsRight = [
 			{name: 'News/Updates', url: '#/news'},
 			{name: 'Podcasts', url: '#/podcasts'},
@@ -268,6 +268,7 @@
 		$scope.select = function (item) {
 			$scope.ministrySelected = false;
       //console.log('Item', item);
+      /*
       if (item.name === 'Home') {
         window.open('#', '_self');
       } else if (item.name === 'News/Updates') {
@@ -275,6 +276,7 @@
       } else {
         $route.reload();
       }
+      //*/
 
 			$scope.selected = item;
 			$('.top-bar').removeClass('expanded');
@@ -458,7 +460,6 @@
 
     $scope.changeActive = function(index) {
     	$scope.selectedBullet = $scope.bullets[index];
-
     	if (!$scope.$$phase) {
     		$scope.$apply();
     	}
@@ -474,8 +475,6 @@
     $scope.nextSlide = function() {
     	mySwipe.next();
     };
-
-    //angular.element(document).foundation('orbit', {});
   }]);
 
   app.controller('HomeController', ['$scope', 'httpService', function ($scope, httpService) {
@@ -536,7 +535,7 @@
         //console.log($scope.nextEvent);
 	    }).then(function() {
         httpService.resetRecursiveGet(); 
-	        //--------------------------------------
+	      //--------------------------------------
 
         var newLabel = '$News/Updates';
     
@@ -553,6 +552,7 @@
 	        }
         };
 
+        httpService.resetRecursiveGet();
         httpService.getLabeledPostRecursive(newLabel).
 	        then(function(data, status, headers, config) {
 		        var today = new Date();
@@ -658,8 +658,7 @@
     });
 	}]);
 
-  app.controller('AboutController', ['$scope', 'httpService', function ($scope, httpService) {
-  	
+  app.controller('AboutController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
   	$scope.options = [
   		{ value: 0, title: 'temp', content: 'temp' },
   		{ value: 1, title: 'temp', content: 'temp' },
@@ -667,7 +666,6 @@
 
   	$scope.switchOption = function() {
   		if ($scope.currentOption != null) {
-
   			if ($scope.currentOption.value === 0) {
   				$scope.getMissionStatement();
   			} else if ($scope.currentOption.value === 1) {
@@ -677,7 +675,6 @@
   			$scope.swipe.slide($scope.currentOption.value);
   		}
   	};
-
   	$scope.callback = function(index) {
   		$scope.currentOption = $scope.options[index];
   		if (!$scope.$$phase) {
@@ -695,8 +692,9 @@
   	var missionStatementData;
   	var ourYouthPastorData;
 
-  	httpService.getLabeledPost('$About Us').
-   	success(function(data, status, headers, config) {
+  	httpService.resetSimpleGet();
+  	httpService.getLabeledPost('$About Us')
+  	.then(function(data) {
    		if (data.items[0] && data.items[1]) {
 
    			var title = data.items[0].labels[0];
@@ -734,14 +732,12 @@
 
    			$scope.currentOption = $scope.options[0];
 	    	$scope.createSwipe();
-
    		} else {
    			$scope.title = "Page Error";
    		}
-
-   	}).
-   	error(function(data, status, headers, config) {
-	  });
+   	}, function(error) {
+   		$log.error('AboutController: $About Us', error);
+   	});
 
 		$scope.getMissionStatement = function() {
 			$scope.subtitle = container.missionStatement.title;
@@ -759,7 +755,7 @@
 		}
 	}]);
 
-	app.controller('WeeklyController', ['$scope', 'httpService', function ($scope, httpService) {
+	app.controller('WeeklyController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
 		$scope.options = [
   		{ value: 0, title: 'temp', content: 'temp' },
   		{ value: 1, title: 'temp', content: 'temp' },
@@ -767,7 +763,6 @@
 
   	$scope.switchOption = function() {
   		if ($scope.currentOption != null) {
-
   			if ($scope.currentOption.value === 0) {
   				$scope.getBibleStudyTemplate();
   			} else if ($scope.currentOption.value === 1) {
@@ -777,7 +772,6 @@
   			$scope.swipe.slide($scope.currentOption.value);
   		}
   	};
-
   	$scope.callback = function(index) {
   		$scope.currentOption = $scope.options[index];
   		if (!$scope.$$phase) {
@@ -795,56 +789,56 @@
     var bibleStudyData;
     var sundaySchoolData;
 
-    httpService.getLabeledPost('$$Weekly Ministries').
-	    success(function(data, status, headers, config) {
-		    if (data.items[0] && data.items[1]) {
+    httpService.resetSimpleGet();
+    httpService.getLabeledPost('$$Weekly Ministries')
+    .then(function(data) {
+	    if (data.items[0] && data.items[1]) {
 
-			    var title = data.items[0].labels[0];
+		    var title = data.items[0].labels[0];
 
-			    if (title.substr(0,2) === '$$') {
-            $scope.title = 'Weekly Ministries';
-			    } else {
-				    $scope.title = "Page Error";
-				    return '';
-			    }
-
-			    if (data.items[0].title === 'Weekly Bible Study') {
-				    bibleStudyData = data.items[0];
-				    sundaySchoolData = data.items[1];
-			    } else {
-				    bibleStudyData = data.items[1];
-				    sundaySchoolData = data.items[0];
-			    }
-
-			    container.sundaySchool.title = sundaySchoolData.title;
-			    container.sundaySchool.content = sundaySchoolData.content;
-
-			    container.bibleStudy.title = bibleStudyData.title;
-			    container.bibleStudy.content = bibleStudyData.content;
-
-			    $scope.getBibleStudyTemplate();
-
-	   			$scope.options[0].title = sundaySchoolData.title;
-	   			$scope.options[0].content = sundaySchoolData.content;
-	   			$scope.options[0].img = 'img/Smushed/weekly-2-banner.jpg';
-	   			$scope.options[0].mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
-					$scope.options[0].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
-	   			
-	   			$scope.options[1].title = bibleStudyData.title;
-	   			$scope.options[1].content = bibleStudyData.content;
-	   			$scope.options[1].img = 'img/Smushed/weekly-1-banner.jpg';
-	   			$scope.options[1].mapLink = 'https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77373&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16';
-					$scope.options[1].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=1411+kennoway+park,+Spring+TX,+77379&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C1411+kennoway+park,+Spring+TX,+77379&sensor=false';
-
-	   			$scope.currentOption = $scope.options[0];
-		    	$scope.createSwipe();
+		    if (title.substr(0,2) === '$$') {
+          $scope.title = 'Weekly Ministries';
 		    } else {
 			    $scope.title = "Page Error";
+			    return '';
 		    }
 
-	    }).
-	    error(function(data, status, headers, config) {
-    });
+		    if (data.items[0].title === 'Weekly Bible Study') {
+			    bibleStudyData = data.items[0];
+			    sundaySchoolData = data.items[1];
+		    } else {
+			    bibleStudyData = data.items[1];
+			    sundaySchoolData = data.items[0];
+		    }
+
+		    container.sundaySchool.title = sundaySchoolData.title;
+		    container.sundaySchool.content = sundaySchoolData.content;
+
+		    container.bibleStudy.title = bibleStudyData.title;
+		    container.bibleStudy.content = bibleStudyData.content;
+
+		    $scope.getBibleStudyTemplate();
+
+   			$scope.options[0].title = sundaySchoolData.title;
+   			$scope.options[0].content = sundaySchoolData.content;
+   			$scope.options[0].img = 'img/Smushed/weekly-2-banner.jpg';
+   			$scope.options[0].mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
+				$scope.options[0].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
+   			
+   			$scope.options[1].title = bibleStudyData.title;
+   			$scope.options[1].content = bibleStudyData.content;
+   			$scope.options[1].img = 'img/Smushed/weekly-1-banner.jpg';
+   			$scope.options[1].mapLink = 'https://maps.google.com/maps?q=24724+aldine+westfield,+spring+TX,+77373&hl=en&ll=30.065213,-95.401046&spn=0.010047,0.01457&sll=31.168934,-100.076842&sspn=10.762073,12.436523&hnear=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&t=m&z=16';
+				$scope.options[1].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=1411+kennoway+park,+Spring+TX,+77379&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C1411+kennoway+park,+Spring+TX,+77379&sensor=false';
+
+   			$scope.currentOption = $scope.options[0];
+	    	$scope.createSwipe();
+	    } else {
+		    $scope.title = "Page Error";
+	    }
+    }, function(error) {
+   		$log.error('WeeklyController: $$Weekly Ministries', error);
+   	});
 
 		$scope.getBibleStudyTemplate = function() {
 			//$scope.url = 'html/test/biblestudy.html';
@@ -870,491 +864,157 @@
 		}
   }]);
 
-	app.controller('InitiativeController', ['$scope', 'httpService', function ($scope, httpService) {
-		$scope.options = [];
+	var appendPostInfo = function(value) {
+		var divider = value.title.indexOf(':');
+		var titleDate = value.title.substr(0,divider);
+		var title = value.title.substr(divider+1, value.title.length);
 
-  	function fillOptions (total) {
-  		for (var i = 0; i < total; i++) {
-  			$scope.options.push({ 
-  				value: i, title: 'temp' + i,
-  				dateText: 'temp' + i,
-  				content: 'temp' + i,
-  			});
-  		}
-  	};
+		var d = parseISO8601(titleDate);
+		var day = d.getDate();
+		var weekday = getDayText(d.getDay());
+		var month = getMonthText(d.getMonth());
+		var year = d.getFullYear();
 
-  	var totalKeys = 300;
-  	var visibleKeys = 30;
-  	var prevFirstKey = 0;
-  	var prevLastKey = 0;
-  	var nextFirstKey = visibleKeys;
-  	var nextLastKey = nextFirstKey + visibleKeys + 2;
-  	var skipIndex = 0;
+		value.title = title;
+		value.date = d;
+		value.dateText = weekday + ', ' + month + ' ' + day;
+	};
+	var removeContentTags = function(value) {
+		//var newString = value.content.replace('<([^>]*)>', '');
+		var newString = value.content;
+		
+		newString = newString.replace(/&nbsp;/g, ' ');
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		newString = newString.replace(/<br \/>|<br>/g, '<br/><br/>');
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
+		newString = newString.replace(regexString, '');
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
+		newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		value.content = newString;
+	};
 
-  	var allOptions = {};
-
-  	fillOptions(totalKeys);
-
-  	$scope.switchOption = function() {
-  		if ($scope.currentOption != null) {
-  			$scope.swipe.slide($scope.currentOption.shiftedIndex);
-  		}
-  	};
-
-  	var reachedEnd = false;
-
-  	function nextTabs() {
-  		skipIndex++;
-  		if (nextLastKey === allOptions.length) { // already reached very end
-  			//console.log('already reached the very end');
-  			
-  			angular.forEach(allOptions, function(value, key) {
-	  			if (key > nextFirstKey+2 && key < nextLastKey) {
-	  				$scope.options[key-nextFirstKey+3].title = value.title;
-						$scope.options[key-nextFirstKey+3].dateText = value.dateText;
-						$scope.options[key-nextFirstKey+3].content = value.content;
-	  			}
-	  		});
-
-	  		var result = visibleKeys - (nextLastKey - prevLastKey) + 2;
-    		$scope.swipe.slide(result, 1);
-
-    		reachedEnd = true;
-  		} else {
-  			angular.forEach(allOptions, function(value, key) {
-	  			if (key > nextFirstKey && key < nextLastKey) {
-	  				$scope.options[key-nextFirstKey+1].title = value.title;
-						$scope.options[key-nextFirstKey+1].dateText = value.dateText;
-						$scope.options[key-nextFirstKey+1].content = value.content;
-	  			}
-	  		});
-	  		prevFirstKey = nextFirstKey;
-	  		prevLastKey = nextLastKey;
-
-	  		nextLastKey += visibleKeys - 1;
-	  		if (nextLastKey > allOptions.length) {
-	  			nextLastKey = allOptions.length;
-	  			nextFirstKey = nextLastKey - visibleKeys;
-	  		} else {
-	  			nextFirstKey += visibleKeys - 1;
-	  		}
-  		}
-  		if (!$scope.$$phase) {
-    		$scope.$apply();
-    	}
-    	if (!reachedEnd) {
-    		$scope.swipe.slide(3, 1);
-    	} else {
-    	}
-  	}
-  	function previousTabs() {
-  		skipIndex--;
-
-  		var current = prevFirstKey - visibleKeys + 1;
-  		angular.forEach(allOptions, function(value, key) {
-  			if (key > current && key < (prevLastKey - visibleKeys + 1)) {
-  				$scope.options[key-current+1].title = value.title;
-					$scope.options[key-current+1].dateText = value.dateText;
-					$scope.options[key-current+1].content = value.content;
-  			}
-  		});
-
-  		nextFirstKey = prevFirstKey;
-  		nextLastKey = prevLastKey;
-
-  		prevLastKey -= visibleKeys - 1;
-  		prevFirstKey -= visibleKeys - 1;
-
-  		if (!reachedEnd) {
-  			$scope.swipe.slide(visibleKeys + 1, 1);
-  		} else {
-  			//$scope.swipe.slide(visibleKeys + 1, 1);
-  			//console.log('$scope.options', $scope.options);
-  			reachedEnd = false;
-  		}
-  	}
-
-  	var currentIndex = 1;
-  	$scope.callback = function(index) {
-  		console.log('skipIndex', skipIndex);
-  		console.log('official index', index);
-  		if (index > 1) {
-  			if (reachedEnd) {
-  				//console.log('nextFirstKey', nextFirstKey);
-  				//console.log('nextLastKey', nextLastKey);
-  				//console.log('nextFirstKey + index', nextFirstKey + index - 3);
-  				//console.log('calculation', (visibleKeys - (nextFirstKey - prevFirstKey) + 3));
-  				currentIndex = nextFirstKey + index - 3;
-  			} else {
-  				currentIndex = (skipIndex * visibleKeys) + index;
-  				if (currentIndex < 0) {
-		  			currentIndex = index;
-		  		}
-  			}
-  		} else {
-  			currentIndex = index;
-  		}
-
-  		//console.log('CURRENT INDEX', index);
-  		//console.log('skipIndex', skipIndex);
-  		console.log('currentIndex', currentIndex);
-
-  		$scope.currentOption = $scope.mainTabs[shiftIndexMap[currentIndex]];
-
-  		mainTabs[activeIndex].isActive = false;
-  		mainTabs[$scope.currentOption.index].isActive = true;
-  		activeIndex = $scope.currentOption.index;
-
-  		currentIndex = index;
-
-    	if (index === 1) {
-    		$scope.subtitle = 'About';
-    	} else {
-    		$scope.subtitle = 'Meditations';
-    	}
-    	
-    	if (index === visibleKeys + 2) {
-    		//console.log('reached the end!');
-    		//nextTabs
-    		if ($scope.options[index].dateText != allOptions[allOptions.length-1].dateText) {
-    			nextTabs();
-
-    			//console.log('allOptions', allOptions);
-    		}
-    	}
-    	/*
-    	console.log('prevFirstKey', prevFirstKey);
-    	console.log('prevLastKey', prevLastKey);
-    	console.log('nextFirstKey', nextFirstKey);
-    	console.log('nextLastKey', nextLastKey);
-    	console.log('index', index);
-    	//*/
-    	if (prevFirstKey > 0) {
-    		if (!reachedEnd && index === 2) {
-    			console.log('jump back all the way!');
-    			previousTabs();
-    		} else if (reachedEnd && index === (visibleKeys - (nextFirstKey - prevFirstKey) + 3) ) {
-    			console.log('jump back a little!');
-    			previousTabs();
-    		} else {
-    			// ERROR
-    		}
-    		console.log('reached the beginning!');
-    	}
-
-    	if (!$scope.$$phase) {
-    		$scope.$apply();
-    	}
-    	//console.log('index', index);
-  	};
-
-  	//************************************
-    //************************************
-
-  	var label = '$$The Multiply Initiative';
-  	$scope.title = label.substr(2, label.length);
+	app.controller('InitiativeController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
+		$scope.title = 'The Multiply Initiative';
   	$scope.subtitle = 'Meditations';
 
-  	var startDate = parseISO8601('2013-10-20');
-  	var activeIndex = 1;
+  	$scope.slideArray = [
+  		/*
+  		{ 
+  			heading: 'About',
+  			title: 'The Multiply Initiative',
+  			date: null,
+  			content: 'The Multiply Initiative is a ...' 
+			},
+  		//*/
+  	];
+  	
+  	var defaultMaxVisible = 20;
+  	var defaultLastVisible = 20;
+  	$scope.isCurrent = true;
+  	$scope.activeSlide = 0;
+  	$scope.maxVisible = defaultMaxVisible;
+  	$scope.lastVisible = defaultLastVisible;
 
-  	var mainTabs = {
-  		0 : {
-  			index: 0,
-  			title: "Today's Meditation",
-  			isActive: false,
-  			data: {}
-  		},
-  		1 : {
-  			index: 1,
-  			title: "The Multiply Initiative",
-  			isActive: true,
-  			data: {}
-  		}
+  	$scope.loadSlide = function(index) {
+  		$scope.activeSlide = index;
   	};
-  	var shiftIndexMap = {
-  		0: 0,
-  		1: 1,
+  	$scope.loadArchives = function() {
+  		$scope.isCurrent = false;
+  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
+  		$scope.lastVisible = $scope.slideArray.length;
   	};
-  	var weeklyData = {};
-
-  	$scope.loadTemplate = function(index) {
-  		console.log('index', index);
-
-  		console.log('index >>', mainTabs[index].shiftedIndex);
-  		console.log('activeIndex >>', mainTabs[activeIndex].shiftedIndex);
-  		console.log('index>> - activeIndex >>', mainTabs[index].shiftedIndex - mainTabs[activeIndex].shiftedIndex);
-  		console.log('/ visibleKeys', (mainTabs[index].shiftedIndex - mainTabs[activeIndex].shiftedIndex) / visibleKeys);
-
-  		var skipTimes = (mainTabs[index].shiftedIndex - mainTabs[activeIndex].shiftedIndex) / visibleKeys;
-
-  		mainTabs[activeIndex].isActive = false;
-  		mainTabs[index].isActive = true;
-  		activeIndex = index;
-
-  		var newIndex = mainTabs[index].shiftedIndex;
-  		//console.log('mainTabs[index].shiftedIndex', newIndex);
-  		//var skipTimes = ((newIndex) - (visibleKeys * skipIndex)) / visibleKeys;
-  		console.log('skipTimes', skipTimes);
-
-  		function recursiveSkip(skip) {
-  			if (skip >= 1) {
-  				nextTabs();
-  				recursiveSkip(skip-1);
-  			} else {
-  				//console.log('prevFirstKey', prevFirstKey);
-  				//console.log('nextFirstKey', nextFirstKey);
-  				//var skipTo = Math.round(skip * visibleKeys);
-  				var skipTo = newIndex - prevFirstKey;
-  				//console.log('move right :', skipTo, newIndex - prevFirstKey);
-
-  				if (skipTo > visibleKeys) {
-  					nextTabs();
-  					skipTo = newIndex - nextFirstKey;
-
-  					//console.log('prevFirstKey', prevFirstKey);
-  					//console.log('nextFirstKey', nextFirstKey);
-  					//console.log('move right :', skipTo, newIndex - nextFirstKey);
-  					
-  					//console.log('$scope.options', $scope.options);
-  					$scope.swipe.slide(skipTo + 3);
-
-  				} else {
-  					//console.log('mainTabs', mainTabs);
-  					$scope.swipe.slide(skipTo + 1);
-  				}
-  			}
-  		}
-  		function recursiveBack(skip) {
-  			if (skip >= 1) {
-  				previousTabs();
-  				recursiveBack(skip-1);
-  			} else {
-  				console.log('prevFirstKey', prevFirstKey);
-  				console.log('nextFirstKey', nextFirstKey);
-  				console.log('newIndex', newIndex);
-  				//var skipTo = Math.round(skip * visibleKeys);
-  				var skipTo = newIndex - nextFirstKey;
-  				console.log('move left :', skipTo, newIndex - nextFirstKey);
-
-  				if (skipTo > visibleKeys) {
-  					previousTabs();
-  					skipTo = newIndex - nextFirstKey;
-
-  					console.log('prevFirstKey', prevFirstKey);
-  					console.log('nextFirstKey', nextFirstKey);
-  					console.log('move left :', skipTo, newIndex - nextFirstKey);
-  					
-  					//console.log('$scope.options', $scope.options);
-  					$scope.swipe.slide(skipTo + 3);
-
-  				} else {
-  					console.log('mainTabs', mainTabs);
-  					$scope.swipe.slide(skipTo + 1);
-  				}
-  			}
-  		}
-  		//console.log('allOptions', allOptions);
-
-  		if (index < 2) {
-  			$scope.swipe.slide(index);
-  		} else {
-  			if (skipTimes < 0) {
-  				console.log("SKIP BACK!!");
-  				recursiveBack(Math.abs(skipTimes));
-  			} else {
-  				recursiveSkip(skipTimes);
-  			}
-  		}
-
-  		//$scope.swipe.slide(mainTabs[index].shiftedIndex);
+  	$scope.loadCurrent = function() {
+  		$scope.isCurrent = true;
+  		$scope.maxVisible = defaultMaxVisible;
+  		$scope.lastVisible = defaultLastVisible;
+  	};
+  	$scope.switchOption = function() {
+  		$scope.activeSlide = $scope.currentOption.index;
   	};
 
-  	httpService.getLabeledPost('$$$The Multiply Initiative').
-   	success(function(data, status, headers, config) {
-   		if (data.items[0]) {
-   			mainTabs[1].title = data.items[0].title;
-   			mainTabs[1].data = new Array(data.items[0]);
+		var isError = false;
+		
+		$scope.$watch('activeSlide', function(newVal, oldVal) {
+    	if (oldVal !== newVal && !isNaN(newVal)) {
+    		$scope.currentOption = $scope.slideArray[newVal];
+    	}
+    });
 
-   			$scope.options[1].title = data.items[0].title;
-				$scope.options[1].dateText = data.items[0].dateText;
-				$scope.options[1].content = data.items[0].content;
+    httpService.resetSimpleGet();
+  	httpService.getLabeledPost('$$$The Multiply Initiative')
+		.then(function(data) {
+			var value = data.items[0];
+   		if (value) {
+   			console.log('$$$The Multiply Initiative data', data);
+   			// Append info to all blog posts and use
+   			// regex to sanitize value.content (html)
+   			removeContentTags(value);
+   			appendPostInfo(value);
+   			var slideObject = {
+   				heading: 'About',
+   				index: 0,
+   				title: value.title,
+   				date: '',
+   				content: value.content,
+   			};
+   			$scope.slideArray.push(slideObject);
+   		} else {
+   			isError = true;
    		}
-   	}).
-   	error(function(data, status, headers, config) {
-	  });
-
-   	httpService.getLabeledPostRecursive('$$$Meditations').
-   	then(function(data, status, headers, config) {
-
-   		var today = new Date();
-   		var maxWeek = -1;
-   		var mostRecentDate;
-   		var dateDataMaps = {};
-
-   		var startKey = 0;
-   		var lastKey = 0;
-   		var noTodaysMeditation = true;
-
-   		angular.forEach(data.items, function(value, key) {
-   			var divider = value.title.indexOf(':');
-   			var titleDate = value.title.substr(0,divider);
-   			var title = value.title.substr(divider+1, value.title.length);
-
-   			var d = parseISO8601(titleDate);
-   			var day = d.getDate();
-   			var weekday = getDayText(d.getDay());
-   			var month = getMonthText(d.getMonth());
-   			var year = d.getFullYear();
-
-   			value.title = title;
-   			value.date = d;
-   			value.dateText = weekday + ', ' + month + ' ' + day;
-
-   			if (!mostRecentDate) {
-   				mostRecentDate = d;
-   			} else if (d > mostRecentDate) {
-   				mostRecentDate = d;
-   			}
-
-   			dateDataMaps[d] = value;
-
-   			if (isSameDate(today, d)) { // add to Today's Meditation
-   				var week = Math.ceil(dateDiff(startDate, d)/7);
-   				if (week > maxWeek) {
-   					maxWeek = week;
-   				}
-   				if (!weeklyData[week]) {
-   					weeklyData[week] = {
-   						data: new Array()
-   					};
-   				}
-   				weeklyData[week].data.push(value);
-
-   				mainTabs[0].data = new Array(value);
-
-   				$scope.options[0].title = value.title;
-					$scope.options[0].dateText = value.dateText;
-					$scope.options[0].content = value.content;
-					noTodaysMeditation = false;
-
-					if ($scope.options[key-startKey+2]) {
-						$scope.options[key-startKey+2].title = value.title;
-						$scope.options[key-startKey+2].dateText = value.dateText;
-						$scope.options[key-startKey+2].content = value.content;
-						lastKey = key;
-					} else {
-						console.log('ERROR: $scope.options is not large enough');
-					}
-   			} else if (d <= today) {
-   				var week = Math.ceil(dateDiff(startDate, d)/7);
-   				if (week > maxWeek) {
-   					maxWeek = week;
-   				}
-   				if (!weeklyData[week]) {
-   					weeklyData[week] = {
-   						data: new Array()
-   					};
-   				}
-   				weeklyData[week].data.push(value);
-
-   				if (noTodaysMeditation) {
-   					if ($scope.options[0].d) {
-   						if (d > $scope.options[0].d) {
-   							$scope.options[0].title = value.title;
-								$scope.options[0].dateText = value.dateText;
-								$scope.options[0].content = value.content;
-								$scope.options[0].d = d;
-   						}
-   					} else {
-   						$scope.options[0].title = value.title;
-							$scope.options[0].dateText = value.dateText;
-							$scope.options[0].content = value.content;
-							$scope.options[0].d = d;
-   					}
-   				}
-
-   				if ($scope.options[key-startKey+2]) {
-						$scope.options[key-startKey+2].title = value.title;
-						$scope.options[key-startKey+2].dateText = value.dateText;
-						$scope.options[key-startKey+2].content = value.content;
-						lastKey = key;
-					} else {
-						console.log('ERROR: $scope.options is not large enough');
-					}
-   			} else { //upcoming
-   				startKey += 1;
-   				// don't post
-   			}
- 			});
-
-			allOptions= angular.copy($scope.options);
-			allOptions.splice(lastKey+3, totalKeys-lastKey);
-
-			$scope.options.splice(visibleKeys+3, totalKeys-visibleKeys);
-
-			if (!mainTabs[0].data[0]) {
-				mainTabs[0].data = new Array(dateDataMaps[mostRecentDate]);
-			}
-
-			var shiftIndex = 0;
-   		for (var i = 2; i<maxWeek + 2; i++) {
-   			var number = maxWeek + 2 - i;
-   			//console.log('number', number);
-   			if (mainTabs[i]) {
-   				mainTabs[i] = {};
-   			}
-   			if (!weeklyData[number]) {
-   				weeklyData[number] = {
-   					data: new Array()
-   				}
-   			}
-
-   			if (i === 2) {
-   				shiftIndex = i;
-   			}
-
-   			mainTabs[i] = {
-   				index: i,
-   				shiftedIndex: shiftIndex,
-   				title: 'Week ' + number,
-   				isActive: false,
-   				data: weeklyData[number].data
-   			}
-
-   			for (var j = shiftIndex; j < shiftIndex + weeklyData[number].data.length; j++) {
-   				shiftIndexMap[j] = i;
-   			}
-
-   			shiftIndex += weeklyData[number].data.length;
+ 		}, function(error) {
+   		$log.error('InitiativeController: $$$The Multiply Initiative', error);
+   	})
+   	.then(function() {
+   		if (!isError) {
+   			httpService.getLabeledPostRecursive('$$$Meditations')
+	   		.then(function(data) {
+		   		console.log('$$$Meditations data', data);
+		   		
+		   		// Append info to all blog posts and use
+		   		// regex to sanitize value.content (html)
+		   		angular.forEach(data.items, function(value, key) {
+		   			removeContentTags(value);
+		   			appendPostInfo(value);
+	   			});
+	   			// Sort posts by most recent date first
+	   			$log.debug('Sorting Blog Posts');
+	   			data.items.sort(sortBlogPosts);
+	   			data.items.reverse();
+	   			// Push all content into slideArray
+	   			angular.forEach(data.items, function(value, key) {
+	   				var slideObject = {
+	   					heading: 'Meditations',
+	   					index: key + 1,
+	   					title: value.title,
+	   					date: value.dateText,
+	   					content: value.content,
+	   				};
+		   			$scope.slideArray.push(slideObject);
+	   			});
+	   			// Set the currentOption
+	   			$scope.currentOption = $scope.slideArray[0];
+				}, function(error) {
+					$log.error('InitiativeController: $$$Meditations', error);
+				});
    		}
-   		mainTabs[0].shiftedIndex = 0;
-   		mainTabs[1].shiftedIndex = 1;
-
-   		angular.forEach(mainTabs, function (value, key) {
-   			value.data.sort(sortBlogPosts);
-   			value.data.reverse();
-   		});
-
-   		var mainTabsArray = new Array();
-   		angular.forEach(mainTabs, function (value, key) {
-   			mainTabsArray.push(value);
-   		});
-
-			$scope.createSwipe();
-			$scope.mainTabs = mainTabsArray;
-			$scope.swipe.slide(1);
-		});
-		//.error(function(data, status, headers, config) {
-	  //});
+   	});
 	}]);
 
 	app.controller('UpcomingController', ['$scope', 'httpService', function ($scope, httpService) {
 		$scope.callback = function(index) {
   	};
-
   	var setCover = function(data) {
-
   		data.imgLarge = 'img/Smushed/upcoming-default.jpg';
   		data.visible = true;
 
@@ -1400,8 +1060,9 @@
   	$scope.allUpcomingEvents;
   	// = new Array();
 
-  	httpService.getLabeledPostRecursive(label).
-   	then(function(data, status, headers, config) {
+  	httpService.resetRecursiveGet();
+  	httpService.getLabeledPostRecursive(label)
+  	.then(function(data) {
    		var today = new Date();
 
    		console.log('data', data);
@@ -1466,205 +1127,115 @@
 
    		console.log('$scope', $scope);
    		//$scope.createSwipe();
+   	}, function(error) {
+   		$log.error('UpcomingController: $$Upcoming Ministry Events', error);
    	});
 	}]);
 
-	app.controller('NewsController', ['$scope', 'httpService', function ($scope, httpService) {
-		$scope.options = [];
+	var removeContentTags2 = function(value) {
+		//var newString = value.content.replace('<([^>]*)>', '');
+		var newString = value.content;
+		
+		newString = newString.replace(/&nbsp;/g, ' ');
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		//newString = newString.replace(/<br \/>|<br>/g, '<br/><br/>');
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>|<h2([^>]*)>|<\/h2>|<h3([^>]*)>|<\/h3>|<h4([^>]*)>|<\/h4>/g;
+		newString = newString.replace(regexString, '');
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
+		newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
+		//console.log('newString', newString);
+		//console.log('***************************');
+		
+		value.content = newString;
+	};
 
-  	function fillOptions (total) {
-  		for (var i = 0; i < total; i++) {
-  			$scope.options.push({ 
-  				value: i, title: 'temp' + i,
-  				dateText: 'temp' + i,
-  				content: 'temp' + i,
-  			});
-  		}
+	app.controller('NewsController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
+		$scope.title = 'News/Updates';
+  	//$scope.subtitle = 'Meditations';
+
+  	$scope.slideArray = [
+  		/*
+  		{ 
+  			heading: 'About',
+  			title: 'The Multiply Initiative',
+  			date: null,
+  			content: 'The Multiply Initiative is a ...' 
+			},
+  		//*/
+  	];
+  	
+  	var defaultMaxVisible = 15;
+  	var defaultLastVisible = 15;
+  	$scope.isCurrent = true;
+  	$scope.activeSlide = 0;
+  	$scope.maxVisible = defaultMaxVisible;
+  	$scope.lastVisible = defaultLastVisible;
+
+  	$scope.loadSlide = function(index) {
+  		$scope.activeSlide = index;
+  	};
+  	$scope.loadArchives = function() {
+  		$scope.isCurrent = false;
+  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
+  		$scope.lastVisible = $scope.slideArray.length;
+  	};
+  	$scope.loadCurrent = function() {
+  		$scope.isCurrent = true;
+  		$scope.maxVisible = defaultMaxVisible;
+  		$scope.lastVisible = defaultLastVisible;
+  	};
+  	$scope.switchOption = function() {
+  		$scope.activeSlide = $scope.currentOption.index;
   	};
 
-  	var totalKeys = 300;
-  	fillOptions(totalKeys);
-
-  	$scope.switchOption = function(index) {
-  		if ($scope.currentOption != null) {
-  			if ($scope.currentOption === $scope.selectOptions[0]) {
-  				$scope.loadTemplate(0);
-  			} else if ($scope.currentOption === $scope.selectOptions[1]) {
-  				$scope.loadTemplate(1);
-  			} else {
-  				// ERROR
-  			}
-  			//$scope.swipe.slide($scope.currentOption.shiftedIndex);
-  		}
-  	};
-
-  	$scope.callback = function(index) {
-	    if (index < mainTabs[0].data.length) {
-	    	mainTabs[activeIndex].isActive = false;
-		    mainTabs[0].isActive = true;
-		    activeIndex = 0;
-
-	    	$scope.currentOption = $scope.selectOptions[0];
-	    } else if (index >= mainTabs[0].data.length) {
-	    	mainTabs[activeIndex].isActive = false;
-		    mainTabs[1].isActive = true;
-		    activeIndex = 1;
-
-	    	$scope.currentOption = $scope.selectOptions[1];
-	    } else {
-	    	//ERROR
-	    }
-	    if (!$scope.$$phase) {
-    		$scope.$apply();
+		$scope.$watch('activeSlide', function(newVal, oldVal) {
+    	if (oldVal !== newVal && !isNaN(newVal)) {
+    		$scope.currentOption = $scope.slideArray[newVal];
     	}
-
-  	};
-
-  	//************************************
-    //************************************
-
-		var label = '$News/Updates';
-    $scope.title = label.substr(1, label.length);
-    $scope.allNews;
-
-    var futureNews = new Array();
-    var currentNews = new Array(); // Current News becomes Old News after 1 Week
-    var oldNews = new Array();
-
-    var activeIndex = 0;
-    var mainTabs = {
-	    0 : {
-		    title: "Current News/Updates",
-		    isActive: false,
-		    data: {}
-	    },
-	    1 : {
-		    title: "Old News/Updates",
-		    isActive: false,
-		    data: {}
-	    }
-    };
-
-    $scope.selectOptions = [
-    	{ 
-    		title: 'Current News/Updates',
-    	},
-    	{
-    		title: 'Old News/Updates',
-    	},
-    ];
-	
-    $scope.mainTabs = mainTabs;
-
-    $scope.loadTemplate = function(index) {
-	    mainTabs[activeIndex].isActive = false;
-	    mainTabs[index].isActive = true;
-	    activeIndex = index;
-
-	    if (index === 0) {
-	    	$scope.currentOption = $scope.selectOptions[0];
-	    	$scope.swipe.slide(0);
-	    } else {
-	    	$scope.currentOption = $scope.selectOptions[1];
-	    	$scope.swipe.slide(mainTabs[0].data.length);
-	    }
-    }
+    });
 
     httpService.resetRecursiveGet();
+  	httpService.getLabeledPostRecursive('$News/Updates')
+ 		.then(function(data) {
+   		console.log('$News/Updates data', data);
+   		
+   		// Append info to all blog posts and use
+   		// regex to sanitize value.content (html)
+   		angular.forEach(data.items, function(value, key) {
+   			removeContentTags2(value);
+   			appendPostInfo(value);
+ 			});
+ 			// Sort posts by most recent date first
+ 			$log.debug('Sorting Blog Posts');
+ 			data.items.sort(sortBlogPosts);
+ 			data.items.reverse();
+ 			// Push all content into slideArray
+ 			angular.forEach(data.items, function(value, key) {
+ 				var slideObject = {
+ 					//heading: 'Meditations',
+ 					index: key,
+ 					title: value.title,
+ 					date: value.dateText,
+ 					content: value.content,
+ 				};
+   			$scope.slideArray.push(slideObject);
+ 			});
+ 			// Set the currentOption
+ 			$scope.currentOption = $scope.slideArray[0];
+		}, function(error) {
+			$log.error('InitiativeController: $$$Meditations', error);
+		});
+	}]);
 
-    httpService.getLabeledPostRecursive(label).
-    then(function(data, status, headers, config) {
-	    var today = new Date();
-
-	    angular.forEach(data.items, function(value, key) {
-		    var divider = value.title.indexOf(':');
-		    var titleDate = value.title.substr(0,divider);
-		    var title = value.title.substr(divider+1, value.title.length);
-
-		    //var d = new Date(titleDate);
-		    var d = parseISO8601(titleDate);
-		    var day = d.getDate();
-		    var weekday = getDayText(d.getDay());
-		    var month = getMonthText(d.getMonth());
-		    var year = d.getFullYear();
-
-		    value.title = title;
-		    value.date = d;
-		    value.dateText = 'For ' + weekday + ', ' + month + ' ' + day;
-
-		    //console.log('before', value.date);
-
-		    if (value.labels.indexOf('Sunday School Update') >= 0 || value.labels.indexOf('Bible Study Update') >= 0) {
-			    var lastWeek = new Date(value.date.getTime() - (7*24*60*60*1000));
-			    value.date = lastWeek;
-		    }
-
-		    var nextWeek = new Date(value.date.getTime() + (8*24*60*60*1000));
-		    var nextDay = new Date(value.date.getTime() + (1*24*60*60*1000));
-
-        value.nextWeek = nextWeek;
-        value.nextDay = nextDay;
-
-		    if (value.date > today) {
-			    futureNews.push(value);
-		    } else {
-			    if (today > nextWeek) {
-				    	oldNews.push(value);
-			    	} else {
- 				    if(value.labels.indexOf('Sunday School Update') >= 0 || value.labels.indexOf('Bible Study Update') >= 0) {
-               //value.dateText = 'For ' + weekday + ', ' + month + ' ' + day;
-   				     if (today > nextDay) {
-	   				    currentNews.push(value);
-   				    } 
-   			    } else {
-   				    currentNews.push(value);
- 				    }
- 			    }
-		    }
-	    });
-
-	    mainTabs[0].data = currentNews;
-	    mainTabs[1].data = oldNews;
-
-	    angular.forEach(mainTabs, function (value, key) {
-		    value.data.sort(sortBlogPosts);
-		    value.data.reverse();
-	    });
-	    
-	    var lastKey = 0;
-	    angular.forEach(mainTabs[0].data, function(value, key) {
-	    	$scope.options[key].title = value.title;
-				$scope.options[key].dateText = value.dateText;
-				$scope.options[key].content = value.content;
-
-				if (key > lastKey) {
-					lastKey = key;
-				}
-	    });
-	    lastKey++;
-
-	    var lastKey2= 0;
-	    angular.forEach(mainTabs[1].data, function(value, key) {
-	    	$scope.options[mainTabs[0].data.length + key].title = value.title;
-				$scope.options[mainTabs[0].data.length + key].dateText = value.dateText;
-				$scope.options[mainTabs[0].data.length + key].content = value.content;
-
-				if (key > lastKey2) {
-					lastKey2 = key;
-				}
-	    });
-	    lastKey2++;
-	    lastKey += lastKey2;
-	    //$scope.options = $scope.options.concat(mainTabs[0].data);
-	    //$scope.options = $scope.options.concat(mainTabs[1].data);
-	    $scope.createSwipe();
-	    $scope.options.splice(lastKey, $scope.options.length-lastKey);
-
-	    $scope.loadTemplate(activeIndex);
-    });
-	}]);	
-
-	app.controller('PodcastsController', ['$scope', 'httpService', function($scope, httpService) {
+	app.controller('PodcastsController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
 		angular.element( '#audioPlayer' ).audioPlayer({
 	    classPrefix: 'audioplayer',
 	    strPlay: 'Play',
@@ -1681,8 +1252,7 @@
     	player.play();
     }
 
-		$scope.callback = function(index) {};
-
+		$scope.callback = function (index) {};
 		$scope.playThis = function (pathToAudio) {
 			if ($scope.allPodcasts) {
 				if ($scope.allPodcasts[pathToAudio]) {
@@ -1694,7 +1264,7 @@
 					playSource();
 				}
 			}
-		}
+		};
 		
 		//** Podcast Search **/
 		$scope.searchTypes = [
@@ -1735,8 +1305,9 @@
 
 		$scope.allPodcasts = {};
 
-  	httpService.getLabeledPost(label).
-   	success(function(data, status, headers, config) {
+		httpService.resetSimpleGet();
+  	httpService.getLabeledPost(label)
+  	.then(function(data) {
    		if (data.items[0]) {
    			var jsonContent = data.items[0].content;
    			var jsonString = jsonContent.toString();
@@ -1772,16 +1343,16 @@
    				}
    			}
    		}
-   	}).
-   	error(function(data, status, headers, config) {
-	  });
+   	}, function(error) {
+   		$log.error('PodcastsController: $Podcasts', error);
+   	});
 	}]);
 
-  app.controller('ContactController', ['$scope', 'httpService', function ($scope, httpService) {
-
-  	httpService.getLabeledPost('$Contact').
-   	success(function(data, status, headers, config) {
-   		if (data.items[0]) {
+  app.controller('ContactController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
+  	httpService.resetSimpleGet();
+  	httpService.getLabeledPost('$Contact')
+  	.then(function(data) {
+  		if (data.items[0]) {
    			var pageData = data.items[0];
    			$scope.title = pageData.title;
    			$scope.content = pageData.content;
@@ -1790,16 +1361,196 @@
    		}
 
    		findBibleRefs();
-   	}).
-   	error(function(data, status, headers, config) {
-	  });
+   	}, function(error) {
+   		$log.error('ContactController: $Contact', error);
+   	});
 	}]);
-	
+
   /********************************************************************
    *
-   *                            Directives
+   *                            UI Directives
    *
    ********************************************************************/
+	
+	app.directive('infiniteSwipe', 
+	['$log', 
+	function ($log) {
+		/*****************************************************
+   	*                    	Link Function
+   	*****************************************************/
+		var link = function(scope, element, attrs, controller) {
+			$log.debug('infinite-swipe scope', scope);
+			// ---------------------------
+	    // Element Styling
+			var defaultHeight = 500;
+			// ---------------------------
+			
+			// ---------------------------
+			var isDigest = true;
+			var isInternal = true;
+			var infiniteSwipe = {
+	    	carousel: null,
+	    	minLength: 3,
+	    	init: function() {
+	    		if (scope.fixedHeight) {
+	    			element.height(scope.fixedHeight);
+	    		} else {
+	    			element.height(defaultHeight);
+	    		}
+	    		infiniteSwipe.carousel = new SwipeView(scope.swipeElement[0], {
+			      numberOfPages: scope.slides.length,
+			      hastyPageFlip: true,
+			      loop: false,
+			    });
+			    
+			    scope.swipeElement[0].style.overflowX = 'hidden';
+			    scope.swipeElement[0].style.overflowY = 'scroll'; 
+
+			    infiniteSwipe.loadInitialData();
+
+			    infiniteSwipe.carousel.onFlip(infiniteSwipe.onFlipHandler);
+	    	},
+	    	loadInitialData: function() {
+	    		// Load initial data
+			    for (var i = 0; i < 3; i++) {
+			    	var page;
+			    	if (i === 0) {
+			    		page = scope.slides.length;
+			    	} else {
+			    		page = i - 1;
+			    	}
+			      
+			      var el = document.createElement('div');
+			      el.className = 'infiniteSwipe';
+			      
+			      infiniteSwipe.setSlideContent(el, scope.slides[page]);
+			      if (page === 0) {
+			      	scope.heading = scope.slides[page].heading;
+			      }
+			      infiniteSwipe.carousel.masterPages[i].appendChild(el);
+			    }
+	    	},
+	    	onFlipHandler: function () {
+		    	var el;
+		      var upcoming;
+		      for (var i = 0; i < 3; i++) {
+		        upcoming = infiniteSwipe.carousel.masterPages[i].dataset.upcomingPageIndex;
+		        if (upcoming != infiniteSwipe.carousel.masterPages[i].dataset.pageIndex) {
+		          el = infiniteSwipe.carousel.masterPages[i].querySelector('div');
+		          infiniteSwipe.setSlideContent(el, scope.slides[upcoming]);
+		        }
+		      }
+		      if (isDigest && !scope.$$phase) {
+		    		scope.$apply(function() {
+		    			scope.heading = scope.slides[infiniteSwipe.carousel.pageIndex].heading;
+		    			scope.activeIndex = infiniteSwipe.carousel.pageIndex;
+		    			isInternal = false;
+		    		});
+		    	} else {
+		    		scope.heading = scope.slides[infiniteSwipe.carousel.pageIndex].heading;
+		    		scope.activeIndex = infiniteSwipe.carousel.pageIndex;
+		    		isDigest = true;
+		    	}
+		    },
+	    	setSlideContent: function(el, value) {
+	    		if (value) {
+	    			var title = '<h2>' + value.title + '</h2>';
+		    		var date = '<h3>' + value.date + '</h3>';
+		    		el.innerHTML = title + date + value.content;
+	    		}
+	    	},
+	    };
+	    // ---------------------------
+
+	    // ---------------------------
+	    // Handle scope async updates
+	    scope.$watchCollection('slides', function(newVal, oldVal) {
+	    	//console.log('watchCollection slides oldVal', oldVal, 'newVal', newVal);
+	    	if (newVal && newVal.length >= infiniteSwipe.minLength) {
+	    		infiniteSwipe.init();
+	    	} 
+	    });
+	    scope.$watch('activeIndex', function(newVal, oldVal) {
+	    	if (isInternal && !isNaN(newVal) && scope.slides.length >= infiniteSwipe.minLength) {
+	    		//console.log('switch to newVal', newVal);
+	    		isDigest = false;
+	    		goToPage(newVal);
+	    		//console.log('infiniteSwipe.carousel', infiniteSwipe.carousel);
+	    	} 
+	    	isInternal = true;
+	    });
+	    // ---------------------------
+
+	    // ---------------------------
+	    // Slide Controls
+	    var goToPage = function(index) {
+	    	infiniteSwipe.carousel.goToPage(index);
+	    };
+	    scope.nextSlide = function() {
+	    	infiniteSwipe.carousel.next();
+	    };
+	    scope.prevSlide = function() {
+	    	infiniteSwipe.carousel.prev();
+	    };
+	    $(document).keyup(function (e) {
+	    	if(e.which === 37) {
+	    		scope.prevSlide();
+	    	}
+	    	if(e.which === 39) {
+	    		scope.nextSlide();
+	    	}
+			});
+			// ---------------------------
+		};
+
+		/*****************************************************
+   	*              Directive Definition Object
+   	*****************************************************/
+	  var directiveDefinitionObject = {
+      priority: 0,
+      template: function(tElement, tAttrs) {
+      	var htmlString = '<div style="height: 100%;"> \
+	    											<div class="clearfix" style="height: 112px;"> \
+												      <a class="no-text-select left" ng-click="prevSlide()"><i class="fi-arrow-left" style="color: #ff2701; font-size: 3em;"></i></a> \
+												      <a class="no-text-select right" ng-click="nextSlide()"><i class="fi-arrow-right" style="color: #ff2701; font-size: 3em;"></i></a> \
+												      <h1 class="text-center" style="margin: 0;">{{ heading }}</h1> \
+												      <h2 class="hide-for-touch text-center" style="margin: 0;"><small>Use arrow keys to navigate</small></h2> \
+												      <h2 class="show-for-touch text-center" style="margin: 0;"><small>Swipe or use arrow keys to navigate</small></h2> \
+												    </div> \
+	      										<div style="height: calc(100% - 112px); \
+	      											padding: 1.25rem; \
+											      	border-style: solid; \
+											      	border-width: 1px; \
+											      	border-color: #d9d9d9; \
+											      	background-color: #f2f2f2;"> \
+											      	<div ng-scope-element="swipeElement" \
+											      		style="height: 100%; \
+											      		-webkit-overflow-scrolling: touch; \
+											      		overflow-x: hidden !important; \
+											      		overflow-y: scroll !important;"> \
+										      		</div> \
+									      		</div> \
+      										</div>';
+
+      	return htmlString;
+      },
+      transclude: false,
+      restrict: 'A',
+      scope: {
+      	slides: '=',
+      	activeIndex: '=',
+      	fixedHeight: '=',
+      },
+      //controller: function($scope, $element, $attrs, $transclude, otherInjectables) { ... },
+      //controllerAs: 'stringAlias',
+      //require: 'siblingDirectiveName', // or // ['^parentDirectiveName', '?optionalDirectiveName', '?^optionalParent'],
+      compile: function compile(tElement, tAttrs, transclude) {
+      	return link;
+      },
+    };
+    return directiveDefinitionObject;
+	}]);
+
 	app.directive('swipejs', function() {
 	  return function(scope, element, attrs) {
 	    scope.createSwipe = function() {
@@ -2011,6 +1762,27 @@
 		}
 	});
 
+
+	/********************************************************************
+   *
+   *                         Utility Directives
+   *
+   ********************************************************************/
+
+	app.directive("ngScopeElement", function () {
+	  var directiveDefinitionObject = {
+	    restrict: "A",
+	    compile: function compile(tElement, tAttrs, transclude) {
+	      return {
+	          pre: function preLink(scope, iElement, iAttrs, controller) {
+	            scope[iAttrs.ngScopeElement] = iElement;
+	          }
+	        };
+	    }
+	  };
+	  return directiveDefinitionObject;
+	});
+
   /********************************************************************
    *
    *                            Feed Reader
@@ -2039,7 +1811,7 @@
 	  });
 	}]);
 
-	app.service('httpService', ['$http', '$q', function ($http, $q) {
+	app.service('httpService', ['$log', '$http', '$q', function ($log, $http, $q) {
 		var self = this;
 		
 		// Request an API Key for the Blogger API from 
@@ -2052,90 +1824,114 @@
 	  self.getBlog = function() {
 	  	var url = 'https://www.googleapis.com/blogger/v3/blogs/' +
 	    blogId + '?key=' + apikey + '&callback=JSON_CALLBACK';
-	    
-	    //console.log(url);
 	    return $http.jsonp(url);
 	  };
-		self.getBlogPosts = function() {     
+		self.getBlogPosts = function() {
 	    var url = 'https://www.googleapis.com/blogger/v3/blogs/' +
 	    blogId + '/posts?maxPosts=9999&key=' + apikey + '&callback=JSON_CALLBACK';
-	    
-	    //console.log(url);
 	    return $http.jsonp(url);
+		};
+
+		//--------------------------------------
+		// Simple Post HTTP Get
+		var simple = {
+			deferred: null,
+			mainLabel: '',
+			container: {
+		    items : new Array()
+	    },
+			getPost: function() {
+				var url = 'https://www.googleapis.com/blogger/v3' +
+				'/blogs/' + blogId + 
+				'/posts?maxResults=20' +
+				'&labels=' + simple.mainLabel +
+				'&fields=nextPageToken,items(title,published,labels,content)'+
+				'&key='+ apikey + '&callback=JSON_CALLBACK';
+
+				$http.jsonp(url)
+		    .success(function(data, status, headers, config) {
+		    	simple.container.items.push.apply(simple.container.items, data.items);
+		    	simple.deferred.resolve(simple.container);
+		   	})
+		   	.error(function(data, status, headers, config) {
+		   		$log.error('httpService: simpleGet', data);
+			  });
+			},
+			resetGet: function() {
+				simple.deferred = $q.defer();
+				simple.mainLabel = '';
+				simple.container = {
+			    items : new Array()
+		    };
+			},
 		};
 		self.getLabeledPost = function(label) {
-			var url = 'https://www.googleapis.com/blogger/v3' +
-			'/blogs/' + blogId + 
-			'/posts?maxResults=20' +
-			'&labels=' + label +
-			'&fields=nextPageToken,items(title,published,labels,content)'+
-			'&key='+ apikey + '&callback=JSON_CALLBACK';
-
-			//console.log(url);
-	    return $http.jsonp(url);
+			simple.resetGet();
+			simple.deferred = $q.defer();
+			simple.mainLabel = label;
+			simple.getPost();
+			return simple.deferred.promise;
 		};
-
-		var recursiveContainer = {
-			items : new Array()
+		self.resetSimpleGet = function() {
+			simple.resetGet();
 		};
-		var mainLabel;
-		var deferred;
+		//--------------------------------------
 
-		var recursiveGet = function(label, nextPageToken) {
-			var url = 'https://www.googleapis.com/blogger/v3' +
-			'/blogs/' + blogId + 
-			'/posts?maxResults=20';
-			if (nextPageToken) {
-                //console.log('loading next page', url);
-				url += '&pageToken='+ nextPageToken;
-                //console.log('after next page', url);
-			}
-			url += '&labels=' + mainLabel +
-			'&fields=nextPageToken,items(title,published,labels,content)'+
-			'&key='+ apikey + '&callback=JSON_CALLBACK';
+		//--------------------------------------
+		// Recursive Post HTTP Get
+		var recursive = {
+			deferred: null,
+			mainLabel: '',
+			container: {
+				items : new Array()	
+			},
+			getPost: function(label, nextPageToken) {
+				var url = 'https://www.googleapis.com/blogger/v3' +
+					'/blogs/' + blogId + 
+					'/posts?maxResults=20';
+				if (nextPageToken) {
+					url += '&pageToken='+ nextPageToken;
+				}
+				url += '&labels=' + recursive.mainLabel +
+					'&fields=nextPageToken,items(title,published,labels,content)'+
+					'&key='+ apikey + '&callback=JSON_CALLBACK';
 
-			//console.log('>>recursiveGet<<', mainLabel, nextPageToken, url);
-	    $http.jsonp(url).
-   		success(function(data, status, headers, config) {
-   			//console.log('recursive', data);
-   			//recursiveContainer.items.push(data.items);
-   			recursiveContainer.items.push.apply(recursiveContainer.items, data.items);
-   			if(data.nextPageToken) {
-   				recursiveGet(mainLabel, data.nextPageToken);
-          //console.log('resolve', recursiveContainer);
-          //deferred.resolve(recursiveContainer);
-   			} else {
-          //console.log('resolve', recursiveContainer);
-   				deferred.resolve(recursiveContainer);
-   			}
-	   	}).
-	   	error(function(data, status, headers, config) {
-		  });
+				$http.jsonp(url)
+		    .success(function(data, status, headers, config) {
+	   			recursive.container.items.push.apply(recursive.container.items, data.items);
+	   			if(data.nextPageToken) {
+	   				recursive.getPost(recursive.mainLabel, data.nextPageToken);
+	   			} else {
+	          recursive.deferred.resolve(recursive.container);
+	   			}
+		   	})
+		   	.error(function(data, status, headers, config) {
+			  });
+			},
+			resetGet: function() {
+				recursive.deferred = $q.defer();
+				recursive.mainLabel = '';
+	      recursive.container = {
+			    items : new Array()
+		    };
+			},
 		};
-
 		self.getLabeledPostRecursive = function(label, nextPageToken) {
-      self.resetRecursiveGet();
-
-			deferred = $q.defer();
-			mainLabel = label;
-
-			recursiveGet();
-
-			return deferred.promise;
+      recursive.resetGet();
+			recursive.deferred = $q.defer();
+			recursive.mainLabel = label;
+			recursive.getPost();
+			return recursive.deferred.promise;
 		};
+		self.resetRecursiveGet = function(){
+			recursive.resetGet();
+		};
+		//--------------------------------------
 
-    self.resetRecursiveGet = function() {
-      deferred = $q.defer();
-			mainLabel = '';
-      recursiveContainer = {
-		    items : new Array()
-	    };
-    };
-		/*
+    /*
 		page tokens
 		CgkIChiA45D1nigQ48DZtY_5wuoS
 		CgkIChiE_-DznigQ48DZtY_5wuoS
-
 		//*/
 	}]);
 
@@ -2148,5 +1944,3 @@
 
 })();
 
-
-//#bf4040

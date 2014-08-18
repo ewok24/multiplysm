@@ -5,45 +5,51 @@
   </div>
   <!-- </Page Title> -->
 
+
   <!-- <View for Small/Medium Screens> -->
   <div class="small-12 columns hide-for-large-up">
-    <select ng-model="currentOption" ng-options="tab.title for tab in mainTabs" ng-change="switchOption()">
+    <select ng-model="currentOption" ng-options="tab.title for tab in slideArray" ng-change="switchOption()">
     </select>
   </div>
   <!-- </View for Small/Medium Screens> -->
+
 
   <!-- <View for Large Screens> -->
   <div class="show-for-large-up">
     <div class="large-3 columns">
       <ul class="side-nav">
-        <li data-ng-repeat="tab in mainTabs | orderBy:'index':number" ng-class="{active: tab.isActive}" ng-click="loadTemplate(tab.index)"><a>{{ tab.title }}</a></li>
+        <li ng-click="loadCurrent()" 
+          ng-if="!isCurrent"
+          ng-class="{active: ($index === activeSlide) }">
+          <a>Return to Current Posts</a>
+        </li>
+        <li ng-if="!isCurrent"
+          class="divider">
+        </li>
+        <li ng-repeat="tab in slideArray | limitTo: lastVisible | limitTo: -maxVisible" 
+          ng-click="loadSlide(tab.index)"
+          ng-class="{active: (tab.index === activeSlide) }">
+          <a>{{ tab.title }}</a>
+        </li>
         <li class="divider"></li>
+        <li ng-click="loadArchives()" 
+          ng-if="isCurrent">
+          <a>Archives</a>
+        </li>
       </ul>
     </div>
   </div>
   <!-- </View for Large Screens> -->
 
-  <div class="small-12 large-9 columns">
-    <div class="clearfix">
-      <a class="hide-for-touch no-text-select left" ng-click="prevSlide()"><i class="fi-arrow-left" style="color: #ff2701; font-size: 3em;"></i></a>
-      <a class="hide-for-touch no-text-select right" ng-click="nextSlide()"><i class="fi-arrow-right" style="color: #ff2701; font-size: 3em;"></i></a>
-      <h1 class="text-center" style="margin: 0;">{{ subtitle }}</h1>
-      <h2 class="hide-for-touch text-center" style="margin: 0;"><small>Use arrow keys to navigate</small></h2>
-      <h2 class="show-for-touch text-center" style="margin: 0;"><small>Swipe to navigate</small></h2>
-    </div>
-    <div class='swipe' swipejs>
-      <div class='swipe-wrap'>
-        
-        <div ng-repeat="option in options">
-          <div class="panel">
-            <h2>{{option.title}}</h2>
-            <h3>{{option.dateText}}</h3>
-            <br/>
-            <div ng-bind-html="option.content"></div>
-          </div>
-        </div>
 
-      </div>
+  <!-- <Infinite Swipe Element> -->
+  <div class="small-12 large-9 columns">
+    <div infinite-swipe
+      slides="slideArray"
+      active-index="activeSlide"
+      fixed-height="712">
     </div>
   </div>
+  <!-- </Infinite Swipe Element> -->
+  
 </div>
