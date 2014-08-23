@@ -25,6 +25,10 @@
 				{
 					templateUrl: 'html/weekly.html'
 				})
+			.when('/sundayschool',
+				{
+					templateUrl: 'html/sundayschool.html'
+				})
 			.when('/initiative',
 				{
 					templateUrl: 'html/initiative.html'
@@ -864,6 +868,245 @@
 		}
   }]);
 
+	app.controller('SundaySchoolController', 
+	['$log', '$scope', '$compile', 'httpService', 
+	function ($log, $scope, $compile, httpService) {
+		$scope.title = 'Sunday School';
+  	$scope.subtitle = 'About';
+
+  	$scope.slideArray = [];
+  	
+  	var defaultMaxVisible = 20;
+  	var defaultLastVisible = 20;
+  	$scope.isCurrent = true;
+  	$scope.activeSlide = 0;
+  	$scope.maxVisible = defaultMaxVisible;
+  	$scope.lastVisible = defaultLastVisible;
+
+  	$scope.loadSlide = function(index) {
+  		$scope.activeSlide = index;
+  	};
+  	$scope.loadArchives = function() {
+  		$scope.isCurrent = false;
+  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
+  		$scope.lastVisible = $scope.slideArray.length;
+  	};
+  	$scope.loadCurrent = function() {
+  		$scope.isCurrent = true;
+  		$scope.maxVisible = defaultMaxVisible;
+  		$scope.lastVisible = defaultLastVisible;
+  	};
+  	$scope.switchOption = function() {
+  		$scope.activeSlide = $scope.currentOption.index;
+  	};
+  	$scope.loadTeacher = function(teacher) {
+  		$scope.current = teacher;
+  		//console.log('$scope.current', $scope.current);
+  		$('#myModal').foundation('reveal', 'open');
+  	};
+		$scope.$watch('activeSlide', function(newVal, oldVal) {
+    	if (oldVal !== newVal && !isNaN(newVal)) {
+    		$scope.currentOption = $scope.slideArray[newVal];
+    	}
+    });
+
+    $scope.teachers;
+		$scope.current = {};
+    var http = {
+    	appendPostInfo: function(value) {
+				var divider = value.title.indexOf(':');
+				var gradeLevel = value.title.substr(0,divider);
+				var teacherName = value.title.substr(divider+1, value.title.length);
+
+				value.name = teacherName;
+				value.gradeLevel = gradeLevel;
+
+				if (teacherName.indexOf('Howard') > 0) {
+					value.index = 0;
+					value.img = 'img/Smushed/bio-howard.jpg';
+				} else if (teacherName.indexOf('Hull') > 0) {
+					value.index = 1;
+					value.img = 'img/Smushed/Sunday School Bios/bio-hull.jpg';
+				} else if (teacherName.indexOf('Loftin') > 0) {
+					value.index = 2;
+					value.img = 'img/Smushed/bio-loftin.jpg';
+				} else {
+					// ERROR
+				}
+			},
+			removeContentTags: function(value) {
+				var newString = value.content;
+				
+				newString = newString.replace(/&nbsp;/g, ' ');
+				newString = newString.replace(/<br \/>|<br>/g, '<br/>');
+				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
+				newString = newString.replace(regexString, '');
+				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
+				newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
+				value.content = newString;
+			},
+    	getPostsSundaySchool: function(isError) {
+    		console.log('isError', isError);
+    		var label = '$$$Sunday School';
+    		return httpService.getLabeledPost(label)
+  			.then(function(data) {
+  				if (!isError) {
+						var value = data.items[0];
+						if (data.items && data.items[0] && data.items[0].title === 'About') {
+							value = data.items[0];
+						} else {
+							value = data.items[1];
+						}
+			   		if (value) {
+			   			// Append info to all blog posts and use
+			   			// regex to sanitize value.content (html)
+			   			//removeContentTags(value);
+			   			appendPostInfo(value);
+			   			var img = 'img/Smushed/weekly-2-banner.jpg';
+			   			var imgEl = '<img src="' + img + '" />';
+
+		   				var mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
+							var mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
+			   			
+			   			var map = '<a href="' + mapLink + '" target="_blank"> \
+				   								<img class="bordered-image" \
+				   									src="' + mapImg + '"> \
+													</img> \
+												</a>';
+
+			   			var slideObject = {
+			   				heading: '',
+			   				index: 0,
+			   				title: value.title,
+			   				date: '',
+			   				content: imgEl + value.content + map,
+			   			};
+			   			$scope.slideArray.push(slideObject);
+			   			// Set the currentOption
+			   			$scope.currentOption = $scope.slideArray[0];			   			
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+			   	} else {
+			   		// STOP Promise Chaining
+			   		$log.error('SundaySchoolController:', label, '- STOP Chaining');
+			   		return true;
+			   	}
+		 		}, function(error) {
+		   		$log.error('SundaySchoolController:', label, error);
+		   	});
+    	},
+    	getPostsTeacherBios: function(isError) {
+    		console.log('isError', isError);
+    		var label = '$$$Teacher Bios';
+   			return httpService.getLabeledPostRecursive(label)
+	   		.then(function(data) {
+	   			if (!isError) {
+			   		//console.log(label, 'data', data);
+			   		var value = data.items[0];
+			   		if (value) {
+			   			angular.forEach(data.items, function(value, key) {
+				   			http.removeContentTags(value);
+				   			http.appendPostInfo(value);
+			   			});
+			   			$scope.teachers = data.items;
+			   			
+			   			var teacherHtml = '<div class"small-12 column"> \
+			   													<h3 style="margin: 0;">Teachers</h3> \
+			   													<h3 style="margin: 0;"><small>Tap on Photos for Teacher Bios</small></h3> \
+				   												<ul class="small-block-grid-2 medium-block-grid-4 large-block-grid-2"> \
+														        <li ng-repeat="teacher in teachers" \
+														          ng-click="loadTeacher(teacher);"> \
+														          <img ng-src="{{teacher.img}}" style="width: 100%; margin-bottom: 10px;"> \
+														          <div style="background-color: #eee; color: #999; border-top: 2px solid #5A5A59; padding: 10px;"> \
+														            <h6 style="margin: 0;"><strong>{{ teacher.name }}</strong></h6> \
+														            <p style="margin: 0;">Grade: {{ teacher.gradeLevel }}</p> \
+														          </div> \
+														        </li> \
+														      </ul> \
+												        </div>';
+							
+							var compiledElem = $compile(teacherHtml)($scope);
+			   			$scope.compiledElem = compiledElem;
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+		   		} else {
+		   			// STOP Promise Chaining
+			   		$log.error('SundaySchoolController:', label, '- STOP Chaining');
+			   		return true;
+		   		}
+   			}, function(error) {
+					$log.error('SundaySchoolController:', label, error);
+				});	
+    	},
+    	getPostsUpdates: function(isError) {
+    		console.log('isError', isError);
+    		var label = '$$$Sunday School Updates';
+   			return httpService.getLabeledPostRecursive(label)
+	   		.then(function(data) {
+	   			if (!isError) {
+			   		console.log(label, 'data', data);
+			   		var value = data.items[0];
+			   		if (value) {
+			   			/*
+				   		// Append info to all blog posts and use
+				   		// regex to sanitize value.content (html)
+				   		angular.forEach(data.items, function(value, key) {
+				   			//removeContentTags(value);
+				   			appendPostInfo(value);
+			   			});
+			   			// Sort posts by most recent date first
+			   			$log.debug('Sorting Blog Posts');
+			   			data.items.sort(sortBlogPosts);
+			   			data.items.reverse();
+			   			// Push all content into slideArray
+			   			angular.forEach(data.items, function(value, key) {
+			   				var slideObject = {
+			   					heading: 'Updates',
+			   					index: key + 1,
+			   					title: value.title,
+			   					date: value.dateText,
+			   					content: value.content,
+			   				};
+				   			$scope.slideArray.push(slideObject);
+			   			});
+			   			//*/
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+		   		} else {
+		   			// STOP Promise Chaining
+			   		$log.error('SundaySchoolController:', label, '- STOP Chaining');
+			   		return true;
+		   		}
+   			}, function(error) {
+					$log.error('SundaySchoolController:', label, error);
+				});	
+    	}
+    };
+
+    httpService.resetSimpleGet();
+  	http.getPostsSundaySchool()
+  		.then(http.getPostsTeacherBios)
+  		.then(http.getPostsUpdates)
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+	}]);
+
 	var appendPostInfo = function(value) {
 		var divider = value.title.indexOf(':');
 		var titleDate = value.title.substr(0,divider);
@@ -919,8 +1162,8 @@
   		//*/
   	];
   	
-  	var defaultMaxVisible = 20;
-  	var defaultLastVisible = 20;
+  	var defaultMaxVisible = 15;
+  	var defaultLastVisible = 15;
   	$scope.isCurrent = true;
   	$scope.activeSlide = 0;
   	$scope.maxVisible = defaultMaxVisible;
@@ -1373,8 +1616,8 @@
    ********************************************************************/
 	
 	app.directive('infiniteSwipe', 
-	['$log', 
-	function ($log) {
+	['$log', '$compile',
+	function ($log, $compile) {
 		/*****************************************************
    	*                    	Link Function
    	*****************************************************/
@@ -1390,7 +1633,7 @@
 			var isInternal = true;
 			var infiniteSwipe = {
 	    	carousel: null,
-	    	minLength: 3,
+	    	minLength: scope.minLength,
 	    	init: function() {
 	    		if (scope.fixedHeight) {
 	    			element.height(scope.fixedHeight);
@@ -1479,6 +1722,12 @@
 	    	} 
 	    	isInternal = true;
 	    });
+	    scope.$watch('compiledElem', function(newVal, oldVal) {
+	    	//console.log('scope.$watch compiledElem', newVal);
+	    	if (newVal) {
+	    		$('#swipeview-masterpage-1').append(scope.compiledElem);
+	    	}
+	    });
 	    // ---------------------------
 
 	    // ---------------------------
@@ -1538,8 +1787,10 @@
       restrict: 'A',
       scope: {
       	slides: '=',
+      	minLength: '=',
       	activeIndex: '=',
       	fixedHeight: '=',
+      	compiledElem: '=',
       },
       //controller: function($scope, $element, $attrs, $transclude, otherInjectables) { ... },
       //controllerAs: 'stringAlias',

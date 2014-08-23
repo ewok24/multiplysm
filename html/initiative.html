@@ -20,7 +20,7 @@
       <ul class="side-nav">
         <li ng-click="loadCurrent()" 
           ng-if="!isCurrent"
-          ng-class="{active: ($index === activeSlide) }">
+          ng-class="{ active: ($index === activeSlide) }">
           <a>Return to Current Posts</a>
         </li>
         <li ng-if="!isCurrent"
@@ -46,6 +46,7 @@
   <div class="small-12 large-9 columns">
     <div infinite-swipe
       slides="slideArray"
+      min-length="3"
       active-index="activeSlide"
       fixed-height="712">
     </div>

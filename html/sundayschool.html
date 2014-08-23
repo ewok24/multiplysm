@@ -1,9 +1,25 @@
-<div ng-controller="NewsController" class="row">
+<div ng-controller="SundaySchoolController" class="row">
   <!-- <Page Title> -->
-  <div class="small-12 large-12 columns">
-    <h1>{{title}}</h1>
+	<div class="small-12 large-12 columns">
+  	<h1>{{title}}</h1>
   </div>
   <!-- </Page Title> -->
+
+  
+  <!-- <Reveal Modal> -->
+  <div id="myModal" class="reveal-modal" data-reveal>
+    <div class="small-6 medium-6 large-4 column">
+      <img ng-src="{{ current.img }}" style="width: 100%; margin-bottom: 10px;">
+    </div>
+    <div class="small-6 medium-6 large-8 column">
+      <h2>{{ current.name }}</h2>
+      <p class="lead">Grade: {{ current.gradeLevel }}</p>
+    </div>
+    <div class="small-12 column" ng-bind-html="current.content">
+    </div>
+    <a class="close-reveal-modal">&#215;</a>
+  </div>
+  <!-- </Reveal Modal> -->
 
 
   <!-- <View for Small/Medium Screens> -->
@@ -29,7 +45,7 @@
         <li ng-repeat="tab in slideArray | limitTo: lastVisible | limitTo: -maxVisible" 
           ng-click="loadSlide(tab.index)"
           ng-class="{active: (tab.index === activeSlide) }">
-          <a>{{ tab.date }}</a>
+          <a>{{ tab.title }}</a>
         </li>
         <li class="divider"></li>
         <li ng-click="loadArchives()" 
@@ -46,11 +62,12 @@
   <div class="small-12 large-9 columns">
     <div infinite-swipe
       slides="slideArray"
-      min-length="3"
+      min-length="1"
       active-index="activeSlide"
-      fixed-height="612">
+      fixed-height="712"
+      compiled-elem="compiledElem">
     </div>
   </div>
   <!-- </Infinite Swipe Element> -->
-
+  
 </div>
