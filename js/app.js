@@ -926,7 +926,7 @@
 					value.img = 'img/Smushed/bio-howard.jpg';
 				} else if (teacherName.indexOf('Hull') > 0) {
 					value.index = 1;
-					value.img = 'img/Smushed/Sunday School Bios/bio-hull.jpg';
+					value.img = 'img/Smushed/bio-hull.jpg';
 				} else if (teacherName.indexOf('Loftin') > 0) {
 					value.index = 2;
 					value.img = 'img/Smushed/bio-loftin.jpg';
