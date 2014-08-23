@@ -924,11 +924,17 @@
 				if (teacherName.indexOf('Howard') > 0) {
 					value.index = 0;
 					value.img = 'img/Smushed/bio-howard.jpg';
-				} else if (teacherName.indexOf('Hull') > 0) {
+				} else if (teacherName.indexOf('Hurd') > 0) {
 					value.index = 1;
+					value.img = 'img/Smushed/bio-hurd.jpg';
+				} else if (teacherName.indexOf('Munns') > 0) {
+					value.index = 2;
+					value.img = 'img/Smushed/bio-munns.jpg';
+				} else if (teacherName.indexOf('Hull') > 0) {
+					value.index = 3;
 					value.img = 'img/Smushed/bio-hull.jpg';
 				} else if (teacherName.indexOf('Loftin') > 0) {
-					value.index = 2;
+					value.index = 4;
 					value.img = 'img/Smushed/bio-loftin.jpg';
 				} else {
 					// ERROR
@@ -1006,18 +1012,20 @@
    			return httpService.getLabeledPostRecursive(label)
 	   		.then(function(data) {
 	   			if (!isError) {
-			   		//console.log(label, 'data', data);
+			   		console.log(label, 'data', data);
 			   		var value = data.items[0];
 			   		if (value) {
 			   			angular.forEach(data.items, function(value, key) {
 				   			http.removeContentTags(value);
 				   			http.appendPostInfo(value);
 			   			});
+							data.items.sort(function(a, b) { return a.index-b.index });
+			   			
 			   			$scope.teachers = data.items;
 			   			
 			   			var teacherHtml = '<div class"small-12 column"> \
 			   													<h3 style="margin: 0;">Teachers</h3> \
-			   													<h3 style="margin: 0;"><small>Tap on Photos for Teacher Bios</small></h3> \
+			   													<h3 style="margin: 0;"><small>Click/Tap on Photos for Teacher Bios</small></h3> \
 				   												<ul class="small-block-grid-2 medium-block-grid-4 large-block-grid-2"> \
 														        <li ng-repeat="teacher in teachers" \
 														          ng-click="loadTeacher(teacher);"> \
