@@ -21,9 +21,9 @@
 				{
 					templateUrl: 'html/events.html'
 				})
-			.when('/weekly',
+			.when('/biblestudy',
 				{
-					templateUrl: 'html/weekly.html'
+					templateUrl: 'html/biblestudy.html'
 				})
 			.when('/sundayschool',
 				{
@@ -224,7 +224,8 @@
 			{name: 'Home', url: '#/', label: false, path: '' },
 			{name: 'About Us', url: '#/about', label: false, path: 'about' },
 			{name: 'Ministries', url: '#/events', label: false, path: 'events' },
-			{name: 'Weekly Ministries', url: '#/weekly#biblestudy', label: false, path: 'weekly#biblestudy' },
+			{name: 'Weekly Bible Study', url: '#/biblestudy', label: false, path: 'biblestudy' },
+			{name: 'Sunday School', url: '#/sundayschool', label: false, path: 'sundayschool' },
 			{name: 'The Multiply Initiative', url: '#/initiative', label: false, path: 'initiative' },
 			{name: 'Upcoming Ministry Events', url: '#/upcoming', label: false, path: 'upcoming' },
 			{name: 'News/Updates', url: '#/news', label: false, path: 'news' },
@@ -759,7 +760,7 @@
 		}
 	}]);
 
-	app.controller('WeeklyController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
+	app.controller('BibleStudyController', ['$log', '$scope', 'httpService', function ($log, $scope, httpService) {
 		$scope.options = [
   		{ value: 0, title: 'temp', content: 'temp' },
   		{ value: 1, title: 'temp', content: 'temp' },
@@ -801,7 +802,7 @@
 		    var title = data.items[0].labels[0];
 
 		    if (title.substr(0,2) === '$$') {
-          $scope.title = 'Weekly Ministries';
+          $scope.title = 'Weekly Bible Study';
 		    } else {
 			    $scope.title = "Page Error";
 			    return '';
@@ -836,7 +837,7 @@
 				$scope.options[1].mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=1411+kennoway+park,+Spring+TX,+77379&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C1411+kennoway+park,+Spring+TX,+77379&sensor=false';
 
    			$scope.currentOption = $scope.options[0];
-	    	$scope.createSwipe();
+	    	//$scope.createSwipe();
 	    } else {
 		    $scope.title = "Page Error";
 	    }
@@ -933,8 +934,11 @@
 				} else if (teacherName.indexOf('Hull') > 0) {
 					value.index = 3;
 					value.img = 'img/Smushed/bio-hull.jpg';
-				} else if (teacherName.indexOf('Loftin') > 0) {
+				} else if (teacherName.indexOf('Patino') > 0) {
 					value.index = 4;
+					value.img = 'img/Smushed/bio-patino.jpg';
+				} else if (teacherName.indexOf('Loftin') > 0) {
+					value.index = 5;
 					value.img = 'img/Smushed/bio-loftin.jpg';
 				} else {
 					// ERROR
@@ -952,7 +956,7 @@
 				value.content = newString;
 			},
     	getPostsSundaySchool: function(isError) {
-    		console.log('isError', isError);
+    		//console.log('isError', isError);
     		var label = '$$$Sunday School';
     		return httpService.getLabeledPost(label)
   			.then(function(data) {
@@ -981,7 +985,7 @@
 												</a>';
 
 			   			var slideObject = {
-			   				heading: '',
+			   				heading: 'Sunday School',
 			   				index: 0,
 			   				title: value.title,
 			   				date: '',
@@ -1007,12 +1011,12 @@
 		   	});
     	},
     	getPostsTeacherBios: function(isError) {
-    		console.log('isError', isError);
+    		//console.log('isError', isError);
     		var label = '$$$Teacher Bios';
    			return httpService.getLabeledPostRecursive(label)
 	   		.then(function(data) {
 	   			if (!isError) {
-			   		console.log(label, 'data', data);
+			   		//console.log(label, 'data', data);
 			   		var value = data.items[0];
 			   		if (value) {
 			   			angular.forEach(data.items, function(value, key) {
@@ -1057,23 +1061,22 @@
 				});	
     	},
     	getPostsUpdates: function(isError) {
-    		console.log('isError', isError);
-    		var label = '$$$Sunday School Updates';
+    		//console.log('isError', isError);
+    		var label = '$$$Sunday School Posts';
    			return httpService.getLabeledPostRecursive(label)
 	   		.then(function(data) {
 	   			if (!isError) {
-			   		console.log(label, 'data', data);
+			   		//console.log(label, 'data', data);
 			   		var value = data.items[0];
 			   		if (value) {
-			   			/*
-				   		// Append info to all blog posts and use
+			   			// Append info to all blog posts and use
 				   		// regex to sanitize value.content (html)
 				   		angular.forEach(data.items, function(value, key) {
-				   			//removeContentTags(value);
+				   			http.removeContentTags(value);
 				   			appendPostInfo(value);
 			   			});
 			   			// Sort posts by most recent date first
-			   			$log.debug('Sorting Blog Posts');
+			   			// $log.debug('Sorting Blog Posts');
 			   			data.items.sort(sortBlogPosts);
 			   			data.items.reverse();
 			   			// Push all content into slideArray
@@ -1087,7 +1090,6 @@
 			   				};
 				   			$scope.slideArray.push(slideObject);
 			   			});
-			   			//*/
 			   			// Continue Promise Chaining
 			   			return false;
 			   		} else {
@@ -1715,10 +1717,15 @@
 
 	    // ---------------------------
 	    // Handle scope async updates
+	    var loadCompiledElem = false;
 	    scope.$watchCollection('slides', function(newVal, oldVal) {
 	    	//console.log('watchCollection slides oldVal', oldVal, 'newVal', newVal);
 	    	if (newVal && newVal.length >= infiniteSwipe.minLength) {
 	    		infiniteSwipe.init();
+	    		if (loadCompiledElem) {
+	    			$('#swipeview-masterpage-1').append(scope.compiledElem);
+	    			loadCompiledElem = false;
+	    		} 
 	    	} 
 	    });
 	    scope.$watch('activeIndex', function(newVal, oldVal) {
@@ -1733,7 +1740,9 @@
 	    scope.$watch('compiledElem', function(newVal, oldVal) {
 	    	//console.log('scope.$watch compiledElem', newVal);
 	    	if (newVal) {
-	    		$('#swipeview-masterpage-1').append(scope.compiledElem);
+	    		loadCompiledElem = true;
+	    		//scope.swipeElement.append(newVal);
+	    		
 	    	}
 	    });
 	    // ---------------------------

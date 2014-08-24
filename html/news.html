@@ -8,7 +8,7 @@
 
   <!-- <View for Small/Medium Screens> -->
   <div class="small-12 columns hide-for-large-up">
-    <select ng-model="currentOption" ng-options="tab.title for tab in slideArray" ng-change="switchOption()">
+    <select ng-model="currentOption" ng-options="tab.date + ': ' + tab.title for tab in slideArray" ng-change="switchOption()">
     </select>
   </div>
   <!-- </View for Small/Medium Screens> -->

@@ -49,6 +49,7 @@
         </li>
         <li class="divider"></li>
         <li ng-click="loadArchives()" 
+          ng-show="slideArray.length > maxVisible"
           ng-if="isCurrent">
           <a>Archives</a>
         </li>
@@ -62,7 +63,7 @@
   <div class="small-12 large-9 columns">
     <div infinite-swipe
       slides="slideArray"
-      min-length="1"
+      min-length="2"
       active-index="activeSlide"
       fixed-height="712"
       compiled-elem="compiledElem">
