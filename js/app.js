@@ -929,7 +929,7 @@
 					value.img = 'img/Smushed/bio-hurd.jpg';
 				} else if (teacherName.indexOf('Munns') > 0) {
 					value.index = 2;
-					value.img = 'img/Smushed/bio-munns.jpg';
+					value.img = 'img/Smushed/bio-jmunns.jpg';
 				} else if (teacherName.indexOf('Hull') > 0) {
 					value.index = 3;
 					value.img = 'img/Smushed/bio-hull.jpg';
