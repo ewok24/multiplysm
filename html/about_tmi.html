@@ -1,0 +1,19 @@
+﻿<div ng-controller="AboutTMIController" class="row">
+  <!-- <Page Title> -->
+  <div class="small-12 columns">
+    <h1>{{ about.title }}</h1>
+  </div>
+  <!-- </Page Title> -->
+
+  <!-- <About Page View> -->
+  <div class="small-12 columns">
+    <div class="small-12 medium-12 large-9 large-centered columns panel">
+      <h2>{{ about.heading }}</h2>
+      <img ng-src="{{ about.img }}" />
+      <br><br>
+      <div ng-bind-html="about.content"></div>
+    </div>
+  </div>
+  <!-- </About Page View> -->
+
+</div>

@@ -1,0 +1,57 @@
+﻿<div ng-controller="UpdatesThrive" class="row">
+  <!-- <Page Title> -->
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
+  </div>
+  <!-- </Page Title> -->
+  
+
+  <!-- <View for Small/Medium Screens> -->
+  <div class="small-12 columns hide-for-large-up">
+    <select ng-model="currentOption" ng-options="tab.title for tab in slideArray" ng-change="switchOption()">
+    </select>
+  </div>
+  <!-- </View for Small/Medium Screens> -->
+
+
+  <!-- <View for Large Screens> -->
+  <div class="show-for-large-up">
+    <div class="large-3 columns">
+      <ul class="side-nav">
+        <li ng-click="loadCurrent()" 
+          ng-if="!isCurrent"
+          ng-class="{active: ($index === activeSlide) }">
+          <a>Return to Current Posts</a>
+        </li>
+        <li ng-if="!isCurrent"
+          class="divider">
+        </li>
+        <li ng-repeat="tab in slideArray | limitTo: lastVisible | limitTo: -maxVisible" 
+          ng-click="loadSlide(tab.index)"
+          ng-class="{active: (tab.index === activeSlide) }">
+          <a>{{ tab.title }}</a>
+        </li>
+        <li class="divider"></li>
+        <li ng-click="loadArchives()" 
+          ng-show="slideArray.length > maxVisible"
+          ng-if="isCurrent">
+          <a>Archives</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- </View for Large Screens> -->
+
+
+  <!-- <Infinite Swipe Element> -->
+  <div class="small-12 large-9 columns">
+    <div infinite-swipe
+      slides="slideArray"
+      min-length="3"
+      active-index="activeSlide"
+      fixed-height="612">
+    </div>
+  </div>
+  <!-- </Infinite Swipe Element> -->
+  
+</div>

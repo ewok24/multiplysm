@@ -1,24 +1,29 @@
 /********************** 
  *    Global Styles
  **********************/
-
- @font-face {
-	font-family: optimus-princeps;
-	src: url('../fonts/OptimusPrinceps.ttf');
-}
-
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	font-family: optimus-princeps;
-	color: #000;
 }
 p {
 	font-family: Arial, Helvetica, serif;
 }
+.no-text-select {
+	-webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
 
+/********************** 
+ * Key Site Font (Optimus)
+ **********************/
+@font-face {
+	font-family: optimus-princeps;
+	src: url('../fonts/OptimusPrinceps.ttf');
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: optimus-princeps;
+	color: #000;
+}
 .optimus {
 	font-family: optimus-princeps;
 	font-size: 1.2em;
@@ -29,6 +34,9 @@ span.optimus {
 	font-size: 1.2em;
 }
 
+/********************** 
+ *   Infinite Swipe
+ **********************/
 .infiniteSwipe {
 	font-family: Arial, Helvetica, serif
 	font-weight: normal;
@@ -39,49 +47,69 @@ span.optimus {
 }
 
 /********************** 
- *  Foundation Styles
+ * Foundation: Top Bar Styling
  **********************/
-
 .top-bar-section li.active:not(.has-form) a:not(.button) {
 	background: #d02000;
-
 	/* background: #ff2701; */
 	/* background: #911703; */
 	/* background: #dc411c; */
 }
-
 .top-bar-section li.active:not(.has-form) a:not(.button):hover {
 	background: #a61a00;
 }
 
+/********************** 
+ * Foundation: Side Nav Styling
+ **********************/
 .side-nav li a:not(.button) {
 	color: #a61a00;
 }
 .side-nav li.active>a:first-child:not(.button) {
 	color: #ff2701;	
 }
-
 .side-nav li a:not(.button):hover, .side-nav li a:not(.button):focus {
 	color: #ffffff;	
 }
 
+/********************** 
+ *    Swipe Bullets
+ **********************/
+.orbit-bullets li.active {
+	background: #999999 !important;
+}
 .orbit-container .orbit-bullets li {
 	background: #fff;
 	cursor: pointer;
+	width: 1.2rem;
+	height: 1.2rem;
+	margin-right: 20px;
 }
 
-/* 
-Colors:
-
-Red1: dc411c
-Red2: ff2700
-
-*/
+/********************** 
+ *    	 SwipeJS
+ **********************/
+.swipe {
+	overflow: hidden;
+	visibility: hidden;
+	position: relative;
+}
+.swipe-wrap {
+	overflow: hidden;
+	position: relative;
+}
+.swipe-wrap > div {
+	float:left;
+	width:100%;
+	position: relative;
+}
+.swipe-wrap img {
+	width:100%;
+}
 
 /********************** 
  *   MediaElementJS
  **********************/
-
 .mejs-container {
 	height: 130px !important;
 }
@@ -115,31 +143,11 @@ mejs-button mejs-playpause-button mejs-play
 */
 
 
-/********************** 
- *    	 SwipeJS
- **********************/
 
-.swipe {
-	overflow: hidden;
-	visibility: hidden;
-	position: relative;
-}
-.swipe-wrap {
-	overflow: hidden;
-	position: relative;
-}
-.swipe-wrap > div {
-	float:left;
-	width:100%;
-	position: relative;
-}
+/* 
+Colors:
 
-.swipe-wrap img {
-	width:100%;
-}
+Red1: dc411c
+Red2: ff2700
 
-.no-text-select {
-	-webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
+*/

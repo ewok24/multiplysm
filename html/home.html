@@ -134,7 +134,7 @@
 
       <div class="orbit-container">
         <ol class="orbit-bullets">
-          <li class="" ng-repeat="bullet in bullets" ng-click="click(bullet)" ng-class="{active: bullet === selectedBullet}" data-orbit-slide-number="bullet.number">
+          <li ng-repeat="bullet in bullets" ng-click="click(bullet)" ng-class="{active: bullet.number === selectedBullet.number}" data-orbit-slide-number="bullet.number">
           </li>
         </ol>
       </div>

@@ -1,26 +1,10 @@
-<div ng-controller="SundaySchoolController" class="row">
+<div ng-controller="UpdatesSundayBibleFellowship" class="row">
   <!-- <Page Title> -->
 	<div class="small-12 large-12 columns">
   	<h1>{{title}}</h1>
   </div>
   <!-- </Page Title> -->
-
   
-  <!-- <Reveal Modal> -->
-  <div id="myModal" class="reveal-modal" data-reveal>
-    <div class="small-6 medium-6 large-4 column">
-      <img ng-src="{{ current.img }}" style="width: 100%; margin-bottom: 10px;">
-    </div>
-    <div class="small-6 medium-6 large-8 column">
-      <h2>{{ current.name }}</h2>
-      <p class="lead">Grade: {{ current.gradeLevel }}</p>
-    </div>
-    <div class="small-12 column" ng-bind-html="current.content">
-    </div>
-    <a class="close-reveal-modal">&#215;</a>
-  </div>
-  <!-- </Reveal Modal> -->
-
 
   <!-- <View for Small/Medium Screens> -->
   <div class="small-12 columns hide-for-large-up">
@@ -63,10 +47,9 @@
   <div class="small-12 large-9 columns">
     <div infinite-swipe
       slides="slideArray"
-      min-length="2"
+      min-length="3"
       active-index="activeSlide"
-      fixed-height="712"
-      compiled-elem="compiledElem">
+      fixed-height="612">
     </div>
   </div>
   <!-- </Infinite Swipe Element> -->

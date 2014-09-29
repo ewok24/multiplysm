@@ -1,0 +1,48 @@
+﻿<div ng-controller="AboutBibleStudyController" class="row">
+  <!-- <Page Title> -->
+  <div class="small-12 columns">
+    <h1>{{ about.title }}</h1>
+  </div>
+  <!-- </Page Title> -->
+
+  <!-- <About Page View> -->
+  <div class="small-12 columns">
+    <div class="small-12 medium-12 large-9 large-centered columns panel">
+      <h2>{{ about.heading }}</h2>
+      <img ng-src="{{ about.img }}" />
+      <div ng-bind-html="about.content"></div>
+      <div class"small-12 column">
+        <br>
+        <h3>Teachers</h3>
+        <h3><small>Click/Tap on Photos for Teacher Bios</small></h3>
+        <ul class="small-block-grid-2 medium-block-grid-4 large-block-grid-2">
+          <li ng-repeat="teacher in teachers"
+            ng-click="loadTeacher(teacher);"
+            style="cursor: pointer;">
+            <img ng-src="{{teacher.img}}" style="width: 100%; margin-bottom: 10px;">
+            <div style="background-color: #eee; color: #999; border-top: 2px solid #5A5A59; padding: 10px;">
+              <h6 style="margin: 0;"><strong>{{ teacher.name }}</strong></h6>
+              <p style="margin: 0; color: #999;">Grade: {{ teacher.gradeLevel }}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- </About Page View> -->
+
+  <!-- <Reveal Modal> -->
+  <div id="myModal" class="reveal-modal" data-reveal>
+    <div class="small-12 medium-6 large-4 column">
+      <img ng-src="{{ about.modal.img }}" style="width: 100%; margin-bottom: 10px;">
+    </div>
+    <div class="small-12 medium-6 large-8 column">
+      <h2>{{ about.modal.name }}</h2>
+      <p class="lead" style="color: #999;">Grade: {{ about.modal.gradeLevel }}</p>
+    </div>
+    <div class="small-12 column" ng-bind-html="about.modal.content">
+    </div>
+    <a class="close-reveal-modal">&#215;</a>
+  </div>
+  <!-- </Reveal Modal> -->
+</div>

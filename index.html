@@ -50,68 +50,32 @@
   <!-- Top Bar HTML End -->
   <div class="off-canvas-wrap" data-offcanvas>
     <div class="inner-wrap">
-      <!-- New Top Bar HTML Start -->
+      
+      <!-- <New Top Bar HTML Start> -->
       <div>
-
         <!-- <Top Bar Left & Right Fills> -->
         <div style="position: absolute; height: 45px; width: 100%; background-color: #333;"></div>
         <!-- </Top Bar Left & Right Fills> -->
-
         <div class="row slide-top-bar">
-          <nav class="hide-for-small top-bar" data-topbar>
-            <ul class="title-area">
-              <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-            </ul>
-            
-            <section class="top-bar-section">
-              <!-- Right Nav Section -->
-
-              <!-- Left Nav Section -->
-              <ul class="left menu-options">
-                <li class="" ng-repeat="item in itemsLeft" ng-click="select(item)" ng-class="{active: item === selected}">
-                  <a href="{{item.url}}" ng-cloak>{{item.name}}</a>
-                </li>
-                <li class="has-dropdown" ng-click="ministrySelected=true; selected=null;" ng-class="{active: ministrySelected}">
-                  <a href="#/events">Ministries</a>
-                  <ul class="dropdown">
-                    <li><a style="background: #333;" href="#/biblestudy">Weekly Bible Study</a></li>
-                    <li><a style="background: #333;" href="#/sundayschool">Sunday School</a></li>
-                    <li><a style="background: #333;" href="#/initiative">The Multiply Initiative</a></li>
-                    <li><a style="background: #333;" href="#/upcoming">Upcoming Ministry Events</a></li>
-                  </ul>
-                </li>
-                <li class="" ng-repeat="item in itemsRight" ng-click="select(item)" ng-class="{active: item === selected}">
-                  <a href="{{item.url}}" ng-cloak>{{item.name}}</a>
-                </li>
-              </ul>
-            </section>
+          <nav class="hide-for-small top-bar" data-topbar data-options="is_hover: false">
+            <section top-bar-list-items items="items" select-fn="select(item, topItem)" class="top-bar-section"></section>
           </nav>
         </div>
       </div>
-      <!-- New Top Bar HTML End -->
+      <!-- </New Top Bar HTML End> -->
 
       <!-- <New Off Canvas HTML> -->
       <nav class="hide-for-medium-up top-bar tab-bar">
-        <section class="left-small">
-          <a class="left-off-canvas-toggle menu-icon" ><span></span></a>
+        <section class="left-small" style="padding-right: 93px; z-index: 2; cursor: pointer; -webkit-user-select: none; user-select: none;">
+          <a class="left-off-canvas-toggle menu-icon"><span style="padding-left: 5px;">Menu</span></a>
         </section>
-
         <section class="middle tab-bar-section">
-          <h1 class="title hide-for-small-only">Multiply Student Ministry</h1>
           <h1 class="title show-for-small-only">Multiply</h1>
         </section>
       </nav>
       <!-- </New Off Canvas HTML> -->
 
-      <aside class="left-off-canvas-menu">
-        <ul class="off-canvas-list">
-          <li><label>Multiply Student Ministry</label></li>
-          <li class="" ng-repeat="item in sideBarItems" ng-click="select(item)" ng-class="{active: item == selected}">
-            <label ng-if="item.label" ng-click="go(item.path)">{{item.name}}</label>
-            <a ng-if="!item.label" href="{{item.url}}" ng-cloak>{{item.name}}</a>
-          </li>
-        </ul>
-      </aside>
+      <aside off-canvas-list-items items="items" select-fn="select(item, topItem)" class="left-off-canvas-menu"></aside>
 
       <section class="main-section">
         <div class="row">
@@ -135,10 +99,12 @@
                   <p style="color: #ffffff;">
                     We have a variety of ways to keep you informed of our activities here at <span class="optimus">Multiply Student Ministry</span>
                   </p>
-                  <!--
+                  
                   <a href="https://go.goroost.com/register?appKey=a9439828ac2b41948c73cfdd9ce2b184" target="_blank">
-                  -->
+                  <!-- -->
+                  <!--
                   <a href="https://launch.alertrocket.com/register?appKey=a9439828ac2b41948c73cfdd9ce2b184" target="_blank">
+                  -->
                     <div class="small-12 medium-6 columns">
                       <h3 style="color: #ff2701;"><i class="fi-star"></i> NOTIFICATIONS</h3>
                     </div>

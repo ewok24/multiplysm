@@ -1,10 +1,10 @@
-<div ng-controller="InitiativeController" class="row">
+<div ng-controller="UpdatesTMI" class="row">
   <!-- <Page Title> -->
-	<div class="small-12 large-12 columns">
-  	<h1>{{title}}</h1>
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
   </div>
   <!-- </Page Title> -->
-
+  
 
   <!-- <View for Small/Medium Screens> -->
   <div class="small-12 columns hide-for-large-up">
@@ -20,7 +20,7 @@
       <ul class="side-nav">
         <li ng-click="loadCurrent()" 
           ng-if="!isCurrent"
-          ng-class="{ active: ($index === activeSlide) }">
+          ng-class="{active: ($index === activeSlide) }">
           <a>Return to Current Posts</a>
         </li>
         <li ng-if="!isCurrent"
@@ -33,6 +33,7 @@
         </li>
         <li class="divider"></li>
         <li ng-click="loadArchives()" 
+          ng-show="slideArray.length > maxVisible"
           ng-if="isCurrent">
           <a>Archives</a>
         </li>
@@ -43,7 +44,7 @@
 
 
   <!-- <Infinite Swipe Element> -->
-  <div class="small-12 large-9 columns">
+  <div class="small-12 large-9 columns" style="min-height: 712px;">
     <div infinite-swipe
       slides="slideArray"
       min-length="3"
