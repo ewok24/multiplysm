@@ -238,12 +238,12 @@
 			{ name: 'Home', url: '#/', dropdown: false, nested: [] },
 			{ name: 'About Us', url: null, dropdown: true, nested: [
 				{ name: 'About Our Ministry', url: '#/about', nested: [] },
-				{ name: 'Sunday Bible Fellowship', url: '#/about_biblestudy', nested: [] },
+				{ name: 'Bible Study', url: '#/about_biblestudy', nested: [] },
 				{ name: 'Thrive', url: '#/about_thrive', nested: [] },
 				{ name: 'The Multiply Initiative', url: '#/about_tmi', nested: [] },
 			] },
 			{ name: 'Ministry Updates', url: '', dropdown: true, nested: [
-				{ name: 'Sunday Bible Fellowship', url: '#/updates_sundaybiblefellowship', dropdown: false, nested: [] },
+				{ name: 'Bible Study', url: '#/updates_sundaybiblefellowship', dropdown: false, nested: [] },
 				{ name: 'Thrive', url: '#/updates_thrive', dropdown: false, nested: [] },
 				{ name: 'The Multiply Initiative', url: '#/updates_tmi', dropdown: false, nested: [] },
 				{ name: 'Upcoming Events', url: '#/updates_upcoming', dropdown: false, nested: [] },
@@ -538,7 +538,7 @@
 		];
 
   	$scope.about = {};
-  	$scope.about.title = 'Sunday Bible Fellowship';
+  	$scope.about.title = 'Bible Study';
   	$scope.about.heading = 'About';
   	var img = 'img/Smushed/about-bibleFellowship.jpg';
 		var imgEl = '<img src="' + img + '" />';
@@ -846,7 +846,7 @@
 	function ($log, $scope, $compile, httpService) {
 		var defaultSettings = {
 			controllerName: 'UpdatesSundayBibleFellowship',
-			title: 'Sunday Bible Fellowship',
+			title: 'Bible Study',
 			subtitle: 'Updates',
 			postHeading: 'Updates',
 			maxVisible: 13,
