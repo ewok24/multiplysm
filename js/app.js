@@ -1653,6 +1653,7 @@
 			// ---------------------------
 			var isDigest = true;
 			var isInternal = true;
+			var enableWatch = true;
 			var infiniteSwipe = {
 	    	carousel: null,
 	    	minLength: scope.minLength,
@@ -1741,13 +1742,16 @@
 	    	} 
 	    });
 	    scope.$watch('activeIndex', function(newVal, oldVal) {
-	    	if (isInternal && !isNaN(newVal) && scope.slides.length >= infiniteSwipe.minLength) {
-	    		//console.log('switch to newVal', newVal);
-	    		isDigest = false;
-	    		goToPage(newVal);
-	    		//console.log('infiniteSwipe.carousel', infiniteSwipe.carousel);
-	    	} 
-	    	isInternal = true;
+	    	//console.log('[function] scope.$watch(activeIndex) enableWatch', enableWatch);
+	    	if (enableWatch) {
+		    	if (isInternal && !isNaN(newVal) && scope.slides.length >= infiniteSwipe.minLength) {
+		    		//console.log('switch to newVal', newVal);
+		    		isDigest = false;
+		    		goToPage(newVal);
+		    		//console.log('infiniteSwipe.carousel', infiniteSwipe.carousel);
+		    	} 
+		    	isInternal = true;
+		    }
 	    });
 	    scope.$watch('compiledElem', function(newVal, oldVal) {
 	    	//console.log('scope.$watch compiledElem', newVal);
@@ -1762,7 +1766,18 @@
 	    // ---------------------------
 	    // Slide Controls
 	    var goToPage = function(index) {
-	    	infiniteSwipe.carousel.goToPage(index);
+	    	//console.log('goToPage index', index);
+	    	if (index < 2) {
+	    		enableWatch = false;
+	    		infiniteSwipe.carousel.goToPage(index);
+	    		enableWatch = true;
+	    	} else {
+	    		enableWatch = false;
+					infiniteSwipe.carousel.goToPage(index - 2);
+					infiniteSwipe.carousel.next();
+					infiniteSwipe.carousel.next();
+					enableWatch = true;
+	    	}
 	    };
 	    scope.nextSlide = function() {
 	    	infiniteSwipe.carousel.next();
