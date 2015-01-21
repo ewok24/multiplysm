@@ -30,13 +30,16 @@
   <div class="show-for-large-up">
     <div class="large-3 columns">
       <ul class="side-nav">
-        <li ng-class="{active: isMissionStatement}" ng-click="getMissionStatement()"><a>Mission Statement</a></li>
-        <li ng-class="{active: isOurYouthPastor}" ng-click="getOurYouthPastor()"><a>Our Youth Pastor</a></li>
+        <li ng-repeat="slide in slides" 
+          ng-class="{ active: slide.isActive }"
+          ng-click="selectSlide(slide, $index)">
+          <a>{{slide.title}}</a>
+        </li>
         <li class="divider"></li>
       </ul>
     </div>
     <div class="expand-on-small large-9 columns">
-      <img style="width: 100%;" ng-src="{{ img }}"/>
+      <img style="width: 100%;" ng-src="{{ src }}"/>
       <div class="panel">
         <h2>{{ subtitle }}</h2>
         <p>{{ content }}</p>

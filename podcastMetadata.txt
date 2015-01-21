@@ -1,5 +1,38 @@
 [
 {
+"title": "Aiming At Restoration",
+"speaker": "Nathan Ramirez",
+"date": "2013-11-19",
+"passage": "Galatians 6",
+"series": "Non-Series - Galatians",
+"description": "...",
+"dblink": "https://dl.dropboxusercontent.com/s/hp0b4sw3h3qrjdl/2014%2011%2019%20Wed.%20PM%20Edited%40%20Aiming%20At%20Restoration-N.%20Ramirez.mp3",
+"filename": "2014 11 19 Wed. PM Edited@ Aiming At Restoration-N. Ramirez.mp3"
+},
+{
+"title": "Psalm 130",
+"speaker": "Nathan Ramirez",
+"date": "2013-10-08",
+"passage": "Psalm 130",
+"series": "Non-Series - Psalms",
+"description": "...",
+"dblink": "https://dl.dropboxusercontent.com/s/z5o56o2r57bdhf3/2014%2010%2008%20Wed.%20PM%20Edited%40%20Psalm%20130%20Nathan%20Ramirez%40.mp3",
+"filename": "2014 10 08 Wed. PM Edited@ Psalm 130 Nathan Ramirez@.mp3"
+},
+{
+"title": "David & Goliath",
+"speaker": "Nathan Ramirez",
+"date": "2013-03-19",
+"passage": "1 Samuel 17",
+"series": "Non-Series - 1 Samuel",
+"description": "...",
+"dblink": "https://dl.dropboxusercontent.com/s/qaal6s6vfzkamg2/2014%2003%2019%20Wed.%20PM%20Edited%40%20David%20%26%20Goliath%20-%20Nathan%20Ramirez%20%40.mp3",
+"filename": "2014 03 19 Wed. PM Edited@ David & Goliath - Nathan Ramirez @.mp3"
+},
+
+
+
+{
 "title": "Wednesday Evening Service",
 "speaker": "Nathan Ramirez",
 "date": "2013-09-25",
@@ -9,7 +42,6 @@
 "dblink": "https://dl.dropboxusercontent.com/s/4s7iuattat2d0in/2013%2009%2025%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3",
 "filename": "2013 09 25 Wed. PM Edited@ Nathan Ramirez@.mp3"
 },
-
 {
 "title": "Intro To Multiply Student Ministry",
 "speaker": "Nathan Ramirez",

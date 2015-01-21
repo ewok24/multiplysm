@@ -1,13 +1,6 @@
 ﻿<div ng-controller="NewHomeController">
   <!-- <Sub Header> -->
-  <div class="row">
-    <div style="height: 120px;" class="small-12 columns show-for-medium-up">
-      <img style="max-height: 145px" src="img/logo-msm.png">
-    </div>
-    <div style="height: 70px;" class="small-12 columns show-for-small">
-      <img style="max-height: 100px" src="img/logo-msm.png">
-    </div>
-  </div>
+  <div msm-home-header></div>
   <hr/>
   <!-- </Sub Header> -->
 
@@ -16,25 +9,9 @@
     <div class="small-12 columns" style="padding-left: 0; padding-right: 0;">
       <div id='slider' class='swipe'>
         <div class='swipe-wrap'>
-          <div>
-            <a href="">
-              <img class="show-for-large-up" src="img/Smushed/slide0-MainSlide-large.jpg">
-              <img class="show-for-medium" src="img/Smushed/slide0-MainSlide-large.jpg">
-              <img class="show-for-small" src="img/Smushed/slide0-MainSlide-small-retina.jpg">
-            </a>
-          </div>
-          <div>
-            <a href="#/about">
-              <img class="show-for-large-up" src="img/Smushed/slide1-Welcome-large.jpg">
-              <img class="show-for-medium" src="img/Smushed/slide1-Welcome-large.jpg">
-              <img class="show-for-small" src="img/Smushed/slide1-Welcome-small-retina.jpg">
-            </a>
-          </div>
-          <div>
-            <a href="http://foundersbaptist.org/" target="_blank">
-              <img class="show-for-large-up" src="img/Smushed/slide2-FoundersSlide-large.jpg">
-              <img class="show-for-medium" src="img/Smushed/slide2-FoundersSlide-large.jpg">
-              <img class="show-for-small" src="img/Smushed/slide2-FoundersSlide-small-retina.jpg">
+          <div ng-repeat="slide in slides">
+            <a href="{{slide.url}}">
+              <img ng-src="{{slide.src}}">
             </a>
           </div>
         </div>

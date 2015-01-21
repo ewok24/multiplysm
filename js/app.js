@@ -225,7 +225,315 @@
     Logos.ReferenceTagging.tag();
     //*/
   }
+  var regexRules = {
+  	get: {
+  		img: function(htmlString) {
+  			var regexString = /<img([\w\W]+?)\/>/g;
+  			var returnArray = htmlString.match(regexString);
+  			htmlString.replace(regexString, '');
+  			return returnArray;
+	  	},
+	  	src: function(htmlString) {
+	  		return htmlString.match(/src="([\w\W]+?)"/g);
+	  	},
+  	},
+  	replace: {
+  		tags: function(htmlString) {
+  			var regexString = /<div([^>]*)>|<\/div>|<a([^>]*)>|<\/a>|<img([^>]*)>|<\/img>|<br\/>|&#10;/g;
+				return htmlString.replace(regexString, '');
+  		},
+  	},
+  };
+  app.factory('BloggerPost', ['$sanitize', function($sanitize) {
+  	var constructor = function(postData) {
+  		var _title;
+	  	var _labels;
+	  	var _htmlString;
+	  	var _sanitizedHtml;
+	  	var returnObject = {
+	  		getTitle: function() { 
+	  			return _title;
+	  		},
+	  		hasTitle: function(title) {
+	  			if (title === _title) {
+	  				return true;
+	  			} else {
+	  				return false;
+	  			}
+	  		},
+	  		getLabels: function() {
+	  			return _labels;
+	  		},
+	  		hasLabel: function(label) { 
+	  			for (var i = 0; i < _labels; i++) {
+	  				if (_labels[i] === label) {
+	  					return true;
+	  				}
+	  			}
+	  			return false;
+	  		},
+	  		getHtml: function() {
+	  			var returnString = regexRules.replace.tags(_sanitizedHtml);
+	  			return returnString;
+	  		},
+	  		extractImgs: function() {
+	  			return regexRules.get.img(_sanitizedHtml);
+	  		},
+	  		extractImgSrcUrls: function() {
+	  			var imgArray = this.extractImgs();
+	  			var urlArray = [];
+	  			if (imgArray) {
+	  				for (var i = 0; i < imgArray.length; i++) {
+		  				var srcArray = regexRules.get.src(imgArray[i]);
+		  				urlArray.push(srcArray[0].substring(5, srcArray[0].length - 1));
+		  			}
+	  			}
+	  			return urlArray;
+	  		},
+	  	};
+	  	
+  		if (postData) {
+  			_title = postData.title;
+  			_labels = postData.labels;
+  			_htmlString = postData.content;
+  			_sanitizedHtml = $sanitize(_htmlString);
+  		}
+  		return returnObject;
+  	};
+  	return constructor;
+  }]);
+  app.factory('BloggerPostList', ['BloggerPost', function(BloggerPost) {
+  	var constructor = function(data) {
+  		var _items = [];
+	  	var returnObject = {
+	  		getPosts: function() {
+	  			return _items;
+	  		},
+	  	};
+  		if (data && data.items) {
+  			for (var i = 0; i < data.items.length; i++) {
+  				_items.push(new BloggerPost(data.items[i]));
+  			}
+  		}
+  		return returnObject;
+  	};
+  	return constructor;
+  }]);
 
+  /********************************************************************
+   *
+   *                             	 Pages
+   *
+   ********************************************************************/
+  
+  // ------------------------------------
+	// Home Page
+  app.controller('NewHomeController', 
+	['$scope', 'httpService', 'BloggerPostList',
+	function ($scope, httpService, BloggerPostList) {
+		var mySwipe;
+		$scope.slides = [
+			{ url: '' },
+			{ url: '#/about' },
+			{ url: '#/updates_upcoming' },
+		];
+  	$scope.bullets = [];
+  	function addBullet() {
+  		$scope.bullets.push({ number: $scope.bullets.length });
+  	};
+  	function addSlide(index, urlString, srcString) {
+  		if (index > $scope.slides.length) {
+  			$scope.slides.push({
+	  			url: urlString,
+	  			src: srcString,
+	  		});
+  		} else {
+  			$scope.slides[index].src = srcString;
+  		}
+			addBullet();
+		};
+    function initSwipe() {
+    	mySwipe = Swipe(document.getElementById('slider'), {
+	    	startSlide: 0,
+			  speed: 400,
+			  auto: 5000,
+			  continuous: true,
+			  disableScroll: false,
+			  stopPropagation: false,
+			  callback: function(index, elem) {
+			  	$scope.changeActive(index);
+			  },
+			  transitionEnd: function(index, elem) {}
+	    });
+    };
+
+    $scope.changeActive = function(index) {
+    	$scope.selectedBullet = $scope.bullets[index];
+    	if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
+    };
+    $scope.click = function(bullet) {
+    	$scope.selectedBullet = $scope.bullets[bullet.number];
+    	mySwipe.slide(bullet.number);
+    };
+
+    httpService.resetSimpleGet();
+  	httpService.getLabeledPost('$Home')
+  	.then(function(data) {
+  		var list = new BloggerPostList(data);
+  		var post = list.getPosts()[0];
+  		var srcArray = post.extractImgSrcUrls();
+  		
+  		for (var i = 0; i < srcArray.length; i++) {
+  			addSlide(i, '', srcArray[i]);
+  		}
+  		$scope.selectedBullet = $scope.bullets[0];
+
+  		$scope.$watchCollection('slides', function(newVal, oldVal) {
+  			if (newVal !== oldVal) {
+  				initSwipe();
+  			}
+  		});
+   	});
+  }]);
+
+	app.directive('msmHomeHeader', 
+	['$log',
+	function ($log) {
+		/*****************************************************
+   	*                    	Link Function
+   	*****************************************************/
+		var link = function(scope, element, attrs, controller) {
+			$log.debug('msm-home-header scope', scope);
+			
+			// ---------------------------
+		};
+
+		/*****************************************************
+   	*              Directive Definition Object
+   	*****************************************************/
+	  var directiveDefinitionObject = {
+      priority: 0,
+      template: function(tElement, tAttrs) {
+      	var htmlString = '<div class="row"> \
+      											<div style="height: 120px;" class="small-12 columns show-for-medium-up"> \
+      												<a href="#"><img style="max-height: 145px" src="img/logo-msm.png"></a> \
+											    	</div> \
+											    	<div style="height: 70px;" class="small-12 columns show-for-small"> \
+											      	<a href="#"><img style="max-height: 100px" src="img/logo-msm.png"></a> \
+											    	</div> \
+											  	</div>';
+      	return htmlString;
+      },
+      transclude: false,
+      restrict: 'A',
+      scope: {
+      	imgUrl: '@',
+      },
+      //controller: function($scope, $element, $attrs, $transclude, otherInjectables) { ... },
+      //controllerAs: 'stringAlias',
+      //require: 'siblingDirectiveName', // or // ['^parentDirectiveName', '?optionalDirectiveName', '?^optionalParent'],
+      compile: function compile(tElement, tAttrs, transclude) {
+      	return link;
+      },
+    };
+    return directiveDefinitionObject;
+	}]);
+
+	// ------------------------------------
+	// About Page
+	app.controller('AboutController', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+		var defaultSettings = {
+			controllerName: 'AboutController',
+			title: 'About Us',
+			label: '$$$About Our Ministry',
+		};
+		$scope.slides = [];
+		function addSlide(title, content, src) {
+			$scope.slides.push({
+				title: title,
+				content: content,
+				src: src,
+			});
+		};
+		function setActiveSlide(index) {
+			for (var i = 0; i < $scope.slides.length; i++) {
+				$scope.slides[i].isActive = false;
+			}
+			$scope.slides[index].isActive = true;
+		}
+
+  	$scope.options = [
+  		{ value: 0, title: 'temp', content: 'temp' },
+  		{ value: 1, title: 'temp', content: 'temp' },
+  	];
+
+  	$scope.switchOption = function() {
+  		if ($scope.currentOption != null) {
+  			if ($scope.currentOption.value === 0) {
+  				$scope.getMissionStatement();
+  			} else if ($scope.currentOption.value === 1) {
+  				$scope.getOurYouthPastor();
+  			}
+
+  			$scope.swipe.slide($scope.currentOption.value);
+  		}
+  	};
+  	$scope.callback = function(index) {
+  		$scope.currentOption = $scope.options[index];
+  		if (!$scope.$$phase) {
+    		$scope.$apply();
+    	}
+  	};
+
+  	$scope.selectSlide = function(post, index) {
+			$scope.subtitle = post.title;
+			$scope.content = post.content;
+			$scope.src = post.src;
+			setActiveSlide(index);
+		}
+
+  	var missionStatementData;
+  	var ourYouthPastorData;
+
+  	httpService.resetSimpleGet();
+  	httpService.getLabeledPost(defaultSettings.label)
+  	.then(function(data) {
+  		var list = new BloggerPostList(data);
+  		var posts = list.getPosts();
+  		
+   		if (posts[0] && posts[1]) {
+   			$scope.title = defaultSettings.title;
+
+   			if (posts[0].hasTitle('Our Youth Pastor')) {
+   				ourYouthPastorData = posts[0];
+   				missionStatementData = posts[1];
+   			} else {
+   				ourYouthPastorData = posts[1];
+   				missionStatementData = posts[0];
+   			}
+   			addSlide(missionStatementData.getTitle(), 
+   				missionStatementData.getHtml(), 
+   				missionStatementData.extractImgSrcUrls()[0]);
+   			addSlide(ourYouthPastorData.getTitle(), 
+   				ourYouthPastorData.getHtml(), 
+   				ourYouthPastorData.extractImgSrcUrls()[0]);
+   			
+   			$scope.selectSlide($scope.slides[0], 0);
+ 				$scope.currentOption = $scope.options[0];
+
+	    	$scope.createSwipe();
+   		} else {
+   			$scope.title = "Page Error; Please Refresh";
+   		}
+   	}, function(error) {
+   		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.label, error);
+   	});
+	}]);
+	
   /********************************************************************
    *
    *                            Controllers
@@ -365,165 +673,6 @@
   /********************************************************************
    *                         Page Controllers
    ********************************************************************/
-  app.controller('NewHomeController', 
-	['$scope', 
-	function ($scope) {
-  	$scope.slides = [
-  		{ url: '', src: 'img/slide0-MainSlide.png' }, 
-  		{ url: '#/about', src: 'img/slide1-Welcome.png' }, 
-  		{ url: '', src: 'img/slide1-Welcome.png' }, 
-  	];
-
-  	$scope.bullets = [
-  		{ number: 0 },
-  		{ number: 1 },
-  		{ number: 2 },
-  	];
-
-  	$scope.selectedBullet = $scope.bullets[0];
-
-    var mySwipe = Swipe(document.getElementById('slider'), {
-    	startSlide: 0,
-		  speed: 400,
-		  auto: 5000,
-		  continuous: true,
-		  disableScroll: false,
-		  stopPropagation: false,
-		  callback: function(index, elem) {
-		  	$scope.changeActive(index);
-		  },
-		  transitionEnd: function(index, elem) {}
-    });
-
-    $scope.changeActive = function(index) {
-    	$scope.selectedBullet = $scope.bullets[index];
-    	//console.log('$scope.selectedBullet', $scope.selectedBullet);
-    	if (!$scope.$$phase) {
-    		$scope.$apply();
-    	}
-    };
-    $scope.click = function(bullet) {
-    	$scope.selectedBullet = $scope.bullets[bullet.number];
-    	mySwipe.slide(bullet.number);
-    };
-
-    $scope.prevSlide = function() {
-    	mySwipe.prev();
-    };
-    $scope.nextSlide = function() {
-    	mySwipe.next();
-    };
-  }]);
-
-  // ------------------------------------
-	// About Pages:
-	app.controller('AboutController', 
-	['$log', '$scope', 'httpService', 
-	function ($log, $scope, httpService) {
-		var defaultSettings = {
-			controllerName: 'AboutController',
-			title: 'About Us',
-			aboutLabel: '$$$About Our Ministry',
-		};
-
-  	$scope.options = [
-  		{ value: 0, title: 'temp', content: 'temp' },
-  		{ value: 1, title: 'temp', content: 'temp' },
-  	];
-
-  	$scope.switchOption = function() {
-  		if ($scope.currentOption != null) {
-  			if ($scope.currentOption.value === 0) {
-  				$scope.getMissionStatement();
-  			} else if ($scope.currentOption.value === 1) {
-  				$scope.getOurYouthPastor();
-  			}
-
-  			$scope.swipe.slide($scope.currentOption.value);
-  		}
-  	};
-  	$scope.callback = function(index) {
-  		$scope.currentOption = $scope.options[index];
-  		if (!$scope.$$phase) {
-    		$scope.$apply();
-    	}
-  	};
-
-  	//************************************
-    //************************************
-
-  	var container = {
-  		missionStatement : {},
-  		ourYouthPastor : {}
-  	};
-  	var missionStatementData;
-  	var ourYouthPastorData;
-
-  	httpService.resetSimpleGet();
-  	httpService.getLabeledPost(defaultSettings.aboutLabel)
-  	.then(function(data) {
-   		if (data.items[0] && data.items[1]) {
-
-   			var title = data.items[0].labels[0];
-
-   			/*
-   			if (title.substr(0,1) === '$') {
-   				$scope.title = title.substr(1,title.length);
-   			} else {
-   				$scope.title = "Page Error";
-   				return '';
-   			}
-   			//*/
-   			$scope.title = defaultSettings.title;
-
-   			if (data.items[0].title === 'Our Youth Pastor') {
-   				ourYouthPastorData = data.items[0];
-   				missionStatementData = data.items[1];
-   			} else {
-   				ourYouthPastorData = data.items[1];
-   				missionStatementData = data.items[0];
-   			}
-
-   			container.missionStatement.title = missionStatementData.title;
-   			container.missionStatement.content = missionStatementData.content;
-
-   			container.ourYouthPastor.title = ourYouthPastorData.title;
-   			container.ourYouthPastor.content = ourYouthPastorData.content;
-
-   			$scope.getMissionStatement();
-
-   			$scope.options[0].title = missionStatementData.title;
-   			$scope.options[0].content = missionStatementData.content;
-   			$scope.options[0].img = 'img/Smushed/about-us-1-banner.jpg';
-   			
-   			$scope.options[1].title = ourYouthPastorData.title;
-   			$scope.options[1].content = ourYouthPastorData.content;
-   			$scope.options[1].img = 'img/Smushed/about-us-2-banner.jpg';
-
-   			$scope.currentOption = $scope.options[0];
-	    	$scope.createSwipe();
-   		} else {
-   			$scope.title = "Page Error";
-   		}
-   	}, function(error) {
-   		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.aboutLabel, error);
-   	});
-
-		$scope.getMissionStatement = function() {
-			$scope.subtitle = container.missionStatement.title;
-			$scope.content = container.missionStatement.content;
-			$scope.img = 'img/Smushed/about-us-1-banner.jpg';
-			$scope.isMissionStatement = true;
-			$scope.isOurYouthPastor = false;
-		}
-		$scope.getOurYouthPastor = function() {
-			$scope.subtitle = container.ourYouthPastor.title;
-			$scope.content = container.ourYouthPastor.content;
-			$scope.img = 'img/Smushed/about-us-2-banner.jpg';
-			$scope.isMissionStatement = false;
-			$scope.isOurYouthPastor = true;
-		}
-	}]);
 	
 	app.controller('AboutBibleStudyController', 
 	['$log', '$scope', 'httpService', 
