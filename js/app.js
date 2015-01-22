@@ -239,17 +239,30 @@
   	},
   	replace: {
   		tags: function(htmlString) {
-  			var regexString = /<div([^>]*)>|<\/div>|<a([^>]*)>|<\/a>|<img([^>]*)>|<\/img>|<br\/>|&#10;/g;
+  			var regexString = /<div([^>]*)>|<\/div>|<img([^>]*)>|<\/img>|&#10;/g;
 				return htmlString.replace(regexString, '');
+  		},
+  		contentTags: function(htmlString) {
+  			htmlString = htmlString.replace(/&nbsp;/g, ' ');
+				htmlString = htmlString.replace(/<br \/>|<br>/g, '<br/>');
+				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
+				htmlString = htmlString.replace(regexString, '');
+				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
+				htmlString = htmlString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
+				return htmlString;
   		},
   	},
   };
   app.factory('BloggerPost', ['$sanitize', function($sanitize) {
   	var constructor = function(postData) {
   		var _title;
-	  	var _labels;
+  		var _labels;
 	  	var _htmlString;
 	  	var _sanitizedHtml;
+
+	  	var _subtitle;
+  		var _date;
+  		var _dateText;
 	  	var returnObject = {
 	  		getTitle: function() { 
 	  			return _title;
@@ -289,6 +302,29 @@
 		  			}
 	  			}
 	  			return urlArray;
+	  		},
+	  		appendPostInfo: function() {
+	  			var divider = _title.indexOf(':');
+					var titleDate = _title.substr(0,divider);
+					var title = _title.substr(divider+1, _title.length);
+
+					var d = parseISO8601(titleDate);
+					var day = d.getDate();
+					var weekday = getDayText(d.getDay());
+					var month = getMonthText(d.getMonth());
+					var year = d.getFullYear();
+
+					_title = title;
+					_subtitle = titleDate;
+					_date = d;
+					_dateText = weekday + ', ' + month + ' ' + day;
+	  		},
+	  		removeContentTags: function() {
+	  			_sanitizedHtml = regexRules.replace.contentTags(_sanitizedHtml);
+	  			return _sanitizedHtml;
+	  		},
+	  		getSubtitle: function(){
+	  			return _subtitle;
 	  		},
 	  	};
 	  	
@@ -442,7 +478,7 @@
 	}]);
 
 	// ------------------------------------
-	// About Page
+	// About Us: About Our Ministry Page
 	app.controller('AboutController', 
 	['$log', '$scope', 'httpService', 'BloggerPostList',
 	function ($log, $scope, httpService, BloggerPostList) {
@@ -452,9 +488,21 @@
 			label: '$$$About Our Ministry',
 		};
 		$scope.slides = [];
-		function addSlide(title, content, src) {
+		$scope.options = [];
+		function addSlide(post) {
+			var title = post.getTitle();
+			var content = post.getHtml();
+			var src = post.extractImgSrcUrls()[0];
 			$scope.slides.push({
+				post: post,
 				title: title,
+				content: content,
+				src: src,
+			});
+			$scope.options.push({ 
+				value: $scope.options.length, 
+				post: post,
+				title: title, 
 				content: content,
 				src: src,
 			});
@@ -466,19 +514,9 @@
 			$scope.slides[index].isActive = true;
 		}
 
-  	$scope.options = [
-  		{ value: 0, title: 'temp', content: 'temp' },
-  		{ value: 1, title: 'temp', content: 'temp' },
-  	];
-
   	$scope.switchOption = function() {
   		if ($scope.currentOption != null) {
-  			if ($scope.currentOption.value === 0) {
-  				$scope.getMissionStatement();
-  			} else if ($scope.currentOption.value === 1) {
-  				$scope.getOurYouthPastor();
-  			}
-
+  			$scope.selectSlide($scope.currentOption, $scope.currentOption.value);
   			$scope.swipe.slide($scope.currentOption.value);
   		}
   	};
@@ -496,9 +534,6 @@
 			setActiveSlide(index);
 		}
 
-  	var missionStatementData;
-  	var ourYouthPastorData;
-
   	httpService.resetSimpleGet();
   	httpService.getLabeledPost(defaultSettings.label)
   	.then(function(data) {
@@ -509,23 +544,21 @@
    			$scope.title = defaultSettings.title;
 
    			if (posts[0].hasTitle('Our Youth Pastor')) {
-   				ourYouthPastorData = posts[0];
-   				missionStatementData = posts[1];
+   				addSlide(posts[1]);
+   				addSlide(posts[0]);
    			} else {
-   				ourYouthPastorData = posts[1];
-   				missionStatementData = posts[0];
+   				addSlide(posts[0]);
+   				addSlide(posts[1]);
    			}
-   			addSlide(missionStatementData.getTitle(), 
-   				missionStatementData.getHtml(), 
-   				missionStatementData.extractImgSrcUrls()[0]);
-   			addSlide(ourYouthPastorData.getTitle(), 
-   				ourYouthPastorData.getHtml(), 
-   				ourYouthPastorData.extractImgSrcUrls()[0]);
    			
    			$scope.selectSlide($scope.slides[0], 0);
  				$scope.currentOption = $scope.options[0];
 
-	    	$scope.createSwipe();
+ 				$scope.$watchCollection('slides', function(newVal, oldVal) {
+	  			if (newVal !== oldVal) {
+	  				$scope.createSwipe();
+	  			}
+	  		});
    		} else {
    			$scope.title = "Page Error; Please Refresh";
    		}
@@ -533,6 +566,287 @@
    		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.label, error);
    	});
 	}]);
+
+	// ------------------------------------
+	// About Us: Bible Study
+	app.controller('AboutBibleStudyController', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+		$scope.teachers = [];
+		function addTeacher(post) {
+			var name = post.getTitle();
+			var subtitle = post.getSubtitle();
+			var content = post.getHtml();
+			var src = post.extractImgSrcUrls()[0];
+
+			$scope.teachers.push({
+				index: $scope.teachers.length,
+				name: name,
+				gradeLevel: subtitle,
+				content: content,
+				img: src,
+			});
+		};
+		function sortTeachersByName() {
+			$scope.teachers.sort(function(a, b) { 
+ 				if(a.name < b.name) return -1;
+		    if(a.name > b.name) return 1;
+		    return 0;
+ 			});
+		};
+
+  	$scope.about = {};
+  	$scope.about.title = 'Bible Study';
+  	$scope.about.heading = 'About';
+  	/*
+  	var img = 'img/Smushed/about-bibleFellowship.jpg';
+		var imgEl = '<img src="' + img + '" />';
+		$scope.about.img = img;
+		var mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
+		var mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
+		var map = '<a href="' + mapLink + '" target="_blank"> \
+								<img class="bordered-image" \
+									src="' + mapImg + '"> \
+							</img> \
+						</a>';
+		$scope.about.map = map;
+		//*/
+
+  	$scope.loadTeacher = function(teacher) {
+  		$scope.about.modal = teacher;
+  		$('#myModal').foundation('reveal', 'open');
+  	};
+
+  	var http = {
+  		getPostsSundaySchool: function(isError) {
+    		//console.log('isError', isError);
+    		var label = '$$$Sunday Bible Fellowship';
+    		return httpService.getLabeledPost(label)
+  			.then(function(data) {
+  				$log.debug(label + ' data', data);
+  				var list = new BloggerPostList(data);
+  				var posts = list.getPosts();
+  				if (!isError) {
+						var bloggerPost = posts[0];
+						if (bloggerPost && bloggerPost.hasTitle('About: Bible Study')) {
+			   			// Append info to all blog posts and use
+			   			// regex to sanitize value.content (html)
+			   			bloggerPost.appendPostInfo();
+			   			$scope.about.title = bloggerPost.getTitle();
+			   			$scope.about.content = bloggerPost.getHtml();
+			   			$scope.about.heading = bloggerPost.getSubtitle();
+			   			$scope.about.img = bloggerPost.extractImgSrcUrls()[0];
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+			   	} else {
+			   		// STOP Promise Chaining
+			   		$log.error('SundaySchoolController:', label, '- STOP Chaining');
+			   		return true;
+			   	}
+		 		}, function(error) {
+		   		$log.error('SundaySchoolController:', label, error);
+		   	});
+    	},
+  		getPostsTeacherBios: function(isError) {
+    		//console.log('isError', isError);
+    		var label = '$$$Teacher Bios';
+   			return httpService.getLabeledPostRecursive(label)
+	   		.then(function(data) {
+	   			$log.debug(label + ' data', data);
+	   			var list = new BloggerPostList(data);
+  				var posts = list.getPosts();
+	   			if (!isError) {
+			   		var bloggerPost = posts[0];
+						if (bloggerPost) {
+							for (var i = 0; i < posts.length; i++) {
+								posts[i].removeContentTags();
+				   			posts[i].appendPostInfo();
+				   			addTeacher(posts[i]);
+							}
+							sortTeachersByName();
+			   			
+			   			/*
+			   			var teacherHtml = '<div class"small-12 column"> \
+			   													<h3 style="margin: 0;">Teachers</h3> \
+			   													<h3 style="margin: 0;"><small>Click/Tap on Photos for Teacher Bios</small></h3> \
+				   												<ul class="small-block-grid-2 medium-block-grid-4 large-block-grid-2"> \
+														        <li ng-repeat="teacher in teachers" \
+														          ng-click="loadTeacher(teacher);"> \
+														          <img ng-src="{{teacher.img}}" style="width: 100%; margin-bottom: 10px;"> \
+														          <div style="background-color: #eee; color: #999; border-top: 2px solid #5A5A59; padding: 10px;"> \
+														            <h6 style="margin: 0;"><strong>{{ teacher.name }}</strong></h6> \
+														            <p style="margin: 0;">Grade: {{ teacher.gradeLevel }}</p> \
+														          </div> \
+														        </li> \
+														      </ul> \
+												        </div>';
+							//*/
+							//var compiledElem = $compile(teacherHtml)($scope);
+			   			//$scope.compiledElem = compiledElem;
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+		   		} else {
+		   			// STOP Promise Chaining
+			   		$log.error('SundaySchoolController:', label, '- STOP Chaining');
+			   		return true;
+		   		}
+   			}, function(error) {
+					$log.error('SundaySchoolController:', label, error);
+				});	
+    	},
+    };
+
+    httpService.resetSimpleGet();
+  	http.getPostsSundaySchool()
+  		.then(http.getPostsTeacherBios)
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+	}]);
+
+	// ------------------------------------
+	// About Us: Thrive
+	app.controller('AboutThriveController', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+  	$scope.about = {};
+  	$scope.about.title = 'Thrive';
+  	$scope.about.heading = 'About';
+  	/*
+  	var img = 'img/Smushed/about-thrive.jpg';
+		var imgEl = '<img src="' + img + '" />';
+		$scope.about.img = img;
+		var mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
+		var mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
+		var map = '<a href="' + mapLink + '" target="_blank"> \
+								<img class="bordered-image" \
+									src="' + mapImg + '"> \
+							</img> \
+						</a>';
+		$scope.about.map = map;
+		//*/
+
+  	var http = {
+  		getPostsThrive: function(isError) {
+    		//console.log('isError', isError);
+    		var label = '$$$Thrive';
+    		return httpService.getLabeledPost(label)
+  			.then(function(data) {
+  				$log.debug(label + ' data', data);
+  				var list = new BloggerPostList(data);
+  				var posts = list.getPosts();
+	   			if (!isError) {
+			   		var bloggerPost = posts[0];
+						if (bloggerPost && bloggerPost.hasTitle('About: Thrive')) {
+			   			// Append info to all blog posts and use
+			   			// regex to sanitize value.content (html)
+			   			bloggerPost.appendPostInfo();
+			   			$scope.about.title = bloggerPost.getTitle();
+			   			$scope.about.content = bloggerPost.getHtml();
+			   			$scope.about.heading = bloggerPost.getSubtitle();
+			   			$scope.about.img = bloggerPost.extractImgSrcUrls()[0];
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('ThriveController:', label, '- null data');
+			   			return true;
+			   		}
+			   	} else {
+			   		// STOP Promise Chaining
+			   		$log.error('ThriveController:', label, '- STOP Chaining');
+			   		return true;
+			   	}
+		 		}, function(error) {
+		   		$log.error('ThriveController:', label, error);
+		   	});
+    	},
+    };
+
+    httpService.resetSimpleGet();
+  	http.getPostsThrive()
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+	}]);
+	
+	// ------------------------------------
+	// About Us: The Multiply Initiative
+	app.controller('AboutTMIController', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+  	$scope.about = {};
+  	$scope.about.title = 'The Multiply Initiative';
+  	$scope.about.heading = 'About';
+  	/*
+  	var img = 'img/Smushed/about-multiply.jpg';
+		var imgEl = '<img src="' + img + '" />';
+		$scope.about.img = img;
+		var mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
+		var mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
+		var map = '<a href="' + mapLink + '" target="_blank"> \
+								<img class="bordered-image" \
+									src="' + mapImg + '"> \
+							</img> \
+						</a>';
+		$scope.about.map = map;
+		//*/
+  	var http = {
+			getPostsTMI: function(isError) {
+    		//console.log('isError', isError);
+    		var label = '$$$The Multiply Initiative';
+    		return httpService.getLabeledPost(label)
+  			.then(function(data) {
+  				$log.debug(label + ' data', data);
+  				var list = new BloggerPostList(data);
+  				var posts = list.getPosts();
+	   			if (!isError) {
+			   		var bloggerPost = posts[0];
+						if (bloggerPost && bloggerPost.hasTitle('About: The Multiply Initiative')) {
+			   			// Append info to all blog posts and use
+			   			// regex to sanitize value.content (html)
+			   			bloggerPost.appendPostInfo();
+			   			$scope.about.title = bloggerPost.getTitle();
+			   			$scope.about.content = bloggerPost.getHtml();
+			   			$scope.about.heading = bloggerPost.getSubtitle();
+			   			$scope.about.img = bloggerPost.extractImgSrcUrls()[0];
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('ThriveController:', label, '- null data');
+			   			return true;
+			   		}
+			   	} else {
+			   		// STOP Promise Chaining
+			   		$log.error('ThriveController:', label, '- STOP Chaining');
+			   		return true;
+			   	}
+		 		}, function(error) {
+		   		$log.error('ThriveController:', label, error);
+		   	});
+    	},
+    };
+
+    httpService.resetSimpleGet();
+  	http.getPostsTMI()
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+	}]);
+	
+	
+	
 	
   /********************************************************************
    *
@@ -673,319 +987,7 @@
   /********************************************************************
    *                         Page Controllers
    ********************************************************************/
-	
-	app.controller('AboutBibleStudyController', 
-	['$log', '$scope', 'httpService', 
-	function ($log, $scope, httpService) {
-  	$scope.teachers = [
-  		{ index: 0, name: 'Clay & Nikky Howard', gradeLevel: '7-8', img: 'img/Smushed/bio-howard.jpg', }, 
-  		{ index: 1, name: 'Xavier Hurd', gradeLevel: '9-10 (Guys)', img: 'img/Smushed/bio-hurd.jpg', }, 
-  		{ index: 2, name: 'John Munns', gradeLevel: '9-10 (Guys)', img: 'img/Smushed/bio-munns.jpg', }, 
-  		{ index: 3, name: 'Anna Hull', gradeLevel: '9-10 (Girls)', img: 'img/Smushed/bio-hull.jpg', }, 
-  		{ index: 4, name: 'Shelbie Patino', gradeLevel: '9-10 (Girls)', img: 'img/Smushed/bio-patino.jpg', }, 
-  		{ index: 5, name: 'Jeremy & Shari Loftin', gradeLevel: '11-12', img: 'img/Smushed/bio-loftin.jpg', },
-		];
 
-  	$scope.about = {};
-  	$scope.about.title = 'Bible Study';
-  	$scope.about.heading = 'About';
-  	var img = 'img/Smushed/about-bibleFellowship.jpg';
-		var imgEl = '<img src="' + img + '" />';
-		$scope.about.img = img;
-		var mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
-		var mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
-		var map = '<a href="' + mapLink + '" target="_blank"> \
-								<img class="bordered-image" \
-									src="' + mapImg + '"> \
-							</img> \
-						</a>';
-		$scope.about.map = map;
-
-  	$scope.loadTeacher = function(teacher) {
-  		$scope.about.modal = teacher;
-  		$('#myModal').foundation('reveal', 'open');
-  	};
-
-  	var http = {
-  		appendPostInfo: function(value) {
-				var divider = value.title.indexOf(':');
-				var gradeLevel = value.title.substr(0,divider);
-				var teacherName = value.title.substr(divider+1, value.title.length);
-
-				value.name = teacherName;
-				value.gradeLevel = gradeLevel;
-
-				if (teacherName.indexOf('Howard') > 0) {
-					value.index = 0;
-					value.img = 'img/Smushed/bio-howard.jpg';
-				} else if (teacherName.indexOf('Hurd') > 0) {
-					value.index = 1;
-					value.img = 'img/Smushed/bio-hurd.jpg';
-				} else if (teacherName.indexOf('Munns') > 0) {
-					value.index = 2;
-					value.img = 'img/Smushed/bio-munns.jpg';
-				} else if (teacherName.indexOf('Hull') > 0) {
-					value.index = 3;
-					value.img = 'img/Smushed/bio-hull.jpg';
-				} else if (teacherName.indexOf('Patino') > 0) {
-					value.index = 4;
-					value.img = 'img/Smushed/bio-patino.jpg';
-				} else if (teacherName.indexOf('Loftin') > 0) {
-					value.index = 5;
-					value.img = 'img/Smushed/bio-loftin.jpg';
-				} else {
-					// ERROR
-				}
-			},
-			removeContentTags: function(value) {
-				var newString = value.content;
-				
-				newString = newString.replace(/&nbsp;/g, ' ');
-				newString = newString.replace(/<br \/>|<br>/g, '<br/>');
-				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-				newString = newString.replace(regexString, '');
-				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-				newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-				value.content = newString;
-			},
-  		getPostsSundaySchool: function(isError) {
-    		//console.log('isError', isError);
-    		var label = '$$$Sunday Bible Fellowship';
-    		return httpService.getLabeledPost(label)
-  			.then(function(data) {
-  				console.log('data', data);
-  				if (!isError) {
-						var value = data.items[0];
-						if (data.items && data.items[0] && data.items[0].title === 'About: Sunday Bible Fellowship') {
-							value = data.items[0];
-						}
-			   		if (value) {
-			   			// Append info to all blog posts and use
-			   			// regex to sanitize value.content (html)
-			   			appendPostInfo(value);
-			   			//removeContentTags(value);
-			   			$scope.about.content = value.content;
-			   			$scope.about.title = value.title;
-			   			$scope.about.heading = value.subtitle;
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
-			   			// STOP Promise Chaining
-			   			$log.error('SundaySchoolController:', label, '- null data');
-			   			return true;
-			   		}
-			   	} else {
-			   		// STOP Promise Chaining
-			   		$log.error('SundaySchoolController:', label, '- STOP Chaining');
-			   		return true;
-			   	}
-		 		}, function(error) {
-		   		$log.error('SundaySchoolController:', label, error);
-		   	});
-    	},
-  		getPostsTeacherBios: function(isError) {
-    		//console.log('isError', isError);
-    		var label = '$$$Teacher Bios';
-   			return httpService.getLabeledPostRecursive(label)
-	   		.then(function(data) {
-	   			if (!isError) {
-			   		//console.log(label, 'data', data);
-			   		var value = data.items[0];
-			   		if (value) {
-			   			angular.forEach(data.items, function(value, key) {
-				   			http.removeContentTags(value);
-				   			http.appendPostInfo(value);
-			   			});
-							data.items.sort(function(a, b) { return a.index-b.index });
-			   			
-			   			$scope.teachers = data.items;
-			   			
-			   			var teacherHtml = '<div class"small-12 column"> \
-			   													<h3 style="margin: 0;">Teachers</h3> \
-			   													<h3 style="margin: 0;"><small>Click/Tap on Photos for Teacher Bios</small></h3> \
-				   												<ul class="small-block-grid-2 medium-block-grid-4 large-block-grid-2"> \
-														        <li ng-repeat="teacher in teachers" \
-														          ng-click="loadTeacher(teacher);"> \
-														          <img ng-src="{{teacher.img}}" style="width: 100%; margin-bottom: 10px;"> \
-														          <div style="background-color: #eee; color: #999; border-top: 2px solid #5A5A59; padding: 10px;"> \
-														            <h6 style="margin: 0;"><strong>{{ teacher.name }}</strong></h6> \
-														            <p style="margin: 0;">Grade: {{ teacher.gradeLevel }}</p> \
-														          </div> \
-														        </li> \
-														      </ul> \
-												        </div>';
-							
-							//var compiledElem = $compile(teacherHtml)($scope);
-			   			//$scope.compiledElem = compiledElem;
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
-			   			// STOP Promise Chaining
-			   			$log.error('SundaySchoolController:', label, '- null data');
-			   			return true;
-			   		}
-		   		} else {
-		   			// STOP Promise Chaining
-			   		$log.error('SundaySchoolController:', label, '- STOP Chaining');
-			   		return true;
-		   		}
-   			}, function(error) {
-					$log.error('SundaySchoolController:', label, error);
-				});	
-    	},
-    };
-
-    httpService.resetSimpleGet();
-  	http.getPostsSundaySchool()
-  		.then(http.getPostsTeacherBios)
-  		.then(function() {
-  			$log.debug('Promise Chaining is DONE!!!!');
-  		});
-	}]);
-
-	app.controller('AboutThriveController', 
-	['$log', '$scope', 'httpService', 
-	function ($log, $scope, httpService) {
-  	$scope.about = {};
-  	$scope.about.title = 'Thrive';
-  	$scope.about.heading = 'About';
-  	var img = 'img/Smushed/about-thrive.jpg';
-		var imgEl = '<img src="' + img + '" />';
-		$scope.about.img = img;
-		var mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
-		var mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
-		var map = '<a href="' + mapLink + '" target="_blank"> \
-								<img class="bordered-image" \
-									src="' + mapImg + '"> \
-							</img> \
-						</a>';
-		$scope.about.map = map;
-
-  	var http = {
-  		removeContentTags: function(value) {
-				var newString = value.content;
-				newString = newString.replace(/&nbsp;/g, ' ');
-				newString = newString.replace(/<br \/>|<br>/g, '<br/>');
-				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-				newString = newString.replace(regexString, '');
-				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-				newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-				value.content = newString;
-			},
-  		getPostsThrive: function(isError) {
-    		//console.log('isError', isError);
-    		var label = '$$$Thrive';
-    		return httpService.getLabeledPost(label)
-  			.then(function(data) {
-  				if (!isError) {
-						var value = data.items[0];
-						if (data.items && data.items[0] && data.items[0].title === 'About: Thrive') {
-							value = data.items[0];
-						} 
-			   		if (value) {
-			   			// Append info to all blog posts and use
-			   			// regex to sanitize value.content (html)
-			   			appendPostInfo(value);
-			   			//removeContentTags(value);
-			   			$scope.about.content = value.content;
-			   			$scope.about.title = value.title;
-			   			$scope.about.heading = value.subtitle;
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
-			   			// STOP Promise Chaining
-			   			$log.error('ThriveController:', label, '- null data');
-			   			return true;
-			   		}
-			   	} else {
-			   		// STOP Promise Chaining
-			   		$log.error('ThriveController:', label, '- STOP Chaining');
-			   		return true;
-			   	}
-		 		}, function(error) {
-		   		$log.error('ThriveController:', label, error);
-		   	});
-    	},
-    };
-
-    httpService.resetSimpleGet();
-  	http.getPostsThrive()
-  		.then(function() {
-  			$log.debug('Promise Chaining is DONE!!!!');
-  		});
-	}]);
-
-	app.controller('AboutTMIController', 
-	['$log', '$scope', 'httpService', 
-	function ($log, $scope, httpService) {
-  	$scope.about = {};
-  	$scope.about.title = 'The Multiply Initiative';
-  	$scope.about.heading = 'About';
-  	var img = 'img/Smushed/about-multiply.jpg';
-		var imgEl = '<img src="' + img + '" />';
-		$scope.about.img = img;
-		var mapLink = 'https://maps.google.com/maps?q=1411+kennoway+park,+Spring+TX,+77379&hl=en&sll=31.168934,-100.076842&sspn=10.237092,8.76709&hnear=1411+Kennoway+Park+Dr,+Spring,+Texas+77379&t=m&z=16';
-		var mapImg = 'http://maps.googleapis.com/maps/api/staticmap?center=24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Ccolor:red%7Clabel:A%7C24724+Aldine+Westfield+Rd,+Spring,+Texas+77373&sensor=false';
-		var map = '<a href="' + mapLink + '" target="_blank"> \
-								<img class="bordered-image" \
-									src="' + mapImg + '"> \
-							</img> \
-						</a>';
-		$scope.about.map = map;
-
-  	var http = {
-			removeContentTags: function(value) {
-				var newString = value.content;
-				newString = newString.replace(/&nbsp;/g, ' ');
-				newString = newString.replace(/<br \/>|<br>/g, '<br/>');
-				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-				newString = newString.replace(regexString, '');
-				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-				newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-				value.content = newString;
-			},
-  		getPostsTMI: function(isError) {
-    		//console.log('isError', isError);
-    		var label = '$$$The Multiply Initiative';
-    		return httpService.getLabeledPost(label)
-  			.then(function(data) {
-  				if (!isError) {
-						var value = data.items[0];
-						if (data.items && data.items[0] && data.items[0].title === 'About: The Multiply Initiative') {
-							value = data.items[0];
-						} 
-			   		if (value) {
-			   			// Append info to all blog posts and use
-			   			// regex to sanitize value.content (html)
-			   			appendPostInfo(value);
-			   			//removeContentTags(value);
-			   			$scope.about.content = value.content;
-			   			$scope.about.title = value.title;
-			   			$scope.about.heading = value.subtitle;
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
-			   			// STOP Promise Chaining
-			   			$log.error('ThriveController:', label, '- null data');
-			   			return true;
-			   		}
-			   	} else {
-			   		// STOP Promise Chaining
-			   		$log.error('ThriveController:', label, '- STOP Chaining');
-			   		return true;
-			   	}
-		 		}, function(error) {
-		   		$log.error('ThriveController:', label, error);
-		   	});
-    	},
-    };
-
-    httpService.resetSimpleGet();
-  	http.getPostsTMI()
-  		.then(function() {
-  			$log.debug('Promise Chaining is DONE!!!!');
-  		});
-	}]);
 	// ------------------------------------
 
 	// ------------------------------------
