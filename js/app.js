@@ -31,9 +31,9 @@
 					templateUrl: 'html/about_tmi.html'
 				})
 			// Update Pages
-			.when('/updates_sundaybiblefellowship',
+			.when('/updates_biblestudy',
 				{
-					templateUrl: 'html/updates_sundaybiblefellowship.html'
+					templateUrl: 'html/updates_biblestudy.html'
 				})
 			.when('/updates_thrive',
 				{
@@ -210,11 +210,7 @@
 		return true;
 	}
 
-
-	function sortBlogPosts(a,b) { // sorts items by date
-	  return a.date<b.date?-1:a.date>b.date?1:0;
-	}
-  function findBibleRefs() {
+	function findBibleRefs() {
   	/*
   	Logos.ReferenceTagging.lbsBibleVersion = "ESV";
     Logos.ReferenceTagging.lbsLinksOpenNewWindow = true;
@@ -225,35 +221,61 @@
     Logos.ReferenceTagging.tag();
     //*/
   }
-  var regexRules = {
-  	get: {
-  		img: function(htmlString) {
-  			var regexString = /<img([\w\W]+?)\/>/g;
-  			var returnArray = htmlString.match(regexString);
-  			htmlString.replace(regexString, '');
-  			return returnArray;
-	  	},
-	  	src: function(htmlString) {
-	  		return htmlString.match(/src="([\w\W]+?)"/g);
-	  	},
-  	},
-  	replace: {
-  		tags: function(htmlString) {
-  			var regexString = /<div([^>]*)>|<\/div>|<img([^>]*)>|<\/img>|&#10;/g;
-				return htmlString.replace(regexString, '');
-  		},
-  		contentTags: function(htmlString) {
-  			htmlString = htmlString.replace(/&nbsp;/g, ' ');
-				htmlString = htmlString.replace(/<br \/>|<br>/g, '<br/>');
-				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-				htmlString = htmlString.replace(regexString, '');
-				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-				htmlString = htmlString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-				return htmlString;
-  		},
-  	},
-  };
+
   app.factory('BloggerPost', ['$sanitize', function($sanitize) {
+  	var regexRules = {
+	  	get: {
+	  		img: function(htmlString) {
+	  			var regexString = /<img([\w\W]+?)\/>/g;
+	  			var returnArray = htmlString.match(regexString);
+	  			htmlString.replace(regexString, '');
+	  			return returnArray;
+		  	},
+		  	src: function(htmlString) {
+		  		return htmlString.match(/src="([\w\W]+?)"/g);
+		  	},
+	  	},
+	  	replace: {
+	  		tags: function(htmlString) {
+	  			var regexString = /<div([^>]*)>|<\/div>|<img([^>]*)>|<\/img>|&#10;/g;
+					return htmlString.replace(regexString, '');
+	  		},
+	  		contentTags: function(htmlString) {
+	  			htmlString = htmlString.replace(/&nbsp;/g, ' ');
+					htmlString = htmlString.replace(/<br \/>|<br>/g, '<br/>');
+					var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
+					htmlString = htmlString.replace(regexString, '');
+					var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
+					htmlString = htmlString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
+					return htmlString;
+	  		},
+	  		contentTags2: function() {
+	  			//var newString = value.content.replace('<([^>]*)>', '');
+					var newString = value.content;
+					
+					newString = newString.replace(/&nbsp;/g, ' ');
+					//console.log('newString', newString);
+					//console.log('***************************');
+					
+					//newString = newString.replace(/<br \/>|<br>/g, '<br/><br/>');
+					//console.log('newString', newString);
+					//console.log('***************************');
+					
+					var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>|<h2([^>]*)>|<\/h2>|<h3([^>]*)>|<\/h3>|<h4([^>]*)>|<\/h4>/g;
+					newString = newString.replace(regexString, '');
+					//console.log('newString', newString);
+					//console.log('***************************');
+					
+					var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
+					newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
+					//console.log('newString', newString);
+					//console.log('***************************');
+					
+					value.content = newString;
+	  		},
+	  	},
+	  };
+  
   	var constructor = function(postData) {
   		var _title;
   		var _labels;
@@ -262,6 +284,8 @@
 
 	  	var _subtitle;
   		var _date;
+  		var _year;
+  		var _datePlusOne;
   		var _dateText;
 	  	var returnObject = {
 	  		getTitle: function() { 
@@ -309,6 +333,8 @@
 					var title = _title.substr(divider+1, _title.length);
 
 					var d = parseISO8601(titleDate);
+					var dPlusOne = parseISO8601(titleDate);
+   				dPlusOne.setDate(dPlusOne.getDate() + 1);
 					var day = d.getDate();
 					var weekday = getDayText(d.getDay());
 					var month = getMonthText(d.getMonth());
@@ -317,6 +343,8 @@
 					_title = title;
 					_subtitle = titleDate;
 					_date = d;
+					_datePlusOne = dPlusOne;
+					_year = year;
 					_dateText = weekday + ', ' + month + ' ' + day;
 	  		},
 	  		removeContentTags: function() {
@@ -325,6 +353,18 @@
 	  		},
 	  		getSubtitle: function(){
 	  			return _subtitle;
+	  		},
+	  		getDate: function() {
+	  			return _date;
+	  		},
+	  		getDatePlusOne: function() {
+	  			return _datePlusOne;
+	  		},
+	  		getYear: function() {
+	  			return _year;
+	  		},
+	  		getDateText: function() {
+	  			return _dateText;
 	  		},
 	  	};
 	  	
@@ -344,6 +384,12 @@
 	  	var returnObject = {
 	  		getPosts: function() {
 	  			return _items;
+	  		},
+	  		sortByDate: function() {
+	  			_items.sort(function(a, b) {
+	  				return a.getDate()<b.getDate()?-1:a.getDate()>b.getDate()?1:0;
+	  			});
+	  			_items.reverse();
 	  		},
 	  	};
   		if (data && data.items) {
@@ -845,7 +891,430 @@
   		});
 	}]);
 	
+	// ------------------------------------
+	// Ministry Updates: Bible Study
+	app.controller('UpdatesBibleStudy', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+		var defaultSettings = {
+			controllerName: 'UpdatesBibleStudy',
+			title: 'Bible Study',
+			subtitle: 'Updates',
+			postHeading: 'Updates',
+			maxVisible: 13,
+			lastVisible: 13,
+			activeSlide: 0,
+			updateLabel: '$$$Sunday Bible Fellowship Updates',
+		};
+		
+		function _init(){
+			$scope.title = defaultSettings.title;
+	  	$scope.subtitle = defaultSettings.subtitle;
+	  	$scope.current = {};
+	  	$scope.slideArray = [];
+	  	$scope.isCurrent = true;
+	  	$scope.activeSlide = defaultSettings.activeSlide;
+	  	$scope.maxVisible = defaultSettings.maxVisible;
+	  	$scope.lastVisible = defaultSettings.lastVisible;
+		};
+  	$scope.loadSlide = function(index) {
+  		$scope.activeSlide = index;
+  	};
+  	$scope.loadArchives = function() {
+  		$scope.isCurrent = false;
+  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
+  		$scope.lastVisible = $scope.slideArray.length;
+  	};
+  	$scope.loadCurrent = function() {
+  		$scope.isCurrent = true;
+  		$scope.maxVisible = defaultSettings.maxVisible;
+  		$scope.lastVisible = defaultSettings.lastVisible;
+  	};
+  	$scope.switchOption = function() {
+  		$scope.activeSlide = $scope.currentOption.index;
+  	};
+  	$scope.$watch('activeSlide', function(newVal, oldVal) {
+    	if (oldVal !== newVal && !isNaN(newVal)) {
+    		$scope.currentOption = $scope.slideArray[newVal];
+    	}
+    });
+
+    var http = {
+    	getPostsUpdates: function(isError) {
+    		return httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
+	   		.then(function(data) {
+	   			$log.debug(defaultSettings.updateLabel + ' data', data);
+	   			var list = new BloggerPostList(data);
+  				var posts = list.getPosts();
+	   			if (!isError) {
+			   		var bloggerPost = posts[0];
+						if (bloggerPost) {
+	   					// Append info to all blog posts and use
+				   		// regex to sanitize value.content (html)
+				   		for (var i = 0; i < posts.length; i++) {
+				   			posts[i].removeContentTags();
+				   			posts[i].appendPostInfo();
+				   		}
+				   		// Sort posts by most recent date first
+			   			list.sortByDate();
+			   			// Push all content into slideArray
+			   			angular.forEach(posts, function(value, key) {
+			   				var slideObject = {
+			   					heading: defaultSettings.postHeading,
+			   					index: key,
+			   					title: value.getTitle(),
+			   					date: value.getDateText(),
+			   					content: value.getHtml(),
+			   				};
+				   			$scope.slideArray.push(slideObject);
+			   			});
+			   			$scope.currentOption = $scope.slideArray[0];
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+		   		} else {
+		   			// STOP Promise Chaining
+			   		$log.error(defaultSettings.controllerName + ' ' + label, '- STOP Chaining');
+			   		return true;
+		   		}
+   			}, function(error) {
+					$log.error(defaultSettings.controllerName + ' ' + label, error);
+				});	
+    	}
+    };
+
+    _init();
+    httpService.resetSimpleGet();
+  	http.getPostsUpdates()
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+	}]);
 	
+	// ------------------------------------
+	// Ministry Updates: Thrive
+	app.controller('UpdatesThrive', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+		var defaultSettings = {
+			controllerName: 'UpdatesThrive',
+			title: 'Thrive',
+			subtitle: 'Updates',
+			postHeading: 'Updates',
+			maxVisible: 13,
+			lastVisible: 13,
+			activeSlide: 0,
+			updateLabel: '$$$Thrive Updates',
+		};
+		
+		function _init(){
+			$scope.title = defaultSettings.title;
+	  	$scope.subtitle = defaultSettings.subtitle;
+	  	$scope.current = {};
+	  	$scope.slideArray = [];
+	  	$scope.isCurrent = true;
+	  	$scope.activeSlide = defaultSettings.activeSlide;
+	  	$scope.maxVisible = defaultSettings.maxVisible;
+	  	$scope.lastVisible = defaultSettings.lastVisible;
+		};
+  	$scope.loadSlide = function(index) {
+  		$scope.activeSlide = index;
+  	};
+  	$scope.loadArchives = function() {
+  		$scope.isCurrent = false;
+  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
+  		$scope.lastVisible = $scope.slideArray.length;
+  	};
+  	$scope.loadCurrent = function() {
+  		$scope.isCurrent = true;
+  		$scope.maxVisible = defaultSettings.maxVisible;
+  		$scope.lastVisible = defaultSettings.lastVisible;
+  	};
+  	$scope.switchOption = function() {
+  		$scope.activeSlide = $scope.currentOption.index;
+  	};
+  	$scope.$watch('activeSlide', function(newVal, oldVal) {
+    	if (oldVal !== newVal && !isNaN(newVal)) {
+    		$scope.currentOption = $scope.slideArray[newVal];
+    	}
+    });
+
+    var http = {
+    	getPostsUpdates: function(isError) {
+    		return httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
+	   		.then(function(data) {
+	   			$log.debug(defaultSettings.updateLabel + ' data', data);
+	   			var list = new BloggerPostList(data);
+  				var posts = list.getPosts();
+	   			if (!isError) {
+			   		var bloggerPost = posts[0];
+						if (bloggerPost) {
+	   					// Append info to all blog posts and use
+				   		// regex to sanitize value.content (html)
+				   		for (var i = 0; i < posts.length; i++) {
+				   			posts[i].removeContentTags();
+				   			posts[i].appendPostInfo();
+				   		}
+				   		// Sort posts by most recent date first
+			   			list.sortByDate();
+	   					// Push all content into slideArray
+			   			angular.forEach(posts, function(value, key) {
+			   				var slideObject = {
+			   					heading: defaultSettings.postHeading,
+			   					index: key,
+			   					title: value.getTitle(),
+			   					date: value.getDateText(),
+			   					content: value.getHtml(),
+			   				};
+				   			$scope.slideArray.push(slideObject);
+			   			});
+			   			$scope.currentOption = $scope.slideArray[0];
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+		   		} else {
+		   			// STOP Promise Chaining
+			   		$log.error(defaultSettings.controllerName + ' ' + label, '- STOP Chaining');
+			   		return true;
+		   		}
+   			}, function(error) {
+					$log.error(defaultSettings.controllerName + ' ' + label, error);
+				});	
+    	}
+    };
+
+    _init();
+    httpService.resetSimpleGet();
+  	http.getPostsUpdates()
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+	}]);
+
+	// ------------------------------------
+	// Ministry Updates: The Multiply Initiative
+	app.controller('UpdatesTMI', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+		var defaultSettings = {
+			controllerName: 'UpdatesTMI',
+			title: 'The Multiply Initiative',
+			subtitle: 'Meditations',
+			postHeading: 'Meditations',
+			maxVisible: 15,
+			lastVisible: 15,
+			activeSlide: 0,
+			updateLabel: '$$$Meditations',
+		};
+		
+		function _init(){
+			$scope.title = defaultSettings.title;
+	  	$scope.subtitle = defaultSettings.subtitle;
+	  	$scope.current = {};
+	  	$scope.slideArray = [];
+	  	$scope.isCurrent = true;
+	  	$scope.activeSlide = defaultSettings.activeSlide;
+	  	$scope.maxVisible = defaultSettings.maxVisible;
+	  	$scope.lastVisible = defaultSettings.lastVisible;
+		};
+
+  	$scope.loadSlide = function(index) {
+  		$scope.activeSlide = index;
+  	};
+  	$scope.loadArchives = function() {
+  		$scope.isCurrent = false;
+  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
+  		$scope.lastVisible = $scope.slideArray.length;
+  	};
+  	$scope.loadCurrent = function() {
+  		$scope.isCurrent = true;
+  		$scope.maxVisible = defaultSettings.maxVisible;
+  		$scope.lastVisible = defaultSettings.lastVisible;
+  	};
+  	$scope.switchOption = function() {
+  		$scope.activeSlide = $scope.currentOption.index;
+  	};
+  	$scope.$watch('activeSlide', function(newVal, oldVal) {
+    	if (oldVal !== newVal && !isNaN(newVal)) {
+    		$scope.currentOption = $scope.slideArray[newVal];
+    	}
+    });
+
+    var http = {
+    	getPostsUpdates: function(isError) {
+    		return httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
+	   		.then(function(data) {
+	   			$log.debug(defaultSettings.updateLabel + ' data', data);
+	   			var list = new BloggerPostList(data);
+  				var posts = list.getPosts();
+	   			if (!isError) {
+			   		var bloggerPost = posts[0];
+						if (bloggerPost) {
+	   					// Append info to all blog posts and use
+				   		// regex to sanitize value.content (html)
+				   		for (var i = 0; i < posts.length; i++) {
+				   			posts[i].removeContentTags();
+				   			posts[i].appendPostInfo();
+				   		}
+				   		// Sort posts by most recent date first
+			   			list.sortByDate();
+	   					// Push all content into slideArray
+			   			angular.forEach(posts, function(value, key) {
+			   				var slideObject = {
+			   					heading: defaultSettings.postHeading,
+			   					index: key,
+			   					title: value.getTitle(),
+			   					date: value.getDateText(),
+			   					content: value.getHtml(),
+			   				};
+				   			$scope.slideArray.push(slideObject);
+			   			});
+	   					$scope.currentOption = $scope.slideArray[0];
+			   			// Continue Promise Chaining
+			   			return false;
+			   		} else {
+			   			// STOP Promise Chaining
+			   			$log.error('SundaySchoolController:', label, '- null data');
+			   			return true;
+			   		}
+		   		} else {
+		   			// STOP Promise Chaining
+			   		$log.error(defaultSettings.controllerName + ' ' + label, '- STOP Chaining');
+			   		return true;
+		   		}
+   			}, function(error) {
+					$log.error(defaultSettings.controllerName + ' ' + label, error);
+				});	
+    	}
+    };
+
+    _init();
+    httpService.resetSimpleGet();
+  	http.getPostsUpdates()
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+	}]);
+
+	// ------------------------------------
+	// Ministry Updates: Upcoming Events
+	app.controller('UpdatesUpcoming', 
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
+		var defaultSettings = {
+			controllerName: 'UpdatesUpcoming',
+			title: 'Upcoming Events',
+			updateLabel: '$$$Upcoming Events',
+		};
+
+		$scope.callback = function(index) {
+  	};
+  	//************************************
+    //************************************
+
+  	$scope.title = defaultSettings.title;
+  	$scope.allUpcomingEvents;
+
+  	var upcomingEvents = {};
+  	var oldEvents = {};
+  	var setCover = function(eventObj, post) {
+  		eventObj.imgLarge = 'img/Smushed/upcoming-default.jpg';
+  		eventObj.visibleLarge = true;
+  		eventObj.visibleSmall = true;
+
+  		var src = post.extractImgSrcUrls()[0];
+  		if (src) {
+  			eventObj.imgLarge = src;
+  			eventObj.visibleLarge = false;
+  			eventObj.visibleSmall = true;
+  		} else if (post.getTitle().indexOf('Youth Mission Trip') > -1) {
+				eventObj.imgSmall = 'img/Smushed/upcoming-youth-mission-trip.jpg';
+				eventObj.imgLarge = 'img/Smushed/upcoming-youth-mission-trip.jpg';
+			} else if (post.getTitle().indexOf('Crawdad') > -1) {
+				eventObj.imgSmall = 'img/Smushed/upcoming-crawdad-small.jpg';
+				eventObj.imgLarge = 'img/Smushed/upcoming-crawdad.jpg';
+				eventObj.visibleLarge = false;
+  			eventObj.visibleSmall = false;
+			} else if (post.getTitle().indexOf('Summer Lock-In') > -1) {
+				eventObj.imgSmall = 'img/Smushed/upcoming-lock-in.jpg';
+				eventObj.imgLarge = 'img/Smushed/upcoming-lock-in.jpg';
+			} else if (post.hasLabel('Evangelism')) {
+				eventObj.imgSmall = 'img/Smushed/upcoming-evangelism.jpg';
+				eventObj.imgLarge = 'img/Smushed/upcoming-evangelism.jpg';
+			} else if (post.hasLabel('Afterglow')) {	
+
+			} else {
+
+			}
+  	};
+  	function addEvent(eventArray, post) {
+  		var eventObj = {
+  			title: post.getTitle(),
+  			date: post.getDate(),
+  			dateText: post.getDateText(),
+  			content: post.getHtml(),
+  		};
+  		setCover(eventObj, post);
+  		eventArray.push(eventObj);
+  	};
+  	function sortOldUpcomingEvents(today, post) {
+  		var year = post.getYear();
+			if (today > post.getDatePlusOne()) {
+ 				if (!oldEvents[year]) {
+   				oldEvents[year] = {
+   					year: year,
+   					events: new Array()
+   				};
+   			}
+   			addEvent(oldEvents[year].events, post);
+ 			} else {
+ 				if (year) {
+ 					if (!upcomingEvents[year]) {
+	   				upcomingEvents[year] = {
+	   					year: year,
+	   					events: new Array()
+	   				};
+	   			}
+	   			addEvent(upcomingEvents[year].events, post);
+ 				}
+ 			}
+  	};
+  	
+  	httpService.resetRecursiveGet();
+  	httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
+  	.then(function(data) {
+  		$log.debug(defaultSettings.updateLabel + ' data', data);
+ 			var list = new BloggerPostList(data);
+			var posts = list.getPosts();
+   		var bloggerPost = posts[0];
+			if (bloggerPost) {
+				var today = new Date();
+				for (var i = 0; i < posts.length; i++) {
+					posts[i].appendPostInfo();
+					sortOldUpcomingEvents(today, posts[i]);
+				}
+
+				angular.forEach(upcomingEvents, function (value, key) {
+	   			value.events.sort(function(a, b) {
+	   				return a.date<b.date?-1:a.date>b.date?1:0;
+	   			});
+	   		});
+ 			}
+   		$scope.allUpcomingEvents = upcomingEvents;
+   		
+   	}, function(error) {
+   		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.updateLabel, error);
+   	});
+	}]);
+
 	
 	
   /********************************************************************
@@ -865,7 +1334,7 @@
 				{ name: 'The Multiply Initiative', url: '#/about_tmi', nested: [] },
 			] },
 			{ name: 'Ministry Updates', url: '', dropdown: true, nested: [
-				{ name: 'Bible Study', url: '#/updates_sundaybiblefellowship', dropdown: false, nested: [] },
+				{ name: 'Bible Study', url: '#/updates_biblestudy', dropdown: false, nested: [] },
 				{ name: 'Thrive', url: '#/updates_thrive', dropdown: false, nested: [] },
 				{ name: 'The Multiply Initiative', url: '#/updates_tmi', dropdown: false, nested: [] },
 				{ name: 'Upcoming Events', url: '#/updates_upcoming', dropdown: false, nested: [] },
@@ -987,534 +1456,6 @@
   /********************************************************************
    *                         Page Controllers
    ********************************************************************/
-
-	// ------------------------------------
-
-	// ------------------------------------
-	// Update Pages:
-	app.controller('UpdatesSundayBibleFellowship', 
-	['$log', '$scope', '$compile', 'httpService', 
-	function ($log, $scope, $compile, httpService) {
-		var defaultSettings = {
-			controllerName: 'UpdatesSundayBibleFellowship',
-			title: 'Bible Study',
-			subtitle: 'Updates',
-			postHeading: 'Updates',
-			maxVisible: 13,
-			lastVisible: 13,
-			activeSlide: 0,
-			updateLabel: '$$$Sunday Bible Fellowship Updates',
-		};
-		
-		function _init(){
-			$scope.title = defaultSettings.title;
-	  	$scope.subtitle = defaultSettings.subtitle;
-	  	$scope.current = {};
-	  	$scope.slideArray = [];
-	  	$scope.isCurrent = true;
-	  	$scope.activeSlide = defaultSettings.activeSlide;
-	  	$scope.maxVisible = defaultSettings.maxVisible;
-	  	$scope.lastVisible = defaultSettings.lastVisible;
-		};
-
-  	$scope.loadSlide = function(index) {
-  		$scope.activeSlide = index;
-  	};
-  	$scope.loadArchives = function() {
-  		$scope.isCurrent = false;
-  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
-  		$scope.lastVisible = $scope.slideArray.length;
-  	};
-  	$scope.loadCurrent = function() {
-  		$scope.isCurrent = true;
-  		$scope.maxVisible = defaultSettings.maxVisible;
-  		$scope.lastVisible = defaultSettings.lastVisible;
-  	};
-  	$scope.switchOption = function() {
-  		$scope.activeSlide = $scope.currentOption.index;
-  	};
-  	$scope.$watch('activeSlide', function(newVal, oldVal) {
-    	if (oldVal !== newVal && !isNaN(newVal)) {
-    		$scope.currentOption = $scope.slideArray[newVal];
-    	}
-    });
-
-    var http = {
-    	removeContentTags: function(value) {
-				var newString = value.content;
-				newString = newString.replace(/&nbsp;/g, ' ');
-				newString = newString.replace(/<br \/>|<br>/g, '<br/>');
-				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-				newString = newString.replace(regexString, '');
-				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-				newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-				value.content = newString;
-			},
-    	getPostsUpdates: function(isError) {
-    		return httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
-	   		.then(function(data) {
-	   			if (!isError) {
-			   		var value = data.items[0];
-			   		if (value) {
-			   			// Append info to all blog posts and use
-				   		// regex to sanitize value.content (html)
-				   		angular.forEach(data.items, function(value, key) {
-				   			http.removeContentTags(value);
-				   			appendPostInfo(value);
-			   			});
-			   			// Sort posts by most recent date first
-			   			data.items.sort(sortBlogPosts);
-			   			data.items.reverse();
-			   			// Push all content into slideArray
-			   			angular.forEach(data.items, function(value, key) {
-			   				var slideObject = {
-			   					heading: defaultSettings.postHeading,
-			   					index: key,
-			   					title: value.title,
-			   					date: value.dateText,
-			   					content: value.content,
-			   				};
-				   			$scope.slideArray.push(slideObject);
-			   			});
-			   			$scope.currentOption = $scope.slideArray[0];
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
-			   			// STOP Promise Chaining
-			   			$log.error('SundaySchoolController:', label, '- null data');
-			   			return true;
-			   		}
-		   		} else {
-		   			// STOP Promise Chaining
-			   		$log.error(defaultSettings.controllerName + ' ' + label, '- STOP Chaining');
-			   		return true;
-		   		}
-   			}, function(error) {
-					$log.error(defaultSettings.controllerName + ' ' + label, error);
-				});	
-    	}
-    };
-
-    _init();
-    httpService.resetSimpleGet();
-  	http.getPostsUpdates()
-  		.then(function() {
-  			$log.debug('Promise Chaining is DONE!!!!');
-  		});
-	}]);
-
-	app.controller('UpdatesThrive', 
-	['$log', '$scope', 'httpService', 
-	function ($log, $scope, httpService) {
-		var defaultSettings = {
-			controllerName: 'UpdatesThrive',
-			title: 'Thrive',
-			subtitle: 'Updates',
-			postHeading: 'Updates',
-			maxVisible: 13,
-			lastVisible: 13,
-			activeSlide: 0,
-			updateLabel: '$$$Thrive Updates',
-		};
-		
-		function _init(){
-			$scope.title = defaultSettings.title;
-	  	$scope.subtitle = defaultSettings.subtitle;
-	  	$scope.current = {};
-	  	$scope.slideArray = [];
-	  	$scope.isCurrent = true;
-	  	$scope.activeSlide = defaultSettings.activeSlide;
-	  	$scope.maxVisible = defaultSettings.maxVisible;
-	  	$scope.lastVisible = defaultSettings.lastVisible;
-		};
-
-  	$scope.loadSlide = function(index) {
-  		$scope.activeSlide = index;
-  	};
-  	$scope.loadArchives = function() {
-  		$scope.isCurrent = false;
-  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
-  		$scope.lastVisible = $scope.slideArray.length;
-  	};
-  	$scope.loadCurrent = function() {
-  		$scope.isCurrent = true;
-  		$scope.maxVisible = defaultSettings.maxVisible;
-  		$scope.lastVisible = defaultSettings.lastVisible;
-  	};
-  	$scope.switchOption = function() {
-  		$scope.activeSlide = $scope.currentOption.index;
-  	};
-  	$scope.$watch('activeSlide', function(newVal, oldVal) {
-    	if (oldVal !== newVal && !isNaN(newVal)) {
-    		$scope.currentOption = $scope.slideArray[newVal];
-    	}
-    });
-
-    var http = {
-    	removeContentTags: function(value) {
-				var newString = value.content;
-				newString = newString.replace(/&nbsp;/g, ' ');
-				newString = newString.replace(/<br \/>|<br>/g, '<br/>');
-				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-				newString = newString.replace(regexString, '');
-				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-				newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-				value.content = newString;
-			},
-    	getPostsUpdates: function(isError) {
-    		return httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
-	   		.then(function(data) {
-	   			if (!isError) {
-			   		var value = data.items[0];
-			   		if (value) {
-			   			// Append info to all blog posts and use
-				   		// regex to sanitize value.content (html)
-				   		angular.forEach(data.items, function(value, key) {
-				   			http.removeContentTags(value);
-				   			appendPostInfo(value);
-			   			});
-			   			// Sort posts by most recent date first
-			   			data.items.sort(sortBlogPosts);
-			   			data.items.reverse();
-			   			// Push all content into slideArray
-			   			angular.forEach(data.items, function(value, key) {
-			   				var slideObject = {
-			   					heading: defaultSettings.postHeading,
-			   					index: key,
-			   					title: value.title,
-			   					date: value.dateText,
-			   					content: value.content,
-			   				};
-				   			$scope.slideArray.push(slideObject);
-			   			});
-			   			$scope.currentOption = $scope.slideArray[0];
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
-			   			// STOP Promise Chaining
-			   			$log.error('SundaySchoolController:', label, '- null data');
-			   			return true;
-			   		}
-		   		} else {
-		   			// STOP Promise Chaining
-			   		$log.error(defaultSettings.controllerName + ' ' + label, '- STOP Chaining');
-			   		return true;
-		   		}
-   			}, function(error) {
-					$log.error(defaultSettings.controllerName + ' ' + label, error);
-				});	
-    	}
-    };
-
-    _init();
-    httpService.resetSimpleGet();
-  	http.getPostsUpdates()
-  		.then(function() {
-  			$log.debug('Promise Chaining is DONE!!!!');
-  		});
-	}]);
-
-	app.controller('UpdatesTMI', 
-	['$log', '$scope', '$compile', 'httpService', 
-	function ($log, $scope, $compile, httpService) {
-		var defaultSettings = {
-			controllerName: 'UpdatesTMI',
-			title: 'The Multiply Initiative',
-			subtitle: 'Meditations',
-			postHeading: 'Meditations',
-			maxVisible: 15,
-			lastVisible: 15,
-			activeSlide: 0,
-			updateLabel: '$$$Meditations',
-		};
-		
-		function _init(){
-			$scope.title = defaultSettings.title;
-	  	$scope.subtitle = defaultSettings.subtitle;
-	  	$scope.current = {};
-	  	$scope.slideArray = [];
-	  	$scope.isCurrent = true;
-	  	$scope.activeSlide = defaultSettings.activeSlide;
-	  	$scope.maxVisible = defaultSettings.maxVisible;
-	  	$scope.lastVisible = defaultSettings.lastVisible;
-		};
-
-  	$scope.loadSlide = function(index) {
-  		$scope.activeSlide = index;
-  	};
-  	$scope.loadArchives = function() {
-  		$scope.isCurrent = false;
-  		$scope.maxVisible = $scope.slideArray.length - $scope.maxVisible;
-  		$scope.lastVisible = $scope.slideArray.length;
-  	};
-  	$scope.loadCurrent = function() {
-  		$scope.isCurrent = true;
-  		$scope.maxVisible = defaultSettings.maxVisible;
-  		$scope.lastVisible = defaultSettings.lastVisible;
-  	};
-  	$scope.switchOption = function() {
-  		$scope.activeSlide = $scope.currentOption.index;
-  	};
-  	$scope.$watch('activeSlide', function(newVal, oldVal) {
-    	if (oldVal !== newVal && !isNaN(newVal)) {
-    		$scope.currentOption = $scope.slideArray[newVal];
-    	}
-    });
-
-    var http = {
-    	removeContentTags: function(value) {
-				var newString = value.content;
-				newString = newString.replace(/&nbsp;/g, ' ');
-				newString = newString.replace(/<br \/>|<br>/g, '<br/>');
-				var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-				newString = newString.replace(regexString, '');
-				var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-				newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-				value.content = newString;
-			},
-    	getPostsUpdates: function(isError) {
-    		return httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
-	   		.then(function(data) {
-	   			if (!isError) {
-			   		var value = data.items[0];
-			   		if (value) {
-			   			// Append info to all blog posts and use
-				   		// regex to sanitize value.content (html)
-				   		angular.forEach(data.items, function(value, key) {
-				   			http.removeContentTags(value);
-				   			appendPostInfo(value);
-			   			});
-			   			// Sort posts by most recent date first
-			   			data.items.sort(sortBlogPosts);
-			   			data.items.reverse();
-			   			// Push all content into slideArray
-			   			angular.forEach(data.items, function(value, key) {
-			   				var slideObject = {
-			   					heading: defaultSettings.postHeading,
-			   					index: key,
-			   					title: value.title,
-			   					date: value.dateText,
-			   					content: value.content,
-			   				};
-				   			$scope.slideArray.push(slideObject);
-			   			});
-			   			$scope.currentOption = $scope.slideArray[0];
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
-			   			// STOP Promise Chaining
-			   			$log.error('SundaySchoolController:', label, '- null data');
-			   			return true;
-			   		}
-		   		} else {
-		   			// STOP Promise Chaining
-			   		$log.error(defaultSettings.controllerName + ' ' + label, '- STOP Chaining');
-			   		return true;
-		   		}
-   			}, function(error) {
-					$log.error(defaultSettings.controllerName + ' ' + label, error);
-				});	
-    	}
-    };
-
-    _init();
-    httpService.resetSimpleGet();
-  	http.getPostsUpdates()
-  		.then(function() {
-  			$log.debug('Promise Chaining is DONE!!!!');
-  		});
-	}]);
-
-	app.controller('UpdatesUpcoming', 
-	['$scope', 'httpService', 
-	function ($scope, httpService) {
-		var defaultSettings = {
-			controllerName: 'UpdatesUpcoming',
-			title: 'Upcoming Events',
-			updateLabel: '$$$Upcoming Events',
-		};
-
-		$scope.callback = function(index) {
-  	};
-  	var setCover = function(data) {
-  		data.imgLarge = 'img/Smushed/upcoming-default.jpg';
-  		data.visible = true;
-
-  		for (var i = 0; i < data.labels.length; i++) {
-  			//console.log('data', data.title.substr(0,15));
-  			if (data.title.indexOf('Youth Mission Trip') > -1) {
-  				data.imgSmall = 'img/Smushed/upcoming-youth-mission-trip.jpg';
-  				data.imgLarge = 'img/Smushed/upcoming-youth-mission-trip.jpg';
-  				break;
-  			} else if (data.title.indexOf('Crawdad') > -1) {
-  				data.imgSmall = 'img/Smushed/upcoming-crawdad-small.jpg';
-  				data.imgLarge = 'img/Smushed/upcoming-crawdad.jpg';
-  				data.visible = false;
-  				break;
-  			} else if (data.title.indexOf('Summer Lock-In') > -1) {
-  				data.imgSmall = 'img/Smushed/upcoming-lock-in.jpg';
-  				data.imgLarge = 'img/Smushed/upcoming-lock-in.jpg';
-  				break;
-  			} else if (data.labels[i] === 'Evangelism') {
-  				data.imgSmall = 'img/Smushed/upcoming-evangelism.jpg';
-  				data.imgLarge = 'img/Smushed/upcoming-evangelism.jpg';
-  				break;
-  			} else if (data.labels[i] === 'Afterglow') {
-  				break;
-  			} else if (data.labels[i] === 'Afterglow') {
-  				break;
-  			} else if (data.labels[i] === 'Afterglow') {
-  				break;
-  			} else {
-  			}
-  		}
-  	};
-
-  	//************************************
-    //************************************
-
-  	$scope.title = defaultSettings.title;
-  	$scope.allUpcomingEvents;
-
-  	var upcomingEvents = {};
-  	var oldEvents = {};
-  	
-  	httpService.resetRecursiveGet();
-  	httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
-  	.then(function(data) {
-   		var today = new Date();
-   		//console.log('data', data);
-
-   		//data.items.reverse();
-
-   		angular.forEach(data.items, function(value, key) {
-   			var divider = value.title.indexOf(':');
-   			var titleDate = value.title.substr(0,divider);
-   			var title = value.title.substr(divider+1, value.title.length);
-
-   			//var d = new Date(titleDate);
-   			var d = parseISO8601(titleDate);
-   			var dPlusOne = parseISO8601(titleDate);
-   			dPlusOne.setDate(dPlusOne.getDate() + 1);
-   			var day = d.getDate();
-   			var weekday = getDayText(d.getDay());
-   			var month = getMonthText(d.getMonth());
-   			var year = d.getFullYear();
-
-   			//console.log('parse', titleDate, parseISO8601(titleDate));
-
-   			value.title = title;
-   			value.date = d;
-   			value.dateText = weekday + ', ' + month + ' ' + day;
-   			setCover(value);
-
-
-   			if (today > dPlusOne) {
-   				if (!oldEvents[year]) {
-	   				oldEvents[year] = {
-	   					year: year,
-	   					events: new Array()
-	   				};
-	   			}
-	   			oldEvents[year].events.push(value);
-   			} else {
-   				if (year) {
-   					if (!upcomingEvents[year]) {
-		   				upcomingEvents[year] = {
-		   					year: year,
-		   					events: new Array()
-		   				};
-		   			}
-		   			upcomingEvents[year].events.push(value);
-   				}
-   			}
-   		});
-
-   		//console.log('pre-sorted', upcomingEvents);
-
-   		//var sortedEvents = $.extend(true, {}, upcomingEvents);
-   		//upcomingEvents.slice(0);
-
-   		angular.forEach(upcomingEvents, function (value, key) {
-   			value.events.sort(sortBlogPosts);
-   		});
-
-   		//console.log('post-sorted', sortedEvents);
-
-   		$scope.allUpcomingEvents = upcomingEvents;
-
-   		//console.log('$scope', $scope);
-   		//$scope.createSwipe();
-   	}, function(error) {
-   		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.updateLabel, error);
-   	});
-	}]);
-
-	var appendPostInfo = function(value) {
-		var divider = value.title.indexOf(':');
-		var titleDate = value.title.substr(0,divider);
-		var title = value.title.substr(divider+1, value.title.length);
-
-		var d = parseISO8601(titleDate);
-		var day = d.getDate();
-		var weekday = getDayText(d.getDay());
-		var month = getMonthText(d.getMonth());
-		var year = d.getFullYear();
-
-		value.title = title;
-		value.subtitle = titleDate;
-		value.date = d;
-		value.dateText = weekday + ', ' + month + ' ' + day;
-	};
-	var removeContentTags = function(value) {
-		//var newString = value.content.replace('<([^>]*)>', '');
-		var newString = value.content;
-		
-		newString = newString.replace(/&nbsp;/g, ' ');
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		newString = newString.replace(/<br \/>|<br>/g, '<br/><br/>');
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>/g;
-		newString = newString.replace(regexString, '');
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-		newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		value.content = newString;
-	};
-	var removeContentTags2 = function(value) {
-		//var newString = value.content.replace('<([^>]*)>', '');
-		var newString = value.content;
-		
-		newString = newString.replace(/&nbsp;/g, ' ');
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		//newString = newString.replace(/<br \/>|<br>/g, '<br/><br/>');
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		var regexString = /<div([^>]*)>|<\/div>|<span([^>]*)>|<\/span>|<p([^>]*)>|<\/p>|<h2([^>]*)>|<\/h2>|<h3([^>]*)>|<\/h3>|<h4([^>]*)>|<\/h4>/g;
-		newString = newString.replace(regexString, '');
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		var theMultiplyInitiative = '<span class="optimus">The Multiply Initiative</span>';
-		newString = newString.replace(/The Multiply Initiative/g, theMultiplyInitiative);
-		//console.log('newString', newString);
-		//console.log('***************************');
-		
-		value.content = newString;
-	};
-	// ------------------------------------
 
 	// ------------------------------------
 	// Other Pages:
