@@ -1229,6 +1229,8 @@
   		eventObj.imgLarge = 'img/Smushed/upcoming-default.jpg';
   		eventObj.visibleLarge = true;
   		eventObj.visibleSmall = true;
+  		eventObj.clickOnlyLarge = false;
+  		eventObj.clickOnlySmall = false;
 
   		var src = post.extractImgSrcUrls()[0];
   		if (src) {
@@ -1238,14 +1240,13 @@
   		} else if (post.getTitle().indexOf('Youth Mission Trip') > -1) {
 				eventObj.imgSmall = 'img/Smushed/upcoming-youth-mission-trip.jpg';
 				eventObj.imgLarge = 'img/Smushed/upcoming-youth-mission-trip.jpg';
-			} else if (post.getTitle().indexOf('Crawdad') > -1) {
-				eventObj.imgSmall = 'img/Smushed/upcoming-crawdad-small.jpg';
-				eventObj.imgLarge = 'img/Smushed/upcoming-crawdad.jpg';
-				eventObj.visibleLarge = false;
-  			eventObj.visibleSmall = false;
-			} else if (post.getTitle().indexOf('Summer Lock-In') > -1) {
-				eventObj.imgSmall = 'img/Smushed/upcoming-lock-in.jpg';
-				eventObj.imgLarge = 'img/Smushed/upcoming-lock-in.jpg';
+			} else if (post.getTitle().indexOf('Superbowl') > -1) {
+				eventObj.imgSmall = 'img/Smushed/upcoming-superbowl-small.jpg';
+				eventObj.imgLarge = 'img/Smushed/upcoming-superbowl-large.jpg';
+			} else if (post.getTitle().indexOf('Street Reach') > -1) {
+				eventObj.imgSmall = 'img/upcoming-street-reach.png';
+				eventObj.imgLarge = 'img/upcoming-street-reach.png';
+				eventObj.clickOnlyLarge = true;
 			} else if (post.hasLabel('Evangelism')) {
 				eventObj.imgSmall = 'img/Smushed/upcoming-evangelism.jpg';
 				eventObj.imgLarge = 'img/Smushed/upcoming-evangelism.jpg';
@@ -1309,7 +1310,6 @@
 	   		});
  			}
    		$scope.allUpcomingEvents = upcomingEvents;
-   		
    	}, function(error) {
    		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.updateLabel, error);
    	});
