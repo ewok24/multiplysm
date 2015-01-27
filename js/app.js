@@ -74,7 +74,7 @@
 					templateUrl: 'html/thankyou.html'
 				})
       .otherwise({ redirectTo: '/' });
-		$logProvider.debugEnabled(true);
+		$logProvider.debugEnabled(false);
 	}]);
 
 	app.service('selectedService', function() {
@@ -1227,33 +1227,48 @@
   	var oldEvents = {};
   	var setCover = function(eventObj, post) {
   		eventObj.imgLarge = 'img/Smushed/upcoming-default.jpg';
-  		eventObj.visibleLarge = true;
-  		eventObj.visibleSmall = true;
-  		eventObj.clickOnlyLarge = false;
-  		eventObj.clickOnlySmall = false;
+  		eventObj.imgSmall = 'img/Smushed/upcoming-default.jpg';
+
+  		eventObj.showTitleGtMd = true;
+      eventObj.showDateGtMd = true;
+      eventObj.showClickGtMd = true;
+      eventObj.showTitleSm = true;
+      eventObj.showDateSm = true;
+      eventObj.showClickSm = true;
 
   		var src = post.extractImgSrcUrls()[0];
   		if (src) {
   			eventObj.imgLarge = src;
-  			eventObj.visibleLarge = false;
-  			eventObj.visibleSmall = true;
+  			eventObj.imgSmall = src;
+  			eventObj.showTitleGtMd = false;
+	      eventObj.showDateGtMd = false;
+	      eventObj.showClickGtMd = false;
   		} else if (post.getTitle().indexOf('Youth Mission Trip') > -1) {
+  			eventObj.imgLarge = 'img/Smushed/upcoming-youth-mission-trip.jpg';
 				eventObj.imgSmall = 'img/Smushed/upcoming-youth-mission-trip.jpg';
-				eventObj.imgLarge = 'img/Smushed/upcoming-youth-mission-trip.jpg';
 			} else if (post.getTitle().indexOf('Superbowl') > -1) {
-				eventObj.imgSmall = 'img/Smushed/upcoming-superbowl-small.jpg';
 				eventObj.imgLarge = 'img/Smushed/upcoming-superbowl-large.jpg';
+				eventObj.imgSmall = 'img/Smushed/upcoming-superbowl-small.jpg';
 			} else if (post.getTitle().indexOf('Street Reach') > -1) {
-				eventObj.imgSmall = 'img/upcoming-street-reach.png';
-				eventObj.imgLarge = 'img/upcoming-street-reach.png';
-				eventObj.clickOnlyLarge = true;
-			} else if (post.hasLabel('Evangelism')) {
-				eventObj.imgSmall = 'img/Smushed/upcoming-evangelism.jpg';
-				eventObj.imgLarge = 'img/Smushed/upcoming-evangelism.jpg';
-			} else if (post.hasLabel('Afterglow')) {	
-
-			} else {
-
+				eventObj.imgLarge = 'img/Smushed/upcoming-missions-street-reach-md.jpg';
+				eventObj.imgSmall = 'img/Smushed/upcoming-missions-street-reach-sm.jpg';
+				eventObj.showTitleGtMd = false;
+      	eventObj.showTitleSm = false;
+			} else if (post.getTitle().indexOf('Winter Retreat') > -1) {
+				eventObj.imgLarge = 'img/Smushed/upcoming-events-winter-retreat-md.jpg';
+				eventObj.imgSmall = 'img/Smushed/upcoming-events-winter-retreat-sm.jpg';
+				eventObj.showTitleGtMd = false;
+      	eventObj.showTitleSm = false;
+			} else if (post.getTitle().indexOf('Camp Mitchell') > -1) {
+				eventObj.imgLarge = 'img/Smushed/upcoming-events-summer-camp-md.jpg';
+				eventObj.imgSmall = 'img/Smushed/upcoming-events-summer-camp-sm.jpg';
+				eventObj.showTitleGtMd = false;
+      	eventObj.showTitleSm = false;
+			} else if (post.getTitle().indexOf('Afterglow') > -1) {
+				eventObj.imgLarge = 'img/Smushed/upcoming-events-afterglow-md.jpg';
+				eventObj.imgSmall = 'img/Smushed/upcoming-events-afterglow-.jpg';
+				eventObj.showTitleGtMd = false;
+      	eventObj.showTitleSm = false;
 			}
   	};
   	function addEvent(eventArray, post) {
@@ -1315,7 +1330,142 @@
    	});
 	}]);
 
-	
+	app.directive('msmEventImg', 
+	['$log',
+	function ($log) {
+		/*****************************************************
+   	*                    	Link Function
+   	*****************************************************/
+		var link = function(scope, element, attrs, controller) {
+			$log.debug('msm-event-label scope', scope);
+			
+			// ---------------------------
+			// Initialize Objects
+			
+		};
+
+		/*****************************************************
+   	*              Directive Definition Object
+   	*****************************************************/
+	  var directiveDefinitionObject = {
+      priority: 0,
+      template: function(tElement, tAttrs) {
+      	var htmlString = '<div class="show-for-medium-up" back-img="{{ urlGtMd }}" \
+    												ng-transclude \
+      											style="width: 100%; height: 360px; background: left top; background-repeat: no-repeat; background-size: cover;"> \
+    											</div> \
+            							<div class="show-for-small" back-img="{{ urlSm }}" \
+          									ng-transclude \
+      											style="width: 100%; height: 360px; background: center; background-repeat: no-repeat; background-size: cover;"> \
+        									</div>';
+      	return htmlString;
+      },
+      transclude: true,
+      restrict: 'A',
+      scope: {
+      	urlGtMd: '=',
+      	urlSm: '=',
+      },
+      //controller: function($scope, $element, $attrs, $transclude, otherInjectables) { ... },
+      //controllerAs: 'stringAlias',
+      //require: 'siblingDirectiveName', // or // ['^parentDirectiveName', '?optionalDirectiveName', '?^optionalParent'],
+      compile: function compile(tElement, tAttrs, transclude) {
+      	return link;
+      },
+    };
+    return directiveDefinitionObject;
+	}]);
+
+	app.directive('msmEventLabel', 
+	['$log',
+	function ($log) {
+		/*****************************************************
+   	*                    	Link Function
+   	*****************************************************/
+		var link = function(scope, element, attrs, controller) {
+			$log.debug('msm-event-label scope', scope);
+			
+			// ---------------------------
+			// Initialize Objects
+			if (scope.showTitleGtMd) scope.showTitleGtMd = true;
+      if (scope.showDateGtMd) scope.showDateGtMd = true;
+      if (scope.showClickGtMd) scope.showClickGtMd = true;
+
+      if (scope.showTitleSm) scope.showTitleSm = true;
+      if (scope.showDateSm) scope.showDateSm = true;
+      if (scope.showClickSm) scope.showClickSm = true;
+		};
+
+		/*****************************************************
+   	*              Directive Definition Object
+   	*****************************************************/
+	  var directiveDefinitionObject = {
+      priority: 0,
+      template: function(tElement, tAttrs) {
+      	var htmlString = '<div style="position: absolute; width: 100%; height: 100%; z-index: 2; \
+      											background: linear-gradient(165deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.4) 80%, rgba(0, 0, 0, 0.8) 100%);"></div> \
+						              <div class="show-for-medium-up" style="position: absolute; width: 100%; height: 100%; z-index: 3;"> \
+						                <h1 ng-if="showTitleGtMd" style="padding-top: 10px; padding-left: 10px; color: #fff; "> \
+						                	{{ title }} \
+					                	</h1> \
+						                <h2 ng-if="showDateGtMd" style="padding-top: 10px; padding-left: 10px; color: #fff; "> \
+						                	{{ date }} \
+						                </h2> \
+						                <h3 ng-if="showClickGtMd" style="position: absolute; bottom: 10px; right: 10px; color: #fff; "> \
+						                	Click Here To Learn More. \
+					                	</h3> \
+						              </div> \
+						              <div class="show-for-small-only" style="position: absolute; width: 100%; height: 100%; z-index: 3;"> \
+						                <h1 ng-if="showTitleSm" style="padding-top: 10px; padding-left: 10px; color: #fff; "> \
+						                	{{ title }} \
+					                	</h1> \
+						                <h2 ng-if="showDateSm" style="padding-top: 10px; padding-left: 10px; color: #fff; "> \
+						                	{{ date }} \
+					                	</h2> \
+						                <h3 ng-if="showClickSm" style="position: absolute; bottom: 10px; right: 10px; color: #fff; "> \
+					                		Click Here To Learn More. \
+				                		</h3> \
+						              </div>';
+      	return htmlString;
+      },
+      transclude: false,
+      restrict: 'A',
+      scope: {
+      	title: '=',
+      	date: '=',
+      	showTitleGtMd: '=?',
+      	showDateGtMd: '=?',
+      	showClickGtMd: '=?',
+      	showTitleSm: '=?',
+      	showDateSm: '=?',
+      	showClickSm: '=?',
+      },
+      //controller: function($scope, $element, $attrs, $transclude, otherInjectables) { ... },
+      //controllerAs: 'stringAlias',
+      //require: 'siblingDirectiveName', // or // ['^parentDirectiveName', '?optionalDirectiveName', '?^optionalParent'],
+      compile: function compile(tElement, tAttrs, transclude) {
+      	return link;
+      },
+    };
+    return directiveDefinitionObject;
+	}]);
+
+	app.directive('backImg', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs, controller) {
+				var url = attrs.backImg;
+
+				scope.setImg = function() {
+					element.css({
+            'background-image': 'url(' + url +')'
+	        });
+				};
+
+				scope.setImg();
+			}
+		}
+	});
 	
   /********************************************************************
    *
@@ -2028,23 +2178,6 @@
 	    	scope.nextSlide = function() {
 		    	scope.swipe.next();
 		    };
-			}
-		}
-	});
-
-	app.directive('backImg', function() {
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs, controller) {
-				var url = attrs.backImg;
-
-				scope.setImg = function() {
-					element.css({
-            'background-image': 'url(' + url +')'
-	        });
-				};
-
-				scope.setImg();
 			}
 		}
 	});
