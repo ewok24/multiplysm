@@ -567,6 +567,7 @@
   		}
   	};
   	$scope.callback = function(index) {
+  		$scope.selectSlide($scope.slides[index], index);
   		$scope.currentOption = $scope.options[index];
   		if (!$scope.$$phase) {
     		$scope.$apply();
