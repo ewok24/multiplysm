@@ -74,7 +74,7 @@
 					templateUrl: 'html/thankyou.html'
 				})
       .otherwise({ redirectTo: '/' });
-		$logProvider.debugEnabled(false);
+		$logProvider.debugEnabled(true);
 	}]);
 
 	app.service('selectedService', function() {
@@ -528,6 +528,7 @@
 	app.controller('AboutController', 
 	['$log', '$scope', 'httpService', 'BloggerPostList',
 	function ($log, $scope, httpService, BloggerPostList) {
+		$log.debug('AboutController $scope', $scope);
 		var defaultSettings = {
 			controllerName: 'AboutController',
 			title: 'About Us',
@@ -558,28 +559,27 @@
 				$scope.slides[i].isActive = false;
 			}
 			$scope.slides[index].isActive = true;
-		}
+		};
+		var selectSlideFn = function(post, index) {
+			$scope.subtitle = post.title;
+			$scope.content = post.content;
+			$scope.src = post.src;
+			setActiveSlide(index);
+		};
+		$scope.selectSlide = function(post, index) {
+			selectSlideFn(post, index);
+			//$scope.callback(index);
+			//$scope.slideTo(index);
+		};
 
-  	$scope.switchOption = function() {
-  		if ($scope.currentOption != null) {
-  			$scope.selectSlide($scope.currentOption, $scope.currentOption.value);
-  			$scope.swipe.slide($scope.currentOption.value);
-  		}
-  	};
+		// Swipe JS callback
   	$scope.callback = function(index) {
-  		$scope.selectSlide($scope.slides[index], index);
+  		selectSlideFn($scope.slides[index], index);
   		$scope.currentOption = $scope.options[index];
   		if (!$scope.$$phase) {
     		$scope.$apply();
     	}
   	};
-
-  	$scope.selectSlide = function(post, index) {
-			$scope.subtitle = post.title;
-			$scope.content = post.content;
-			$scope.src = post.src;
-			setActiveSlide(index);
-		}
 
   	httpService.resetSimpleGet();
   	httpService.getLabeledPost(defaultSettings.label)
@@ -1467,6 +1467,145 @@
 			}
 		}
 	});
+
+	// ------------------------------------
+	// Podcasts
+	app.controller('PodcastsController', 
+	['$log', '$scope', 'httpService', 
+	function ($log, $scope, httpService) {
+		angular.element( '#audioPlayer' ).audioPlayer({
+	    classPrefix: 'audioplayer',
+	    strPlay: 'Play',
+	    strPause: 'Pause',
+	    strVolume: 'Volume',
+		});
+		var player = document.getElementById('audioPlayer');
+
+		function updateSource (newSrc) {
+      player.src = newSrc;
+      player.load();
+    }
+    function playSource () {
+    	player.play();
+    }
+
+		$scope.callback = function (index) {};
+		$scope.playThis = function (pathToAudio) {
+			if ($scope.allPodcasts) {
+				if ($scope.allPodcasts[pathToAudio]) {
+					$scope.currentSermon = $scope.allPodcasts[pathToAudio];
+
+					var link = $scope.allPodcasts[pathToAudio].dblink;
+					updateSource(link);
+					$scope.prevSlide();
+					playSource();
+				}
+			}
+		};
+		
+		//** Podcast Search **/
+		$scope.searchTypes = [
+			{ type: 'By Title' },
+			{ type: 'By Speaker' },
+			{ type: 'By Series' }
+			//{ type: 'By Passage' }
+		];
+		$scope.searchType = $scope.searchTypes[0];
+		$scope.show = {
+			title: true,
+			speaker: false,
+			series: false
+		}
+		$scope.switchType = function() {
+			$scope.show.title = false;
+			$scope.show.speaker = false;
+			$scope.show.series = false;
+
+			switch($scope.searchType.type) {
+				case 'By Title':
+					$scope.show.title = true;
+					break;
+				case 'By Speaker':
+					$scope.show.speaker = true;
+					break;
+				case 'By Series':
+					$scope.show.series = true;
+					break;
+				default:
+					break;
+			}
+		}
+		//********************/
+
+		var label = '$Podcasts';
+  	$scope.title = label.substr(1, label.length);
+
+		$scope.allPodcasts = {};
+
+		httpService.resetSimpleGet();
+  	httpService.getLabeledPost(label)
+  	.then(function(data) {
+   		if (data.items[0]) {
+   			var jsonContent = data.items[0].content;
+   			var jsonString = jsonContent.toString();
+
+   			if (jsonString) {
+   				var jsonObject = JSON.parse(jsonString);
+   				 //console.log('jsonObject', jsonObject);
+   				if (jsonObject) { //Parse Successful
+   					angular.forEach(jsonObject, function(value, key) {
+   						var jDate = parseISO8601(value.date);
+   						value.dayNumber = jDate.getDate();
+   						value.day = getDayText(jDate.getDay());
+   						value.month = getMonthText(jDate.getMonth());
+
+   						if (isNaN(value.dayNumber)) {
+   							value.month = "No Date";
+   							value.dayNumber = "";
+   							value.day = "";
+   						} else {
+   							value.date = value.month + " " + value.dayNumber + ", " + jDate.getFullYear();
+   						}
+
+   					});
+   					$scope.allPodcasts = jsonObject;
+   					if ($scope.allPodcasts) {
+   						$scope.currentSermon = $scope.allPodcasts[0];
+   						if ($scope.currentSermon) {
+   							//console.log($scope.currentSermon.dblink);
+   							updateSource($scope.currentSermon.dblink);
+   							$scope.createSwipe();
+   						}
+   					}
+   				}
+   			}
+   		}
+   	}, function(error) {
+   		$log.error('PodcastsController: $Podcasts', error);
+   	});
+	}]);
+
+	// ------------------------------------
+	// Contact Us
+	app.controller('ContactController', 
+	['$log', '$scope', 'httpService', 
+	function ($log, $scope, httpService) {
+  	httpService.resetSimpleGet();
+  	httpService.getLabeledPost('$Contact')
+  	.then(function(data) {
+  		if (data.items[0]) {
+   			var pageData = data.items[0];
+   			$scope.title = pageData.title;
+   			$scope.content = pageData.content;
+   		} else {
+   			$scope.title = "Page Error";
+   		}
+
+   		findBibleRefs();
+   	}, function(error) {
+   		$log.error('ContactController: $Contact', error);
+   	});
+	}]);
 	
   /********************************************************************
    *
@@ -1603,148 +1742,6 @@
 		_initSelectedItems();
 		window.addEventListener('orientationchange', checkAndFlip);
 	}]);
-
-  /********************************************************************
-   *                         Page Controllers
-   ********************************************************************/
-
-	// ------------------------------------
-	// Other Pages:
-	app.controller('PodcastsController', 
-	['$log', '$scope', 'httpService', 
-	function ($log, $scope, httpService) {
-		angular.element( '#audioPlayer' ).audioPlayer({
-	    classPrefix: 'audioplayer',
-	    strPlay: 'Play',
-	    strPause: 'Pause',
-	    strVolume: 'Volume',
-		});
-		var player = document.getElementById('audioPlayer');
-
-		function updateSource (newSrc) {
-      player.src = newSrc;
-      player.load();
-    }
-    function playSource () {
-    	player.play();
-    }
-
-		$scope.callback = function (index) {};
-		$scope.playThis = function (pathToAudio) {
-			if ($scope.allPodcasts) {
-				if ($scope.allPodcasts[pathToAudio]) {
-					$scope.currentSermon = $scope.allPodcasts[pathToAudio];
-
-					var link = $scope.allPodcasts[pathToAudio].dblink;
-					updateSource(link);
-					$scope.prevSlide();
-					playSource();
-				}
-			}
-		};
-		
-		//** Podcast Search **/
-		$scope.searchTypes = [
-			{ type: 'By Title' },
-			{ type: 'By Speaker' },
-			{ type: 'By Series' }
-			//{ type: 'By Passage' }
-		];
-		$scope.searchType = $scope.searchTypes[0];
-		$scope.show = {
-			title: true,
-			speaker: false,
-			series: false
-		}
-		$scope.switchType = function() {
-			$scope.show.title = false;
-			$scope.show.speaker = false;
-			$scope.show.series = false;
-
-			switch($scope.searchType.type) {
-				case 'By Title':
-					$scope.show.title = true;
-					break;
-				case 'By Speaker':
-					$scope.show.speaker = true;
-					break;
-				case 'By Series':
-					$scope.show.series = true;
-					break;
-				default:
-					break;
-			}
-		}
-		//********************/
-
-		var label = '$Podcasts';
-  	$scope.title = label.substr(1, label.length);
-
-		$scope.allPodcasts = {};
-
-		httpService.resetSimpleGet();
-  	httpService.getLabeledPost(label)
-  	.then(function(data) {
-   		if (data.items[0]) {
-   			var jsonContent = data.items[0].content;
-   			var jsonString = jsonContent.toString();
-
-   			if (jsonString) {
-   				var jsonObject = JSON.parse(jsonString);
-   				 //console.log('jsonObject', jsonObject);
-   				if (jsonObject) { //Parse Successful
-   					angular.forEach(jsonObject, function(value, key) {
-   						var jDate = parseISO8601(value.date);
-   						value.dayNumber = jDate.getDate();
-   						value.day = getDayText(jDate.getDay());
-   						value.month = getMonthText(jDate.getMonth());
-
-   						if (isNaN(value.dayNumber)) {
-   							value.month = "No Date";
-   							value.dayNumber = "";
-   							value.day = "";
-   						} else {
-   							value.date = value.month + " " + value.dayNumber + ", " + jDate.getFullYear();
-   						}
-
-   					});
-   					$scope.allPodcasts = jsonObject;
-   					if ($scope.allPodcasts) {
-   						$scope.currentSermon = $scope.allPodcasts[0];
-   						if ($scope.currentSermon) {
-   							//console.log($scope.currentSermon.dblink);
-   							updateSource($scope.currentSermon.dblink);
-   							$scope.createSwipe();
-   						}
-   					}
-   				}
-   			}
-   		}
-   	}, function(error) {
-   		$log.error('PodcastsController: $Podcasts', error);
-   	});
-	}]);
-
-  app.controller('ContactController', 
-	['$log', '$scope', 'httpService', 
-	function ($log, $scope, httpService) {
-  	httpService.resetSimpleGet();
-  	httpService.getLabeledPost('$Contact')
-  	.then(function(data) {
-  		if (data.items[0]) {
-   			var pageData = data.items[0];
-   			$scope.title = pageData.title;
-   			$scope.content = pageData.content;
-   		} else {
-   			$scope.title = "Page Error";
-   		}
-
-   		findBibleRefs();
-   	}, function(error) {
-   		$log.error('ContactController: $Contact', error);
-   	});
-	}]);
-	// ------------------------------------
 
   /********************************************************************
    *
@@ -2090,9 +2087,10 @@
 	}]);
 
 	app.directive('swipejs', function() {
+		var swipeElem;
 	  return function(scope, element, attrs) {
-	    scope.createSwipe = function() {
-	    	scope.swipe = Swipe(element[0], {
+	  	scope.createSwipe = function() {
+	    	swipeElem = Swipe(element[0], {
 		    	startSlide: 0,
 				  speed: 400,
 				  auto: 0,
@@ -2106,15 +2104,20 @@
 				  	scope.callback(index);
 				  }
 		    });
+		    scope.swipe = swipeElem;
 	    };
 	    scope.prevSlide = function() {
-    		scope.swipe.prev();
+    		swipeElem.prev();
     	};
     	scope.nextSlide = function() {
-	    	scope.swipe.next();
+	    	swipeElem.next();
+	    };
+	    scope.slideTo = function(index) {
+	    	console.log('swipe', swipeElem);
+	    	swipeElem.slide(index, 400);
 	    };
 
-	    $(document).keyup(function (e) {
+	    angular.element(document).keyup(function (e) {
 	    	if(e.which === 37) {
 	    		scope.prevSlide();
 	    	}
