@@ -74,7 +74,7 @@
 					templateUrl: 'html/thankyou.html'
 				})
       .otherwise({ redirectTo: '/' });
-		$logProvider.debugEnabled(true);
+		$logProvider.debugEnabled(false);
 	}]);
 
 	app.service('selectedService', function() {
@@ -301,8 +301,19 @@
 	  		getLabels: function() {
 	  			return _labels;
 	  		},
+	  		getImageLabel: function() {
+	  			var imgLabel;
+	  			for (var i = 0; i < _labels.length; i++) {
+	  				if (_labels[i].substr(0, 5) === 'Image') {
+	  					var divider = _labels[i].indexOf(':');
+							imgLabel = _labels[i].substr(divider+1, _labels[i].length);
+	  					return imgLabel;
+	  				}
+	  			}
+	  			return false;
+	  		},
 	  		hasLabel: function(label) { 
-	  			for (var i = 0; i < _labels; i++) {
+	  			for (var i = 0; i < _labels.length; i++) {
 	  				if (_labels[i] === label) {
 	  					return true;
 	  				}
@@ -1207,13 +1218,144 @@
 
 	// ------------------------------------
 	// Ministry Updates: Upcoming Events
+	app.factory('RawBloggerPosts', 
+	['$log', '$http', '$q', 
+	function ($log, $http, $q) {
+		// Request an API Key for the Blogger API from 
+	  // https://code.google.com/apis/console/
+	  var apikey = "AIzaSyBwh5B3d-nVf8Ut6mf690Id5miFFQ01s0M";
+	  // You can find the blogId in the HTML source of a blog
+	  var blogId = "1357003820482584675";
+	  var baseUrl = 'https://www.googleapis.com/blogger/v3' +
+					'/blogs/' + blogId + 
+					'/posts?maxResults=20';
+
+		var returnConstructor = function (label) {
+			var _deferred = $q.defer();
+			var _container = {
+				items: new Array(),
+			};
+			var _getBloggerPosts = function(label, nextPageToken){
+		  	var url = baseUrl;
+		  	if (nextPageToken) {
+		  		url += '&pageToken='+ nextPageToken;
+		  	}
+		  	url += '&labels=' + label +
+						'&fields=nextPageToken, items(title, published, labels, content)'+
+						'&key='+ apikey + '&callback=JSON_CALLBACK';
+
+				$http.jsonp(url)
+			    .success(function(data, status, headers, config) {
+		   			_container.items.push.apply(_container.items, data.items);
+		   			if(data.nextPageToken) {
+		   				_getBloggerPosts(label, data.nextPageToken);
+		   			} else {
+		          _deferred.resolve(_container);
+		   			}
+			   	})
+			   	.error(function(data, status, headers, config) {
+			   		$log.error('Error: data', data);
+				  });
+		  };
+			_getBloggerPosts(label);
+
+			var returnObj = {
+				getPromise: function () {
+					return _deferred.promise;
+				},
+			};
+			return returnObj;
+		};
+
+		return returnConstructor;
+	}]);
+
+	app.service('eventImgService', 
+	['$log', '$q', 'RawBloggerPosts', 'BloggerPostList',
+	function ($log, $q, RawBloggerPosts, BloggerPostList){
+		$log.debug('--------------------------------Service: defaultImgService--------------------------------');
+		var self = this;
+
+		var _defaultImgs = {};
+		var _defaultLarge = 'img/Smushed/upcoming-default.jpg';
+		var _defaultSmall = 'img/Smushed/upcoming-default.jpg';
+
+		var label = 'Event Images';
+		var imgPosts = new RawBloggerPosts(label);
+		
+		var returnPromise = imgPosts.getPromise().then(function(data) {
+			$log.debug('eventImgService > data', data);
+			var list = new BloggerPostList(data);
+			var posts = list.getPosts();
+			for (var i = 0; i < posts.length; i++) {
+				var imgSrcUrls = posts[i].extractImgSrcUrls();
+				if (imgSrcUrls && imgSrcUrls.length === 1) {
+					_defaultImgs[posts[i].getTitle()] = {
+						post: posts[i],
+						gtmd: posts[i].extractImgSrcUrls()[0],
+						sm: posts[i].extractImgSrcUrls()[0],
+					};
+				} else if (imgSrcUrls && imgSrcUrls.length === 2) {
+					_defaultImgs[posts[i].getTitle()] = {
+						post: posts[i],
+						gtmd: posts[i].extractImgSrcUrls()[0],
+						sm: posts[i].extractImgSrcUrls()[1],
+					};
+				} else {
+					// ERROR
+				}
+			}
+			$log.debug('_defaultImgs', _defaultImgs);
+		});
+		
+		self.init = function() {
+			return returnPromise;
+		};
+		self.getImageLarge = function(label) {
+			if (_defaultImgs[label]) {
+				return _defaultImgs[label].gtmd;
+			} else {
+				return _defaultLarge;
+			}
+		};
+		self.getImageSmall = function(label) {
+			if (_defaultImgs[label]) {
+				return _defaultImgs[label].sm;
+			} else {
+				return _defaultSmall;
+			}
+		};
+		self.hideTitle = function(label) {
+			if (_defaultImgs[label]) {
+				return _defaultImgs[label].post.hasLabel('Hide Title');
+			} else {
+				return false;
+			}
+		};
+		self.hideDate = function(label) {
+			if (_defaultImgs[label]) {
+				return _defaultImgs[label].post.hasLabel('Hide Date');
+			} else {
+				return false;
+			}
+		};
+		self.hideClick = function(label) {
+			if (_defaultImgs[label]) {
+				return _defaultImgs[label].post.hasLabel('Hide Click');
+			} else {
+				return false;
+			}
+		};
+
+	}]);
+
 	app.controller('UpdatesUpcoming', 
-	['$log', '$scope', 'httpService', 'BloggerPostList',
-	function ($log, $scope, httpService, BloggerPostList) {
+	['$log', '$scope', 'httpService', 'BloggerPostList', 'eventImgService',
+	function ($log, $scope, httpService, BloggerPostList, eventImgService) {
 		var defaultSettings = {
 			controllerName: 'UpdatesUpcoming',
 			title: 'Upcoming Events',
-			updateLabel: '$$$Upcoming Events',
+			label: '$$$Upcoming Events',
 		};
 
 		$scope.callback = function(index) {
@@ -1237,39 +1379,48 @@
       eventObj.showDateSm = true;
       eventObj.showClickSm = true;
 
-  		var src = post.extractImgSrcUrls()[0];
-  		if (src) {
-  			eventObj.imgLarge = src;
-  			eventObj.imgSmall = src;
-  			eventObj.showTitleGtMd = false;
-	      eventObj.showDateGtMd = false;
-	      eventObj.showClickGtMd = false;
-  		} else if (post.getTitle().indexOf('Youth Mission Trip') > -1) {
-  			eventObj.imgLarge = 'img/Smushed/upcoming-youth-mission-trip.jpg';
-				eventObj.imgSmall = 'img/Smushed/upcoming-youth-mission-trip.jpg';
-			} else if (post.getTitle().indexOf('Superbowl') > -1) {
-				eventObj.imgLarge = 'img/Smushed/upcoming-superbowl-large.jpg';
-				eventObj.imgSmall = 'img/Smushed/upcoming-superbowl-small.jpg';
-			} else if (post.getTitle().indexOf('Street Reach') > -1) {
-				eventObj.imgLarge = 'img/Smushed/upcoming-missions-street-reach-md.jpg';
-				eventObj.imgSmall = 'img/Smushed/upcoming-missions-street-reach-sm.jpg';
+  		var postImageLabel = post.getImageLabel();
+  		if (postImageLabel) {
+  			var trimmedLabel = postImageLabel.trim();
+  			eventObj.imgLarge = eventImgService.getImageLarge(trimmedLabel);
+  			eventObj.imgSmall = eventImgService.getImageSmall(trimmedLabel);
+  			$log.debug('eventObj.imgLarge', eventObj.imgLarge);
+  			$log.debug('eventObj.imgSmall', eventObj.imgSmall);
+
+  			if (eventImgService.hideTitle(trimmedLabel)) {
+  				eventObj.showTitleGtMd = false;
+  				eventObj.showTitleSm = false;
+  			}
+  			if (eventImgService.hideDate(trimmedLabel)) {
+  				eventObj.showDateGtMd = false;
+  				eventObj.showDateSm = false;
+  			}
+  			if (eventImgService.hideClick(trimmedLabel)) {
+  				eventObj.showClickGtMd = false;
+  				eventObj.showClickSm = false;
+  			}
+  		}
+  		
+  		var src = post.extractImgSrcUrls();
+  		if (src && src.length === 1) {
+  			eventObj.imgLarge = src[0];
+  			eventObj.imgSmall = src[0];
+  		} else if (src && src.length === 2) {
+  			eventObj.imgLarge = src[0];
+  			eventObj.imgSmall = src[1];
+  		}
+
+  		if (post.hasLabel('Hide Title')) {
 				eventObj.showTitleGtMd = false;
-      	eventObj.showTitleSm = false;
-			} else if (post.getTitle().indexOf('Winter Retreat') > -1) {
-				eventObj.imgLarge = 'img/Smushed/upcoming-events-winter-retreat-md.jpg';
-				eventObj.imgSmall = 'img/Smushed/upcoming-events-winter-retreat-sm.jpg';
-				eventObj.showTitleGtMd = false;
-      	eventObj.showTitleSm = false;
-			} else if (post.getTitle().indexOf('Camp Mitchell') > -1) {
-				eventObj.imgLarge = 'img/Smushed/upcoming-events-summer-camp-md.jpg';
-				eventObj.imgSmall = 'img/Smushed/upcoming-events-summer-camp-sm.jpg';
-				eventObj.showTitleGtMd = false;
-      	eventObj.showTitleSm = false;
-			} else if (post.getTitle().indexOf('Afterglow') > -1) {
-				eventObj.imgLarge = 'img/Smushed/upcoming-events-afterglow-md.jpg';
-				eventObj.imgSmall = 'img/Smushed/upcoming-events-afterglow-.jpg';
-				eventObj.showTitleGtMd = false;
-      	eventObj.showTitleSm = false;
+				eventObj.showTitleSm = false;
+			}
+			if (post.hasLabel('Hide Date')) {
+				eventObj.showDateGtMd = false;
+				eventObj.showDateSm = false;
+			}
+			if (post.hasLabel('Hide Click')) {
+				eventObj.showClickGtMd = false;
+				eventObj.showClickSm = false;
 			}
   	};
   	function addEvent(eventArray, post) {
@@ -1291,7 +1442,7 @@
    					events: new Array()
    				};
    			}
-   			addEvent(oldEvents[year].events, post);
+   			//addEvent(oldEvents[year].events, post);
  			} else {
  				if (year) {
  					if (!upcomingEvents[year]) {
@@ -1305,30 +1456,41 @@
  			}
   	};
   	
-  	httpService.resetRecursiveGet();
-  	httpService.getLabeledPostRecursive(defaultSettings.updateLabel)
-  	.then(function(data) {
-  		$log.debug(defaultSettings.updateLabel + ' data', data);
- 			var list = new BloggerPostList(data);
-			var posts = list.getPosts();
-   		var bloggerPost = posts[0];
-			if (bloggerPost) {
-				var today = new Date();
-				for (var i = 0; i < posts.length; i++) {
-					posts[i].appendPostInfo();
-					sortOldUpcomingEvents(today, posts[i]);
-				}
+  	var http = {
+  		getUpcomingEvents: function() {
+  			httpService.resetRecursiveGet();
+  			return httpService.getLabeledPostRecursive(defaultSettings.label)
+			  	.then(function(data) {
+			  		$log.debug(defaultSettings.label + ' data', data);
+			 			var list = new BloggerPostList(data);
+						var posts = list.getPosts();
+			   		var bloggerPost = posts[0];
+						if (bloggerPost) {
+							var today = new Date();
+							for (var i = 0; i < posts.length; i++) {
+								posts[i].appendPostInfo();
+								sortOldUpcomingEvents(today, posts[i]);
+							}
 
-				angular.forEach(upcomingEvents, function (value, key) {
-	   			value.events.sort(function(a, b) {
-	   				return a.date<b.date?-1:a.date>b.date?1:0;
-	   			});
-	   		});
- 			}
-   		$scope.allUpcomingEvents = upcomingEvents;
-   	}, function(error) {
-   		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.updateLabel, error);
-   	});
+							angular.forEach(upcomingEvents, function (value, key) {
+				   			value.events.sort(function(a, b) {
+				   				return a.date<b.date?-1:a.date>b.date?1:0;
+				   			});
+				   		});
+			 			}
+			   		$scope.allUpcomingEvents = upcomingEvents;
+			   	}, function(error) {
+			   		$log.error(defaultSettings.controllerName + ': ' + defaultSettings.label, error);
+			   	});
+  		},
+  	};
+
+  	eventImgService.init()
+  		.then(http.getUpcomingEvents)
+  		.then(function() {
+  			$log.debug('Promise Chaining is DONE!!!!');
+  		});
+
 	}]);
 
 	app.directive('msmEventImg', 
