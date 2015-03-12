@@ -363,9 +363,14 @@
 		  				var srcArray = regexRules.get.src(imgLinkArray[i]);
 		  				var href = hrefArray[0].substring(6, hrefArray[0].length - 1);
 		  				var src = srcArray[0].substring(5, srcArray[0].length - 1);
+		  				var hasTarget = false;
+		  				if (imgLinkArray[i].indexOf('target="_blank"') > -1) {
+		  					hasTarget = true;
+		  				}
 		  				if (href !== src) {
 		  					urlArray.push({
 			  					href: href,
+			  					hasTarget: hasTarget,
 			  					src: src,
 			  				});
 		  				}
@@ -378,12 +383,14 @@
 			  				if (i + 1 > urlArray.length) {
 			  					urlArray.push({
 				  					href: '',
+				  					hasTarget: false,
 				  					src: src,
 				  				});
 			  				} else {
 			  					if (urlArray[i].src !== src) {
 				  					urlArray.splice(i, 0, {
 					  					href: '',
+					  					hasTarget: false,
 					  					src: src,
 					  				});
 				  				}
@@ -489,14 +496,16 @@
   	function addBullet() {
   		$scope.bullets.push({ number: $scope.bullets.length });
   	};
-  	function addSlide(index, urlString, srcString) {
+  	function addSlide(index, urlString, hasTarget, srcString) {
   		if (index + 1 > $scope.slides.length || !$scope.slides[index]) {
   			$scope.slides.push({
 	  			url: urlString,
+	  			hasTarget: hasTarget,
 	  			src: srcString,
 	  		});
   		} else {
   			$scope.slides[index].url = urlString;
+  			$scope.slides[index].hasTarget = hasTarget;
   			$scope.slides[index].src = srcString;
   		}
 			addBullet();
@@ -535,7 +544,7 @@
   		var hrefSrcArray = post.extractImgLinks();
 
   		for (var i = 0; i < hrefSrcArray.length; i++) {
-  			addSlide(i, hrefSrcArray[i].href, hrefSrcArray[i].src);
+  			addSlide(i, hrefSrcArray[i].href, hrefSrcArray[i].hasTarget, hrefSrcArray[i].src);
   		}
   		$scope.selectedBullet = $scope.bullets[0];
 

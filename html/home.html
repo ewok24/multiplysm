@@ -10,7 +10,10 @@
       <div id='slider' class='swipe'>
         <div class='swipe-wrap'>
           <div ng-repeat="slide in slides">
-            <a href="{{slide.url}}">
+            <a ng-if="!slide.hasTarget" href="{{slide.url}}">
+              <img ng-src="{{slide.src}}">
+            </a>
+            <a ng-if="slide.hasTarget" href="{{slide.url}}" target="_blank">
               <img ng-src="{{slide.src}}">
             </a>
           </div>
