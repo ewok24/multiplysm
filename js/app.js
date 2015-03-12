@@ -8,6 +8,7 @@
 	var app = angular.module('msmApp', ['ngRoute', 'ngSanitize', 'angulartics', 'angulartics.google.analytics']);
 
 	app.config(['$routeProvider', '$logProvider', function ($routeProvider, $logProvider) {
+		$logProvider.debugEnabled(false);
 		$routeProvider
 			.when('/',
 				{
@@ -74,7 +75,6 @@
 					templateUrl: 'html/thankyou.html'
 				})
       .otherwise({ redirectTo: '/' });
-		$logProvider.debugEnabled(true);
 	}]);
 
 	app.service('selectedService', function() {
@@ -450,7 +450,6 @@
   			_htmlString = postData.content;
   			_sanitizedHtml = $sanitize(_htmlString);
   		}
-  		console.log('_sanitizedHtml', _sanitizedHtml);
   		return returnObject;
   	};
   	return constructor;
@@ -488,8 +487,8 @@
   // ------------------------------------
 	// Home Page
   app.controller('NewHomeController', 
-	['$scope', 'httpService', 'BloggerPostList',
-	function ($scope, httpService, BloggerPostList) {
+	['$log', '$scope', 'httpService', 'BloggerPostList',
+	function ($log, $scope, httpService, BloggerPostList) {
 		var mySwipe;
 		$scope.slides = [
 			{ url: '' },
@@ -547,7 +546,7 @@
   		var post = list.getPosts()[0];
   		var hrefSrcArray = post.extractImgLinks();
 
-  		console.log('hrefSrcArray', hrefSrcArray);
+  		$log.debug('hrefSrcArray', hrefSrcArray);
 
   		for (var i = 0; i < hrefSrcArray.length; i++) {
   			addSlide(i, hrefSrcArray[i].href, hrefSrcArray[i].hasTarget, hrefSrcArray[i].src);
@@ -1472,22 +1471,6 @@
   			}
   		}
 
-  		console.log('post.title' + post.getTitle());
-  		if (post.titleContains('Street Reach')) {
-				eventObj.imgLarge = 'img/upcoming-missions-street-reach.png';
-				eventObj.imgSmall = 'img/upcoming-missions-street-reach.png';
-			} 
-			if (post.titleContains('Winter Retreat')) {
-				eventObj.imgLarge = 'img/upcoming-events-winter-retreat.png';
-				eventObj.imgSmall = 'img/upcoming-events-winter-retreat.png';
-			} 
-			if (post.titleContains('Camp Mitchell')) {
-				eventObj.imgLarge = 'img/upcoming-events-summer-camp.png';
-				eventObj.imgSmall = 'img/upcoming-events-summer-camp.png';
-			}
-
-
-  		
   		var src = post.extractImgSrcUrls();
   		if (src && src.length === 1) {
   			eventObj.imgLarge = src[0];
@@ -1603,15 +1586,14 @@
     												ng-transclude \
       											style="width: 100%; height: 360px; \
       											background-repeat: no-repeat; \
-      											background-position: center; \
-      											background-size: contain;"> \
+      											background-size: cover;"> \
     											</div> \
             							<div class="show-for-small" back-img="{{ urlSm }}" \
           									ng-transclude \
       											style="width: 100%; height: 360px; \
       											background-repeat: no-repeat; \
       											background-position: center; \
-      											background-size: contain;"> \
+      											background-size: cover;"> \
         									</div>';
       	return htmlString;
       },
