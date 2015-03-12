@@ -74,7 +74,7 @@
 					templateUrl: 'html/thankyou.html'
 				})
       .otherwise({ redirectTo: '/' });
-		$logProvider.debugEnabled(false);
+		$logProvider.debugEnabled(true);
 	}]);
 
 	app.service('selectedService', function() {
@@ -231,6 +231,15 @@
 	  			htmlString.replace(regexString, '');
 	  			return returnArray;
 		  	},
+		  	imgLink: function(htmlString) {
+	  			var regexString = /<a([\w\W]+?)\<img([\w\W]+?)\/>/g;
+	  			var returnArray = htmlString.match(regexString);
+	  			htmlString.replace(regexString, '');
+	  			return returnArray;
+		  	},
+		  	href: function(htmlString) {
+		  		return htmlString.match(/href="([\w\W]+?)"/g);
+		  	},
 		  	src: function(htmlString) {
 		  		return htmlString.match(/src="([\w\W]+?)"/g);
 		  	},
@@ -298,6 +307,13 @@
 	  				return false;
 	  			}
 	  		},
+	  		titleContains: function(text) {
+	  			if (_title.indexOf(text) > -1) {
+	  				return true;
+	  			} else {
+	  				return false;
+	  			}
+	  		},
 	  		getLabels: function() {
 	  			return _labels;
 	  		},
@@ -334,6 +350,45 @@
 	  				for (var i = 0; i < imgArray.length; i++) {
 		  				var srcArray = regexRules.get.src(imgArray[i]);
 		  				urlArray.push(srcArray[0].substring(5, srcArray[0].length - 1));
+		  			}
+	  			}
+	  			return urlArray;
+	  		},
+	  		extractImgLinks: function() {
+	  			var urlArray = [];
+	  			var imgLinkArray = regexRules.get.imgLink(_sanitizedHtml);
+	  			if (imgLinkArray) {
+	  				for (var i = 0; i < imgLinkArray.length; i++) {
+		  				var hrefArray = regexRules.get.href(imgLinkArray[i]);
+		  				var srcArray = regexRules.get.src(imgLinkArray[i]);
+		  				var href = hrefArray[0].substring(6, hrefArray[0].length - 1);
+		  				var src = srcArray[0].substring(5, srcArray[0].length - 1);
+		  				if (href !== src) {
+		  					urlArray.push({
+			  					href: href,
+			  					src: src,
+			  				});
+		  				}
+		  			}
+		  			var imgArray = this.extractImgs();
+		  			if (imgArray) {
+		  				for (var i = 0; i < imgArray.length; i++) {
+			  				var srcArray = regexRules.get.src(imgArray[i]);
+			  				var src = srcArray[0].substring(5, srcArray[0].length - 1);
+			  				if (i + 1 > urlArray.length) {
+			  					urlArray.push({
+				  					href: '',
+				  					src: src,
+				  				});
+			  				} else {
+			  					if (urlArray[i].src !== src) {
+				  					urlArray.splice(i, 0, {
+					  					href: '',
+					  					src: src,
+					  				});
+				  				}
+			  				}
+			  			}
 		  			}
 	  			}
 	  			return urlArray;
@@ -427,20 +482,21 @@
 		var mySwipe;
 		$scope.slides = [
 			{ url: '' },
-			{ url: '#/about' },
-			{ url: '#/updates_upcoming' },
+			{ url: '' },
+			{ url: '' },
 		];
   	$scope.bullets = [];
   	function addBullet() {
   		$scope.bullets.push({ number: $scope.bullets.length });
   	};
   	function addSlide(index, urlString, srcString) {
-  		if (index > $scope.slides.length) {
+  		if (index + 1 > $scope.slides.length || !$scope.slides[index]) {
   			$scope.slides.push({
 	  			url: urlString,
 	  			src: srcString,
 	  		});
   		} else {
+  			$scope.slides[index].url = urlString;
   			$scope.slides[index].src = srcString;
   		}
 			addBullet();
@@ -476,10 +532,10 @@
   	.then(function(data) {
   		var list = new BloggerPostList(data);
   		var post = list.getPosts()[0];
-  		var srcArray = post.extractImgSrcUrls();
-  		
-  		for (var i = 0; i < srcArray.length; i++) {
-  			addSlide(i, '', srcArray[i]);
+  		var hrefSrcArray = post.extractImgLinks();
+
+  		for (var i = 0; i < hrefSrcArray.length; i++) {
+  			addSlide(i, hrefSrcArray[i].href, hrefSrcArray[i].src);
   		}
   		$scope.selectedBullet = $scope.bullets[0];
 
@@ -1400,6 +1456,22 @@
   				eventObj.showClickSm = false;
   			}
   		}
+
+  		console.log('post.title' + post.getTitle());
+  		if (post.titleContains('Street Reach')) {
+				eventObj.imgLarge = 'img/upcoming-missions-street-reach.png';
+				eventObj.imgSmall = 'img/upcoming-missions-street-reach.png';
+			} 
+			if (post.titleContains('Winter Retreat')) {
+				eventObj.imgLarge = 'img/upcoming-events-winter-retreat.png';
+				eventObj.imgSmall = 'img/upcoming-events-winter-retreat.png';
+			} 
+			if (post.titleContains('Camp Mitchell')) {
+				eventObj.imgLarge = 'img/upcoming-events-summer-camp.png';
+				eventObj.imgSmall = 'img/upcoming-events-summer-camp.png';
+			}
+
+
   		
   		var src = post.extractImgSrcUrls();
   		if (src && src.length === 1) {
@@ -1490,7 +1562,6 @@
   		.then(function() {
   			$log.debug('Promise Chaining is DONE!!!!');
   		});
-
 	}]);
 
 	app.directive('msmEventImg', 
@@ -1500,7 +1571,7 @@
    	*                    	Link Function
    	*****************************************************/
 		var link = function(scope, element, attrs, controller) {
-			$log.debug('msm-event-label scope', scope);
+			//$log.debug('msm-event-label scope', scope);
 			
 			// ---------------------------
 			// Initialize Objects
@@ -1515,11 +1586,17 @@
       template: function(tElement, tAttrs) {
       	var htmlString = '<div class="show-for-medium-up" back-img="{{ urlGtMd }}" \
     												ng-transclude \
-      											style="width: 100%; height: 360px; background: left top; background-repeat: no-repeat; background-size: cover;"> \
+      											style="width: 100%; height: 360px; \
+      											background-repeat: no-repeat; \
+      											background-position: center; \
+      											background-size: contain;"> \
     											</div> \
             							<div class="show-for-small" back-img="{{ urlSm }}" \
           									ng-transclude \
-      											style="width: 100%; height: 360px; background: center; background-repeat: no-repeat; background-size: cover;"> \
+      											style="width: 100%; height: 360px; \
+      											background-repeat: no-repeat; \
+      											background-position: center; \
+      											background-size: contain;"> \
         									</div>';
       	return htmlString;
       },
@@ -1546,7 +1623,7 @@
    	*                    	Link Function
    	*****************************************************/
 		var link = function(scope, element, attrs, controller) {
-			$log.debug('msm-event-label scope', scope);
+			//$log.debug('msm-event-label scope', scope);
 			
 			// ---------------------------
 			// Initialize Objects
