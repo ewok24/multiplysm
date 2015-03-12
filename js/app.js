@@ -361,8 +361,11 @@
 	  				for (var i = 0; i < imgLinkArray.length; i++) {
 		  				var hrefArray = regexRules.get.href(imgLinkArray[i]);
 		  				var srcArray = regexRules.get.src(imgLinkArray[i]);
-		  				var href = hrefArray[0].substring(6, hrefArray[0].length - 1);
+
+		  				var lastHref = hrefArray.length - 1;
+		  				var href = hrefArray[lastHref].substring(6, hrefArray[lastHref].length - 1);
 		  				var src = srcArray[0].substring(5, srcArray[0].length - 1);
+		  				
 		  				var hasTarget = false;
 		  				if (imgLinkArray[i].indexOf('target="_blank"') > -1) {
 		  					hasTarget = true;
@@ -447,6 +450,7 @@
   			_htmlString = postData.content;
   			_sanitizedHtml = $sanitize(_htmlString);
   		}
+  		console.log('_sanitizedHtml', _sanitizedHtml);
   		return returnObject;
   	};
   	return constructor;
@@ -542,6 +546,8 @@
   		var list = new BloggerPostList(data);
   		var post = list.getPosts()[0];
   		var hrefSrcArray = post.extractImgLinks();
+
+  		console.log('hrefSrcArray', hrefSrcArray);
 
   		for (var i = 0; i < hrefSrcArray.length; i++) {
   			addSlide(i, hrefSrcArray[i].href, hrefSrcArray[i].hasTarget, hrefSrcArray[i].src);
