@@ -653,6 +653,11 @@
 			//$scope.slideTo(index);
 		};
 
+		// Dropdown control
+		$scope.switchOption = function() {
+			var index = $scope.currentOption.value;
+			$scope.slideTo(index);
+  	};
 		// Swipe JS callback
   	$scope.callback = function(index) {
   		selectSlideFn($scope.slides[index], index);
@@ -874,18 +879,25 @@
   				var list = new BloggerPostList(data);
   				var posts = list.getPosts();
 	   			if (!isError) {
-			   		var bloggerPost = posts[0];
-						if (bloggerPost && bloggerPost.hasTitle('About: Thrive')) {
-			   			// Append info to all blog posts and use
-			   			// regex to sanitize value.content (html)
-			   			bloggerPost.appendPostInfo();
-			   			$scope.about.title = bloggerPost.getTitle();
-			   			$scope.about.content = bloggerPost.getHtml();
-			   			$scope.about.heading = bloggerPost.getSubtitle();
-			   			$scope.about.img = bloggerPost.extractImgSrcUrls()[0];
-			   			// Continue Promise Chaining
-			   			return false;
-			   		} else {
+	   				var foundTitle = false;
+	   				for (var i = 0; i < posts.length; i++) {
+	   					var bloggerPost = posts[i];
+							if (bloggerPost && bloggerPost.hasTitle('About: Thrive')) {
+								// Append info to all blog posts and use
+				   			// regex to sanitize value.content (html)
+				   			bloggerPost.appendPostInfo();
+				   			$scope.about.title = bloggerPost.getTitle();
+				   			$scope.about.content = bloggerPost.getHtml();
+				   			$scope.about.heading = bloggerPost.getSubtitle();
+				   			$scope.about.img = bloggerPost.extractImgSrcUrls()[0];
+				   			// Continue Promise Chaining
+				   			foundTitle = true;
+				   			break;
+				   		}
+	   				}
+	   				if (foundTitle == true) {
+	   					return false;
+	   				} else {
 			   			// STOP Promise Chaining
 			   			$log.error('ThriveController:', label, '- null data');
 			   			return true;
@@ -2349,7 +2361,7 @@
 	    	swipeElem.next();
 	    };
 	    scope.slideTo = function(index) {
-	    	console.log('swipe', swipeElem);
+	    	//console.log('swipe', swipeElem);
 	    	swipeElem.slide(index, 400);
 	    };
 
