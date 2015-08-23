@@ -14,6 +14,9 @@
  * Key Site Font (source-sans-pro)
  **********************/
 @font-face {
+	font-family: 'Open Sans', sans-serif;
+}
+@font-face {
 	font-family: source-sans-pro-regular;
 	src: url('../fonts/SourceSansPro-Regular.otf');
 }
@@ -22,7 +25,7 @@
 	src: url('../fonts/SourceSansPro-Bold.otf');
 }
 h1, h2, h3, h4, h5, h6 {
-	font-family: source-sans-pro-bold;
+	font-family: 'Open Sans';
 	color: #000;
 }
 body {
