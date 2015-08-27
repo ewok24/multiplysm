@@ -330,7 +330,7 @@
 	  		},
 	  		hasLabel: function(label) { 
 	  			for (var i = 0; i < _labels.length; i++) {
-	  				if (_labels[i] === label) {
+	  				if (_labels[i].toLowerCase() === label.toLowerCase()) {
 	  					return true;
 	  				}
 	  			}
