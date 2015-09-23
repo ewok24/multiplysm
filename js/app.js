@@ -1651,9 +1651,11 @@
 	  var directiveDefinitionObject = {
       priority: 0,
       template: function(tElement, tAttrs) {
-      	var htmlString = '<div style="position: absolute; width: 100%; height: 100%; z-index: 2; \
-      											background: linear-gradient(165deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.4) 80%, rgba(0, 0, 0, 0.8) 100%);"></div> \
-						              <div class="show-for-medium-up" style="position: absolute; width: 100%; height: 100%; z-index: 3;"> \
+      	// Vignette
+      	// <div style="position: absolute; width: 100%; height: 100%; z-index: 2; \
+      	// background: linear-gradient(165deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 30%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.4) 80%, rgba(0, 0, 0, 0.8) 100%);"></div> \
+
+      	var htmlString = '<div class="show-for-medium-up" style="position: absolute; width: 100%; height: 100%; z-index: 3;"> \
 						                <h1 ng-if="showTitleGtMd" style="padding-top: 10px; padding-left: 10px; color: #fff; "> \
 						                	{{ title }} \
 					                	</h1> \
