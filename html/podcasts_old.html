@@ -1,0 +1,59 @@
+﻿<div ng-controller="PodcastsController" class="row">
+  <!-- <Page Title> -->
+  <div class="small-12 large-12 columns">
+    <h1>{{title}}</h1>
+  </div>
+  <!-- </Page Title> -->
+
+  <div class="small-12 columns">
+    <!-- <Swipe.js> -->
+    <div class='swipe' swipejs style="height: 390px;">
+      <div class='swipe-wrap'>
+
+        <!-- Audio Player and Current Podcast -->
+        <div>
+          <div class="clearfix" style="height: 40px;">
+            <a class="no-text-select right" ng-click="nextSlide()"><h3 style="color: #ff2701;">Playlist &gt; </h3></a>
+          </div>
+          <chosen-podcast></chosen-podcast>
+          <audio id="audioPlayer" src="https://dl.dropboxusercontent.com/s/4s7iuattat2d0in/2013%2009%2025%20Wed.%20PM%20Edited%40%20Nathan%20Ramirez%40.mp3" preload="auto" controls></audio>
+        </div>
+        <!-- Podcast Playlist -->
+        <div>
+          <div class="clearfix" style="height: 40px;">
+            <a class="no-text-select left" ng-click="prevSlide()"><h3 style="color: #ff2701;">&lt; Back</h3></a>
+          </div>
+          <!-- <Filter Options> -->
+          <input style="margin: 0px;" type="search" placeholder="Search for sermon by Title" ng-model="searchTitle" ng-show="show.title"></input>
+          <input style="margin: 0px;" type="search" placeholder="Search for sermon by Speaker" ng-model="searchSpeaker" ng-show="show.speaker"></input>
+          <input style="margin: 0px;" type="search" placeholder="Search for sermon by Series" ng-model="searchSeries" ng-show="show.series"></input>
+
+          <select ng-model="searchType" ng-change="switchType()" ng-options="c.type for c in searchTypes"></select>
+          <!-- </Filter Options> -->
+
+          <div style="max-height: 250px; overflow-y: scroll; overflow-x: hidden; -webkit-overflow-scrolling: touch; background-color: #f0eeee; border: solid 2px #444;">
+            <ul style="margin: 0px;">
+              <li ng-repeat="podcast in allPodcasts | filter: { title: searchTitle, speaker: searchSpeaker, series: searchSeries }" style="background-color: #f0eeee; border-bottom: solid 1px #444; height: 108px; overflow: hidden;" ng-click="playThis($index)">
+                <div style="overflow: hidden; height: inherit; padding: 1em;">
+                  <time datetime="2014-09-20" class="icon" style="font-size: 1em; display: block; position: relative; width: 5.1em; height: 5.1em; background-color: #fff; border-radius: 0.6em;">
+                    <em style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; bottom: 0.1em; color: #dc411c;">{{podcast.day}}</em>
+                    <strong style="display: block; width: 100%; font-size: 0.9em; font-weight: bold; font-style: normal; text-align: center; position: absolute; top: 0; color: #fff; background-color: #dc411c; box-shadow: 0 2px 0 #333; padding: 0;">{{podcast.month}}</strong>
+                    <span style="display: block; width: 100%; font-size: 1em; font-weight: bold; font-style: normal; text-align: center; font-size: 2.8em; letter-spacing: -0.05em; padding-top: 6px; color: #2f2f2f;">{{podcast.dayNumber}}</span>
+                  </time>
+                  <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; position: relative; top: -5em; left: 6em;">
+                    <p style="margin: 0px;"><strong>{{podcast.title}}</strong></p>
+                    <p style="margin: 0px;">{{podcast.speaker}} </p>
+                    <p style="margin: 0px;">{{podcast.series}}</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- </Swipe.js> -->
+  </div>
+  	
+</div>

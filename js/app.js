@@ -1788,10 +1788,11 @@
 		//********************/
 
 		var label = '$Podcasts';
-  	$scope.title = label.substr(1, label.length);
+  	//$scope.title = label.substr(1, label.length);
+  	$scope.title = 'Sermons';
 
 		$scope.allPodcasts = {};
-
+		/*
 		httpService.resetSimpleGet();
   	httpService.getLabeledPost(label)
   	.then(function(data) {
@@ -1833,6 +1834,7 @@
    	}, function(error) {
    		$log.error('PodcastsController: $Podcasts', error);
    	});
+		//*/
 	}]);
 
 	// ------------------------------------
@@ -1879,7 +1881,7 @@
 				{ name: 'The Multiply Initiative', url: '#/updates_tmi', dropdown: false, nested: [] },
 				{ name: 'Upcoming Events', url: '#/updates_upcoming', dropdown: false, nested: [] },
 			] },
-			{ name: 'Podcasts', url: '#/podcasts', dropdown: false, nested: [] },
+			{ name: 'Sermons', url: '#/podcasts', dropdown: false, nested: [] },
 			{ name: 'Contact', url: '#/contact', dropdown: false, nested: [] }
 		];
 
