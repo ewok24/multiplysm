@@ -1504,6 +1504,9 @@
 				eventObj.showClickGtMd = false;
 				eventObj.showClickSm = false;
 			}
+
+			eventObj.showClickGtMd = false;
+      eventObj.showClickSm = false;
   	};
   	function addEvent(eventArray, post) {
   		var eventObj = {
