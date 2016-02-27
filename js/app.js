@@ -14,6 +14,11 @@
 				{
 					templateUrl: 'html/home.html'
 				})
+			// Notifications
+			.when('/notifications',
+				{
+					templateUrl: 'html/notifications.html'
+				})
 			// About Us Pages
 			.when('/about',
 				{
